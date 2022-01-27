@@ -1,0 +1,59 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="goBack()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Registrar Empresa
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-grid class="bg1 h-100">
+    <ion-row>
+      <ion-col size="12" size-sm="6" offset-sm="3">
+
+        <ion-card class="">
+          <ion-card-header>
+            <ion-card-title>Comercio</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid>
+
+              <ion-row>
+                <ion-col>
+                  <ion-item class="w-100">
+                    <ion-label>Rubros</ion-label>
+                    <ionic-selectable  
+                      [(ngModel)]="model.rubros" [isMultiple]="true"
+                      [items]="listado_rubros"
+                      itemValueField="id"
+                      itemTextField="name"
+                      [canSearch]="true">
+                    </ionic-selectable>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col>
+                  <ion-label>Nombre:</ion-label>
+                  <ion-input placeholder="Almacen de tandil" type="text" [(ngModel)]="model.name"></ion-input>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col><ion-button (click)="ingresar()">Ingresar</ion-button></ion-col>
+              </ion-row>
+
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

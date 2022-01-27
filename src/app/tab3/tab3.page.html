@@ -1,0 +1,48 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Actualizaciones
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="bg1">
+    <ion-row>
+      
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Novedades</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <p>En esta pestaña se mostrarán las últimas actualizaciones y novedades.</p><br>
+              </ion-col>
+            </ion-row>
+
+
+          </ion-grid>
+         
+        </ion-card-content>
+      </ion-card>
+      
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-sm="6" size-md="3" *ngFor="let item of listado_noticias">
+
+        <ion-card class="w-100">
+          <ion-card-header>
+            <ion-card-title>Precio agregado</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            {{item.text}}           
+          </ion-card-content>
+        </ion-card>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
