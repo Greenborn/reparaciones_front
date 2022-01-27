@@ -6,6 +6,7 @@ import { LoginViewComponent } from './componentes/login-view/login-view.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule }   from '@angular/common/http';
 import { AuthenticationGuard } from './services/auth.guard';
+import { IonicModule } from '@ionic/angular';
 
 const routes: Routes = [
   {
@@ -20,7 +21,7 @@ const routes: Routes = [
     LoginViewComponent,
   ],
   imports: [
-    CommonModule,
+    CommonModule, IonicModule.forRoot(),
     FormsModule,ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forChild(routes),
