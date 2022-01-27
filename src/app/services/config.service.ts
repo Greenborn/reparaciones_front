@@ -11,7 +11,7 @@ export class ConfigService {
 
   get data() {
     return {
-      apiBaseUrl: this.local ? "http://localhost:8080/" : "https://precios.api.greenborn.com.ar/",
+      apiBaseUrl: this.local ? "http://localhost:8080/" : "https://reparaciones.api.greenborn.com.ar/",
       // apiBaseUrl: this.local ? "http://localhost:8888/" : "https://greenborn-gfc-api.herokuapp.com/",
       loginAction:"login",
       postLoginRoute: '/tabs/tab1',
