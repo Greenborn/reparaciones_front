@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="goBack()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{accion}} Obra
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="bg1 h-100">
+
+    <ion-row>
+      <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
+
+        <ion-card class="">
+          <ion-card-header> <ion-card-title>Información</ion-card-title> </ion-card-header>
+          
+          <ion-card-content>
+            <ion-grid>
+    
+              <ion-row>
+                <ion-col>
+                  <ion-label>Dirección / Alias:</ion-label>
+                  <ion-input placeholder="Dirección / alias" type="text" [(ngModel)]="model.nombre_alias"></ion-input>
+                </ion-col>
+              </ion-row>
+    
+              <ion-row>
+                <ion-col>
+                  <ion-button (click)="goBack()" color="medium">Volver</ion-button>
+                  <ion-button (click)="ingresar()">Guardar</ion-button>
+                </ion-col>
+              </ion-row>
+    
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

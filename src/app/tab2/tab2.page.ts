@@ -1,9 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { FormateoService } from '../services/formateo.service';
 
 import { ApiConsumer } from '../models/ApiConsumer';
-import { Price } from '../models/price';
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,8 +19,9 @@ export class Tab2Page extends ApiConsumer  {
     private alertController:              AlertController,
     public  formateoService:              FormateoService,
     private  router:                      Router,
+    public changeDetectorRef:             ChangeDetectorRef,
   ) {
-    super(alertController, loadingController);
+    super(alertController, loadingController, changeDetectorRef);
     this.max_date = this.formateoService.getFormatedDate(new Date());
   }
 

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthenticationGuard } from '../modules/autentication/services/auth.guard';
+import { ObrasFormComponent } from '../tab1/components/obras.form/obras.form.component';
 import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
@@ -12,6 +13,12 @@ const routes: Routes = [
         path: 'tab1',
         loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule),
         canActivate: [AuthenticationGuard]
+      },
+      {
+        path: 'tab1/crear_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]
+      },
+      {
+        path: 'tab1/editar_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]
       },
       {
         path: 'tab2',

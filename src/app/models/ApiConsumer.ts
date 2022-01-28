@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { AlertController, LoadingController } from "@ionic/angular";
 import { Observable, Subject } from "rxjs";
 import { first, takeUntil } from "rxjs/operators";
@@ -14,7 +14,8 @@ export abstract class ApiConsumer implements OnDestroy {
   constructor(
     // private name: string,
     protected alertCtrl: AlertController,
-    protected loadingController: LoadingController
+    protected loadingController: LoadingController,
+    protected ref:               ChangeDetectorRef,
   ) { }
 
   protected fetch<T>(callback: CallableFunction): Observable<T> {
@@ -50,6 +51,7 @@ async displayAlert(message: string) {
       ok => {
         loading.dismiss();
         this[dataOut] = ok;
+        this.ref.detectChanges();
       },
       err => {
         loading.dismiss();

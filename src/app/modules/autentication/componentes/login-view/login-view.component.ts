@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
@@ -20,9 +20,10 @@ export class LoginViewComponent extends ApiConsumer {
     private auth:               AuthService,
     private router:             Router,
     public  loadingController:  LoadingController,
-    private alertController:    AlertController
+    private alertController:    AlertController,
+    public changeDetectorRef:   ChangeDetectorRef,
   ) { 
-    super(alertController, loadingController);
+    super(alertController, loadingController, changeDetectorRef);
   }
 
   ngOnInit(): void {
