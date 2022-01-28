@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthenticationGuard } from '../modules/autentication/services/auth.guard';
 import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
@@ -9,20 +10,24 @@ const routes: Routes = [
     children: [
       {
         path: 'tab1',
-        loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+        loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule),
+        canActivate: [AuthenticationGuard]
       },
       {
         path: 'tab2',
-        loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule)
+        loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule),
+        canActivate: [AuthenticationGuard]
       },
       {
         path: 'tab3',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),
+        canActivate: [AuthenticationGuard]
       },
       {
         path: '',
         redirectTo: '/tabs/tab1',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        canActivate: [AuthenticationGuard]
       }
     ]
   },
