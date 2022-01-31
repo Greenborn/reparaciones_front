@@ -33,15 +33,19 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
     if (this.router_subs == undefined){
       this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
         if (event.url.search('notas') != -1) {
-          this.titulo = "Notas de obra";
-          if (this.tab2Service.ver_nota_obra_id != undefined){
-            this.loadingEspecificData(this.privateNotaService, 'filter[obra_id]='+this.tab2Service.ver_nota_obra_id+'&expand=categoria,obra',   'notas', 'Consultando notas.');
-            this.titulo = "Notas de obra "+ this.tab2Service.ver_nota_obra_nombre;
-          } else
-            this.loadingEspecificData(this.privateNotaService,'expand=categoria,obra',   'notas', 'Consultando notas.');
+          this.cargar_notas();
         } 
       });
     }
+  }
+
+  cargar_notas(){
+    this.titulo = "Notas de obra";
+    if (this.tab2Service.ver_nota_obra_id != undefined){
+      this.loadingEspecificData(this.privateNotaService, 'filter[obra_id]='+this.tab2Service.ver_nota_obra_id+'&expand=categoria,obra',   'notas', 'Consultando notas.');
+      this.titulo = "Notas de obra "+ this.tab2Service.ver_nota_obra_nombre;
+    } else
+      this.loadingEspecificData(this.privateNotaService,'expand=categoria,obra',   'notas', 'Consultando notas.');
   }
 
   goBack(){
@@ -77,7 +81,18 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
     await alert.present();
   }
 
-  borrar_nota(nota){
-    
+  async borrar_nota(nota){
+    const loading = await this.loadingController.create({ message: 'Borrando nota: ' + nota.nota});
+    await loading.present();
+    this.privateNotaService.delete(nota.id).subscribe(
+      ok => {
+        loading.dismiss();
+        this.cargar_notas();
+      },
+      err => {
+        loading.dismiss();
+        this.displayAlert('Ocurrió un error al intentar eliminar la nota: ' + nota.nota);
+      }
+    );
   }
 }
