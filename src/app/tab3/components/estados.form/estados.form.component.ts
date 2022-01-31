@@ -81,6 +81,18 @@ export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDes
           loading.dismiss();
         }
       );
+    }  else if (this.accion == 'Editar'){
+      this.privateEstadoService.put(this.model, this.model.id).subscribe(
+        ok => {
+          super.displayAlert("Se ha modificado el Estado.");
+          loading.dismiss();
+          this.tab3Service.recargarEstado.next(this.model.categoria_id);
+          this.goBack();
+        },
+        err => {
+          loading.dismiss();
+        }
+      );
     }
   }
 
