@@ -103,6 +103,25 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   }
 
   async ingresar(){
+    if ( !this.model.hasOwnProperty('nota') || this.model.nota == ''){
+      super.displayAlert("Es necesario completar el texto correspondiente a la nota."); return false;
+    }
+
+    if ( !this.model.hasOwnProperty('categoria_id') || this.model.categoria_id == -1){
+      super.displayAlert("Es necesario definir una categoría."); return false;
+    }
+
+    if ( !this.model.hasOwnProperty('estado_id') || this.model.estado_id == -1){
+      super.displayAlert("Es necesario definir un estado."); return false;
+    }
+    
+    if ( !this.model.hasOwnProperty('obra_id') || this.model.obra_id == undefined ||  this.model.obra_id == "undefined"){
+      super.displayAlert("Es necesario definir una obra."); return false;
+    }
+
+    if ( !this.model.hasOwnProperty('vencimiento') || this.model.vencimiento == undefined){
+      super.displayAlert("Es necesario definir una fecha de vencimiento."); return false;
+    }
     const loading = await this.loadingController.create({ message: "Por favor espere..." });
 
     this.model.vencimiento = this.formateoService.getFormatedDate(new Date(this.model.vencimiento));
@@ -114,10 +133,11 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
           this.goBack();
         },
         err => {
+          super.displayAlert("Ha ocurrido un error, revise los datos del formulario o reintente mas tarde.");
           loading.dismiss();
         }
       );
-    }
+    } 
   }
 
   OnDestroy(){
