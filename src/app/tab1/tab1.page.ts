@@ -32,9 +32,11 @@ export class Tab1Page  extends ApiConsumer  implements OnInit, OnDestroy {
   private recargarObrasSubs:any;
 
   ngOnInit() {
-    this.recargarObrasSubs = this.tab1Service.recargarObras.subscribe({ next:() => {
-      this.consultar_habilitadas();
-    }});
+    if (this.recargarObrasSubs == undefined){
+      this.recargarObrasSubs = this.tab1Service.recargarObras.subscribe({ next:() => {
+        this.consultar_habilitadas();
+      }});
+    }
     this.tab1Service.recargarObras.next();
   }
 
@@ -64,7 +66,6 @@ export class Tab1Page  extends ApiConsumer  implements OnInit, OnDestroy {
   }
 
   async eliminar_obra(obra:any){
-    console.log(obra);
     const alert = await this.alertController.create({
       header: 'Atención',
       message: 'Está por eliminar la obra "' + obra.nombre_alias + '" y se perderán sus notas asociadas ¿desea continuar?.',

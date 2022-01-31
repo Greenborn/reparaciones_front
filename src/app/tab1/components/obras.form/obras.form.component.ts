@@ -31,24 +31,26 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
   private router_subs:any;
 
   ngOnInit() {
-    this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
-      if (event.url.search('crear_obra') != -1) {
-        this.accion = 'Nueva';
-      } else if (event.url.search('editar_obra') != -1){
-        this.accion = 'Editar';
-        
-        const loading = await this.loadingController.create({ message: "Por favor espere..." });
-        this.privateObrasService.get(this.tab1Service.obra_edit_id).subscribe(
-          ok => {
-            loading.dismiss();
-            this.model = ok;
-          },
-          err => {
-            loading.dismiss();
-          }
-        );
-      }
-    });
+    if (this.router_subs == undefined){
+      this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
+        if (event.url.search('crear_obra') != -1) {
+          this.accion = 'Nueva';
+        } else if (event.url.search('editar_obra') != -1){
+          this.accion = 'Editar';
+          
+          const loading = await this.loadingController.create({ message: "Por favor espere..." });
+          this.privateObrasService.get(this.tab1Service.obra_edit_id).subscribe(
+            ok => {
+              loading.dismiss();
+              this.model = ok;
+            },
+            err => {
+              loading.dismiss();
+            }
+          );
+        }
+      });
+    }
   }
 
   OnDestroy(){

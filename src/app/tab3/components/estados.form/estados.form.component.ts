@@ -31,24 +31,27 @@ export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDes
   }
 
   ngOnInit() {
-    this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
-      if (event.url.search('crear_categoria') != -1) {
-        this.accion = 'Nueva';
-      } else if (event.url.search('editar_categoria') != -1){
-        this.accion = 'Editar';
-        
-        const loading = await this.loadingController.create({ message: "Por favor espere..." });
-        this.privateEstadoService.get(this.tab3Service.estado_edit_id).subscribe(
-          ok => {
-            loading.dismiss();
-            this.model = ok;
-          },
-          err => {
-            loading.dismiss();
-          }
-        );
-      }
-    });
+    if (this.router_subs == undefined){
+      this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
+        if (event.url.search('crear_estado') != -1) {
+          this.accion = 'Nuevo';
+          this.model.categoria_id = this.tab3Service.estado_categoria_id;
+        } else if (event.url.search('editar_estado') != -1){
+          this.accion = 'Editar';
+          
+          const loading = await this.loadingController.create({ message: "Por favor espere..." });
+          this.privateEstadoService.get(this.tab3Service.estado_edit_id).subscribe(
+            ok => {
+              loading.dismiss();
+              this.model = ok;
+            },
+            err => {
+              loading.dismiss();
+            }
+          );
+        }
+      });
+    }
   }
 
   OnDestroy(){
@@ -56,7 +59,29 @@ export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDes
   }
   
   goBack(){
-    this.router.navigate([ '/tabs/tab3' ]);
+    this.router.navigate([ '/tabs/tab3/editar_categoria' ]);
+  }
+
+  async ingresar(){
+    console.log(this.model);
+    if ( !this.model.hasOwnProperty('nombre') || this.model.nombre == ''){
+      super.displayAlert("Debe definir un nombre para el estado."); return false;
+    }
+
+    const loading = await this.loadingController.create({ message: "Por favor espere..." });
+    if (this.accion == 'Nuevo'){
+      this.privateEstadoService.post(this.model).subscribe(
+        ok => {
+          super.displayAlert("Nuevo registro de Estado creado.");
+          loading.dismiss();
+          this.tab3Service.recargarEstado.next(this.model.categoria_id);
+          this.goBack();
+        },
+        err => {
+          loading.dismiss();
+        }
+      );
+    }
   }
 
 }

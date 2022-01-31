@@ -30,9 +30,11 @@ export class Tab3Page extends ApiConsumer  implements OnInit, OnDestroy{
   }
 
   ngOnInit() {
-    this.recargarCategoriasSubs = this.tab3Service.recargarCategoria.subscribe({ next:() => {
-      this.loadingEspecificData(this.privateCategoriaService, '',   'categorias', 'Consultando categorias.');
-    }});
+    if (this.recargarCategoriasSubs == undefined){
+      this.recargarCategoriasSubs = this.tab3Service.recargarCategoria.subscribe({ next:() => {
+        this.loadingEspecificData(this.privateCategoriaService, '',   'categorias', 'Consultando categorias.');
+      }});
+    }
     this.tab3Service.recargarCategoria.next();
   }
 
