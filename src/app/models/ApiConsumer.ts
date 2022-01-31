@@ -44,6 +44,7 @@ async displayAlert(message: string) {
     this.unsubscribe$.complete();
   }
 
+  public getAllSubject:Subject<any> = new Subject();
   async loadingEspecificData( service:any, params:string,dataOut:string, loadingText:string, recursionCount:number = 0 ){
     const loading = await this.loadingController.create({ message: loadingText });
     await loading.present();
@@ -51,6 +52,7 @@ async displayAlert(message: string) {
       ok => {
         loading.dismiss();
         this[dataOut] = ok;
+        this.getAllSubject.next({service:service, data:this[dataOut]});
         this.ref.detectChanges();
       },
       err => {

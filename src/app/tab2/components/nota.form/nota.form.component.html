@@ -8,3 +8,88 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="bg1 h-100">
+
+    <ion-row>
+      <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
+
+        <ion-card class="nota-form-card">
+          <ion-card-header> <ion-card-title>Información</ion-card-title> </ion-card-header>
+          
+          <ion-card-content>
+            <ion-grid>
+    
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label>Obra:</ion-label>
+                    <ion-select placeholder="Selecionar Obra"  [(ngModel)]="model.obra_id" cancelText="Cancelar">
+                      <ion-select-option *ngFor="let obra of obras" value="{{obra.id}}">{{obra.nombre_alias}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label>Categoría:</ion-label>
+                    <ion-select placeholder="Selecionar Categoría" style="background-color: {{color_categoria}};"  [(ngModel)]="model.categoria_id" (ionChange)="categoria_change()" cancelText="Cancelar">
+                      <ion-select-option *ngFor="let categoria of categorias" value="{{categoria.id}}">{{categoria.nombre}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">Nota</ion-label>
+                    <ion-textarea  rows="5" placeholder="Nueva nota" type="textarea" [(ngModel)]="model.nota"></ion-textarea>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label>Estado:</ion-label>
+                    <ion-select placeholder="Selecionar Estado" [(ngModel)]="model.estado_id" cancelText="Cancelar">
+                      <ion-select-option *ngFor="let estado of estados" value="{{estado.id}}">{{estado.nombre}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label>Fecha de vencimiento:</ion-label>
+                    <ion-datetime 
+                        displayFormat="DD/MMM/YYYY"
+                        monthValues="01,02,03,04,05,06,07,08,09,10,11,12"
+                        monthShortNames="ene, feb, mar, abr, may, jun, jul, ago, sep, oct, nov, dic"
+                        doneText="Elegir"
+                        cancelText="Cancelar"
+                       locale="es-AR" [(ngModel)]="model.vencimiento"></ion-datetime>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+    
+              <ion-row>
+                <ion-col>
+                  <ion-button (click)="goBack()" color="medium">Volver</ion-button>
+                  <ion-button (click)="ingresar()">Guardar</ion-button>
+                </ion-col>
+              </ion-row>
+    
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

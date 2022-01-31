@@ -4,7 +4,11 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Nota } from 'src/app/models/nota';
+import { FormateoService } from 'src/app/services/formateo.service';
+import { PrivateCategoriaService } from 'src/app/services/private.categoria.service';
+import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
+import { PrivateObrasService } from 'src/app/services/private.obras.service';
 import { Tab2Service } from '../../tab2.service';
 
 @Component({
@@ -16,8 +20,14 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
 
   public accion:string = 'Nueva';
   public model:Nota    = new Nota();
+  public obras:any;
+  public color_categoria = "#FFF";
 
   private router_subs:any;
+  private obras_subs:any;
+  private categorias:any;
+  private getAllSubj:any;
+
 
   constructor(
     private alertController:             AlertController,
@@ -25,7 +35,11 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     public ref:                          ChangeDetectorRef,
     private router:                      Router,
     private privateNotaService:          PrivateNotaService,
-    private tab2Service:                 Tab2Service
+    private privateObrasService:         PrivateObrasService,
+    private privateCategoriaService:     PrivateCategoriaService,
+    private privateEstadoService:        PrivateEstadoService,
+    private tab2Service:                 Tab2Service,
+    private formateoService:             FormateoService
   ) {
     super(alertController, loadingController, ref);
   }
@@ -35,9 +49,12 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
       this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
         if (event.url.search('crear_nota') != -1) {
           this.accion = 'Nueva';
+          this.tab2Service.recargarObras.next();
+          this.loadingEspecificData(this.privateCategoriaService, '',   'categorias', 'Consultando Categorias.');
         } else if (event.url.search('editar_nota') != -1){
+          this.tab2Service.recargarObras.next();
+          this.loadingEspecificData(this.privateCategoriaService, '',   'categorias', 'Consultando Categorias.');
           this.accion = 'Editar';
-          
           const loading = await this.loadingController.create({ message: "Por favor espere..." });
           this.privateNotaService.get(this.tab2Service.nota_edit_id).subscribe(
             ok => {
@@ -51,14 +68,66 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
         }
       });
     }
+
+    if (this.obras_subs == undefined){
+      this.obras_subs = this.tab2Service.recargarObras.subscribe({ next:() => {
+        this.loadingEspecificData(this.privateObrasService, 'filter[habilitada]=1',   'obras', 'Consultando obras.');
+      }});
+    }
+
+    if (this.getAllSubj == undefined){
+      this.getAllSubj = this.getAllSubject.subscribe({ next:(data) => {
+        if (data.service.recurso == 'private-obras'){
+          this.model.obra_id = String(this.tab2Service.nueva_nota_obra_id);
+        }
+      }});
+    }
+
+    this.loadingEspecificData(this.privateCategoriaService, '',   'categorias', 'Consultando Categorias.');
+    
+    this.tab2Service.recargarObras.next();
+  }
+
+  categoria_change(){
+    for (let c=0; c < this.categorias.length; c++){
+      if (this.categorias[c].id == this.model.categoria_id){
+        this.color_categoria = this.categorias[c].color;
+        this.cargar_estados(this.model.categoria_id);
+        break;
+      } 
+    }
+  }
+
+  cargar_estados(id){
+    this.loadingEspecificData(this.privateEstadoService, 'filter[categoria_id]='+id,   'estados', 'Consultando Estados.');
+  }
+
+  async ingresar(){
+    const loading = await this.loadingController.create({ message: "Por favor espere..." });
+
+    this.model.vencimiento = this.formateoService.getFormatedDate(new Date(this.model.vencimiento));
+    if (this.accion == 'Nueva'){
+      this.privateNotaService.post(this.model).subscribe(
+        ok => {
+          super.displayAlert("Nuevo registro de Nota creado.");
+          loading.dismiss();
+          this.goBack();
+        },
+        err => {
+          loading.dismiss();
+        }
+      );
+    }
   }
 
   OnDestroy(){
     this.router_subs.unsubscribe();
+    this.obras_subs.unsubscribe();
+    this.getAllSubj.unsubscribe();
   }
   
   goBack(){
-    this.router.navigate([ '/tabs/tab2' ]);
+    this.router.navigate([ this.tab2Service.navigationOrigin ]);
   }
 
 }

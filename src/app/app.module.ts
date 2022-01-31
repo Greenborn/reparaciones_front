@@ -11,11 +11,12 @@ import { IonicSelectableModule } from 'ionic-selectable';
 import { AutenticationModule } from './modules/autentication/autentication.module';
 import { AuthInterceptorService } from './modules/autentication/services/auth-interceptor.service';
 import { NotaFormComponent } from './tab2/components/nota.form/nota.form.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
     declarations: [AppComponent, NotaFormComponent],
-    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, AutenticationModule, HttpClientModule, IonicSelectableModule],
+    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, AutenticationModule, HttpClientModule, IonicSelectableModule],
     providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{
         provide: HTTP_INTERCEPTORS,
         useClass: AuthInterceptorService,

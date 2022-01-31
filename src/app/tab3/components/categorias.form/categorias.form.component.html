@@ -23,15 +23,19 @@
     
               <ion-row>
                 <ion-col>
-                  <ion-label>Nombre:</ion-label>
-                  <ion-input placeholder="Herrería" type="text" [(ngModel)]="model.nombre"></ion-input>
+                  <ion-item>
+                    <ion-label>Nombre:</ion-label>
+                    <ion-input placeholder="Herrería" type="text" [(ngModel)]="model.nombre"></ion-input>
+                  </ion-item>
                 </ion-col>
               </ion-row>
 
               <ion-row>
                 <ion-col>
-                  <ion-label>Color:</ion-label>
-                  <input [(colorPicker)]="model.color" [style.background]="model.color"/>
+                  <ion-item>
+                    <ion-label>Color:</ion-label>
+                    <input [(colorPicker)]="model.color" [style.background]="model.color"/>
+                  </ion-item>
                 </ion-col>
               </ion-row>
     

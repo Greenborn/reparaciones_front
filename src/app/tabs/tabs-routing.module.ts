@@ -12,25 +12,15 @@ const routes: Routes = [
     path: 'tabs',
     component: TabsPage,
     children: [
-      {
-        path: 'tab1',
-        loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule),
-        canActivate: [AuthenticationGuard]
-      },
+      { path: 'tab1',  loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule),  canActivate: [AuthenticationGuard]  },
       { path: 'tab1/crear_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab1/editar_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]  },
-      {
-        path: 'tab2',
-        loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule),
-        canActivate: [AuthenticationGuard]
-      },
+
+      { path: 'tab2', component: NotaFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/crear_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab2/editar_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]  },
-      {
-        path: 'tab3',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),
-        canActivate: [AuthenticationGuard]
-      },
+      
+      { path: 'tab3',  loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),  canActivate: [AuthenticationGuard] },
       { path: 'tab3/crear_categoria', component: CategoriasFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab3/editar_categoria', component: CategoriasFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab3/crear_estado', component: EstadosFormComponent, canActivate: [AuthenticationGuard]   },

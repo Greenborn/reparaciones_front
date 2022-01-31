@@ -4,6 +4,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from '../models/ApiConsumer';
 import { FormateoService } from '../services/formateo.service';
 import { PrivateObrasService } from '../services/private.obras.service';
+import { Tab2Service } from '../tab2/tab2.service';
 import { Tab1Service } from './tab1.service';
 
 @Component({
@@ -21,6 +22,7 @@ export class Tab1Page  extends ApiConsumer  implements OnInit, OnDestroy {
     private privateObrasService:   PrivateObrasService,
     private router:                Router,
     private tab1Service:           Tab1Service,
+    private tab2Service:           Tab2Service,
     public ref:                    ChangeDetectorRef,
   ) {
     super(alertController, loadingController, ref);
@@ -57,8 +59,10 @@ export class Tab1Page  extends ApiConsumer  implements OnInit, OnDestroy {
     this.loadingEspecificData(this.privateObrasService, '',   'listado_obras', 'Consultando obras.');
   }
 
-  nueva_nota(){
-
+  nueva_nota(obra){
+    this.tab2Service.nueva_nota_obra_id = obra.id;
+    this.tab2Service.navigationOrigin = '/tabs/tab1';
+    this.router.navigate([ '/tabs/tab2/crear_nota' ]);
   }
 
   ver_notas(obra:any){
