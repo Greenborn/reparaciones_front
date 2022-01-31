@@ -80,7 +80,17 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     if (this.getAllSubj == undefined){
       this.getAllSubj = this.getAllSubject.subscribe({ next:(data) => {
         if (data.service.recurso == 'private-obras'){
-          this.model.obra_id = String(this.tab2Service.nueva_nota_obra_id);
+          if (this.accion == 'Nueva'){
+            this.model.obra_id = String(this.tab2Service.nueva_nota_obra_id);
+          } else {
+            this.model.obra_id = String(this.model.obra_id);
+          }
+        }
+        if(data.service.recurso == 'private-categoria'){
+          this.model.categoria_id = String(this.model.categoria_id);
+        }
+        if(data.service.recurso == 'private-estado'){
+          this.model.estado_id = String(this.model.estado_id);
         }
       }});
     }
@@ -139,7 +149,19 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
           loading.dismiss();
         }
       );
-    } 
+    }  else if (this.accion == 'Editar'){
+      this.privateNotaService.put(this.model, this.model.id).subscribe(
+        ok => {
+          super.displayAlert("Se ha modificado la nota.");
+          loading.dismiss();
+          this.tab2Service.recargarNotas.next();
+          this.goBack();
+        },
+        err => {
+          loading.dismiss();
+        }
+      );
+    }
   }
 
   OnDestroy(){
