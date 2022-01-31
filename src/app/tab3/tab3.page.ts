@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { AuthService } from '../modules/autentication/services/auth.service';
 
 @Component({
   selector: 'app-tab3',
@@ -9,10 +10,15 @@ import { LoadingController } from '@ionic/angular';
 export class Tab3Page {
 
   constructor(
-    public  loadingController:  LoadingController
+    public  loadingController:  LoadingController,
+    private authService:        AuthService 
   ) {}
 
   ngOnInit() {
     
+  }
+
+  cerrar_session(){
+    this.authService.toLogOut();
   }
 }

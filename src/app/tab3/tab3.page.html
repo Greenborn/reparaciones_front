@@ -8,6 +8,18 @@
 
 <ion-content [fullscreen]="true">
   <ion-grid class="bg1">
-    
+    <ion-row>
+      <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Cuenta de Usuario</ion-card-title>
+          </ion-card-header>
+            
+          <ion-card-content>
+            <ion-button color="secondary" (click)="cerrar_session()" ><ion-icon name="exit"></ion-icon>&nbsp;Cerrar sesión</ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 </ion-content>
