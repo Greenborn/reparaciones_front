@@ -12,4 +12,7 @@ export class Tab2Service {
 
   public recargarObras:Subject<any> = new Subject();
   public navigationOrigin:string = '/tabs/tab1';
+
+  public ver_nota_obra_id:number;
+  public ver_nota_obra_nombre;
 }

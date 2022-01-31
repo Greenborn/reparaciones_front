@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthenticationGuard } from '../modules/autentication/services/auth.guard';
 import { ObrasFormComponent } from '../tab1/components/obras.form/obras.form.component';
 import { NotaFormComponent } from '../tab2/components/nota.form/nota.form.component';
+import { VistaNotasComponent } from '../tab2/components/vista.notas/vista.notas.component';
 import { CategoriasFormComponent } from '../tab3/components/categorias.form/categorias.form.component';
 import { EstadosFormComponent } from '../tab3/components/estados.form/estados.form.component';
 import { TabsPage } from './tabs.page';
@@ -19,6 +20,7 @@ const routes: Routes = [
       { path: 'tab2', component: NotaFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/crear_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab2/editar_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab2/notas', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
       
       { path: 'tab3',  loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),  canActivate: [AuthenticationGuard] },
       { path: 'tab3/crear_categoria', component: CategoriasFormComponent, canActivate: [AuthenticationGuard]   },

@@ -22,10 +22,12 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   public model:Nota    = new Nota();
   public obras:any;
   public color_categoria = "#FFF";
+  public categorias:any = [];
+  public estados:any = [];
 
   private router_subs:any;
   private obras_subs:any;
-  private categorias:any;
+  
   private getAllSubj:any;
 
 

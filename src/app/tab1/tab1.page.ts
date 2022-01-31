@@ -66,7 +66,9 @@ export class Tab1Page  extends ApiConsumer  implements OnInit, OnDestroy {
   }
 
   ver_notas(obra:any){
-    
+    this.tab2Service.ver_nota_obra_id     = obra.id;
+    this.tab2Service.ver_nota_obra_nombre = obra.nombre_alias;
+    this.router.navigate([ '/tabs/tab2/notas' ]);
   }
 
   async eliminar_obra(obra:any){

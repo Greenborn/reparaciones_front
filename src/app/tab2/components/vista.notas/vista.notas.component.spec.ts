@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { NotaFormComponent } from './nota.form.component';
+import { Vista.NotasComponent } from './vista.notas.component';
 
-describe('Nota.FormComponent', () => {
-  let component: NotaFormComponent;
-  let fixture: ComponentFixture<NotaFormComponent>;
+describe('Vista.NotasComponent', () => {
+  let component: Vista.NotasComponent;
+  let fixture: ComponentFixture<Vista.NotasComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NotaFormComponent ],
+      declarations: [ Vista.NotasComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NotaFormComponent);
+    fixture = TestBed.createComponent(Vista.NotasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
