@@ -25,6 +25,7 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+
 .w-100{
     width: 100% !important;
 }
@@ -47,4 +48,10 @@ ion-content, .back-p2 {
 
 ion-card-header{
     background: #e1e1e1;
+}
+
+.item-valign-center{
+    align-content:   center;
+    display:         flex;
+    align-items:     center;
 }

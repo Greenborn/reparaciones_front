@@ -6,6 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { TabsPageRoutingModule } from './tabs-routing.module';
 
 import { TabsPage } from './tabs.page';
+import { EstadosFormComponent } from '../tab3/components/estados.form/estados.form.component';
+import { CategoriasFormComponent } from '../tab3/components/categorias.form/categorias.form.component';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
   imports: [
@@ -13,8 +16,9 @@ import { TabsPage } from './tabs.page';
     CommonModule,
     FormsModule,
 
-    TabsPageRoutingModule
+    TabsPageRoutingModule,
+    ColorPickerModule
   ],
-  declarations: [TabsPage]
+  declarations: [TabsPage, EstadosFormComponent, CategoriasFormComponent]
 })
 export class TabsPageModule {}

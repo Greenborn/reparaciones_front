@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^13.2.0",
     "@angular/common": "~12.1.1",
     "@angular/compiler": "~12.1.1",
     "@angular/core": "~12.1.1",
@@ -26,6 +27,7 @@
     "ionic-selectable": "^4.9.0",
     "ngx-barcode-scanner": "^0.3.0",
     "ngx-bootstrap": "^7.0.0",
+    "ngx-color-picker": "^11.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"

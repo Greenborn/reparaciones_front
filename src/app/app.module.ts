@@ -12,6 +12,7 @@ import { AutenticationModule } from './modules/autentication/autentication.modul
 import { AuthInterceptorService } from './modules/autentication/services/auth-interceptor.service';
 import { NotaFormComponent } from './tab2/components/nota.form/nota.form.component';
 
+
 @NgModule({
     declarations: [AppComponent, NotaFormComponent],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, AutenticationModule, HttpClientModule, IonicSelectableModule],
