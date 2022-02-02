@@ -12,11 +12,14 @@ import { AutenticationModule } from './modules/autentication/autentication.modul
 import { AuthInterceptorService } from './modules/autentication/services/auth-interceptor.service';
 import { NotaFormComponent } from './tab2/components/nota.form/nota.form.component';
 import { FormsModule } from '@angular/forms';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 
 @NgModule({
-    declarations: [AppComponent, NotaFormComponent],
-    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, AutenticationModule, HttpClientModule, IonicSelectableModule],
+    declarations: [
+      AppComponent, NotaFormComponent,
+    ],
+    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,ColorPickerModule, FormsModule, AutenticationModule, HttpClientModule, IonicSelectableModule],
     providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{
         provide: HTTP_INTERCEPTORS,
         useClass: AuthInterceptorService,

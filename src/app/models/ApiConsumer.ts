@@ -65,5 +65,32 @@ async displayAlert(message: string) {
       }
     );
   }
+
+  public img_hfi_result = null;
+  public image_data:any;
+  handleFileInput(files: FileList, params:any = {}) {
+    let me     = this;
+    let file   = files[0];
+    let reader = new FileReader();
+    
+    let on_error   = ()=>{};
+    let on_success = ()=>{};
+    if (params.hasOwnProperty('on_error'))    on_error   = params.on_error;
+    if (params.hasOwnProperty('on_success'))  on_success = params.on_success;
+
+    this.img_hfi_result = null;
+   
+    if (!file) return;
+
+    reader.readAsDataURL(file);
+    reader.onload = function (i) {
+        me.image_data =  { file: reader.result, name:file.name };
+        on_success();
+    };
+    reader.onerror = function (error) {
+        on_error();
+        return false;
+    };
+  }
 }
 

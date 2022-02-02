@@ -63,7 +63,6 @@ export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDes
   }
 
   async ingresar(){
-    console.log(this.model);
     if ( !this.model.hasOwnProperty('nombre') || this.model.nombre == ''){
       super.displayAlert("Debe definir un nombre para el estado."); return false;
     }

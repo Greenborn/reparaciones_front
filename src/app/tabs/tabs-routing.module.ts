@@ -6,6 +6,7 @@ import { NotaFormComponent } from '../tab2/components/nota.form/nota.form.compon
 import { VistaNotasComponent } from '../tab2/components/vista.notas/vista.notas.component';
 import { CategoriasFormComponent } from '../tab3/components/categorias.form/categorias.form.component';
 import { EstadosFormComponent } from '../tab3/components/estados.form/estados.form.component';
+import { TiponotaFormComponent } from '../tab3/components/tiponota.list/tiponota.form/tiponota.form.component';
 import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
@@ -27,6 +28,8 @@ const routes: Routes = [
       { path: 'tab3/editar_categoria', component: CategoriasFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab3/crear_estado', component: EstadosFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab3/editar_estado', component: EstadosFormComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab3/crear_tipo_nota', component: TiponotaFormComponent, canActivate: [AuthenticationGuard]   },
+      { path: 'tab3/editar_tipo_nota', component: TiponotaFormComponent, canActivate: [AuthenticationGuard]  },
       {
         path: '',
         redirectTo: '/tabs/tab1',
