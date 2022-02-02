@@ -35,6 +35,17 @@
               <ion-row>
                 <ion-col>
                   <ion-item>
+                    <ion-label>Tipo de Nota:</ion-label>
+                    <ion-select placeholder="Selecionar Tipo de Nota" style="background-color: {{color_tipo_nota}};"  [(ngModel)]="model.tipo_nota_id" (ionChange)="tiponota_change()" cancelText="Cancelar">
+                      <ion-select-option *ngFor="let tipo_nota of tipo_notas" value="{{tipo_nota.id}}">{{tipo_nota.nombre}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col>
+                  <ion-item>
                     <ion-label>Categoría:</ion-label>
                     <ion-select placeholder="Selecionar Categoría" style="background-color: {{color_categoria}};"  [(ngModel)]="model.categoria_id" (ionChange)="categoria_change()" cancelText="Cancelar">
                       <ion-select-option *ngFor="let categoria of categorias" value="{{categoria.id}}">{{categoria.nombre}}</ion-select-option>

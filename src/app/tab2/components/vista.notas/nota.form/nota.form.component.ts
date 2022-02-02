@@ -9,6 +9,7 @@ import { PrivateCategoriaService } from 'src/app/services/private.categoria.serv
 import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
+import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
 import { Tab2Service } from 'src/app/tab2/tab2.service';
 
 @Component({
@@ -22,7 +23,9 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   public model:Nota    = new Nota();
   public obras:any;
   public color_categoria = "#FFF";
+  public color_tipo_nota = "#FFF";
   public categorias:any = [];
+  public tipo_notas:any = [];
   public estados:any = [];
 
   private router_subs:any;
@@ -41,7 +44,8 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     private privateCategoriaService:     PrivateCategoriaService,
     private privateEstadoService:        PrivateEstadoService,
     private tab2Service:                 Tab2Service,
-    private formateoService:             FormateoService
+    private formateoService:             FormateoService,
+    private privateTipoNotaService:      PrivateTipoNotaService
   ) {
     super(alertController, loadingController, ref);
   }
@@ -74,6 +78,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     if (this.obras_subs == undefined){
       this.obras_subs = this.tab2Service.recargarObras.subscribe({ next:() => {
         this.loadingEspecificData(this.privateObrasService, 'filter[habilitada]=1',   'obras', 'Consultando obras.');
+        this.loadingEspecificData(this.privateTipoNotaService, '',   'tipo_notas', 'Consultando tipos de notas.');
       }});
     }
 
@@ -88,6 +93,9 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
         }
         if(data.service.recurso == 'private-categoria'){
           this.model.categoria_id = String(this.model.categoria_id);
+        }
+        if (data.service.recurso == 'private-tipo-nota'){
+          this.model.tipo_nota_id = String(this.model.tipo_nota_id);
         }
         if(data.service.recurso == 'private-estado'){
           this.model.estado_id = String(this.model.estado_id);
@@ -107,6 +115,15 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
         this.cargar_estados(this.model.categoria_id);
         break;
       } 
+    }
+  }
+
+  tiponota_change(){
+    for (let c=0; c<this.tipo_notas.length; c++){
+      if (this.tipo_notas[c].id == this.model.tipo_nota_id){
+        this.color_tipo_nota = this.tipo_notas[c].color;
+        break;
+      }
     }
   }
 

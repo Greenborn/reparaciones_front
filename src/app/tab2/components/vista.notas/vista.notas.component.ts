@@ -55,6 +55,7 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
 
   editar_nota(nota){
     this.tab2Service.nota_edit_id = nota.id;
+    this.tab2Service.navigationOrigin = '/tabs/tab2';
     this.router.navigate([ '/tabs/tab2/editar_nota' ]);
   }
 
