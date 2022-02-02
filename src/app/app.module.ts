@@ -10,9 +10,9 @@ import { AppComponent } from './app.component';
 import { IonicSelectableModule } from 'ionic-selectable';
 import { AutenticationModule } from './modules/autentication/autentication.module';
 import { AuthInterceptorService } from './modules/autentication/services/auth-interceptor.service';
-import { NotaFormComponent } from './tab2/components/nota.form/nota.form.component';
 import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { NotaFormComponent } from './tab2/components/vista.notas/nota.form/nota.form.component';
 
 
 @NgModule({

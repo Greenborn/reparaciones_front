@@ -9,7 +9,7 @@ import { PrivateCategoriaService } from 'src/app/services/private.categoria.serv
 import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
-import { Tab2Service } from '../../tab2.service';
+import { Tab2Service } from 'src/app/tab2/tab2.service';
 
 @Component({
   selector: 'app-nota.form',

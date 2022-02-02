@@ -37,6 +37,7 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
         } 
       });
     }
+    this.cargar_notas();
   }
 
   cargar_notas(){
@@ -58,6 +59,7 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
   }
 
   nueva_nota(){
+    this.tab2Service.navigationOrigin = '/tabs/tab2';
     this.router.navigate([ '/tabs/tab2/crear_nota' ]);
   }
 
