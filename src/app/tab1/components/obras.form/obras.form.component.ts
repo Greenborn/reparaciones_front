@@ -27,17 +27,21 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
   public model:Obra    = new Obra();
   public accion:string = 'Nueva';
+  public file_field:any;
 
   private router_subs:any;
+  private imageOnSuccessSubj:any;
 
   ngOnInit() {
     if (this.router_subs == undefined){
       this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
         if (event.url.search('crear_obra') != -1) {
           this.accion = 'Nueva';
+          this.model = new Obra();
+          this.image_data = undefined;
         } else if (event.url.search('editar_obra') != -1){
           this.accion = 'Editar';
-          
+          this.image_data = undefined;
           const loading = await this.loadingController.create({ message: "Por favor espere..." });
           this.privateObrasService.get(this.tab1Service.obra_edit_id).subscribe(
             ok => {
@@ -51,10 +55,23 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
         }
       });
     }
+
+    if (this.imageOnSuccessSubj == undefined){
+      this.imageOnSuccessSubj = this.imageOnSuccess.subscribe({ next:(p:any) => {
+        this.model.imagen_data = this.image_data;
+      }});
+    }
+  }
+
+  eliminar_imagen(){
+    this.image_data        = undefined;
+    this.model.imagen_data = undefined;
+    this.file_field        = '';
   }
 
   OnDestroy(){
     this.router_subs.unsubscribe();
+    this.imageOnSuccessSubj.unsubscribe();
   }
 
   goBack(){

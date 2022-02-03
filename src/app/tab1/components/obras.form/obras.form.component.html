@@ -29,6 +29,27 @@
                   </ion-item>
                 </ion-col>
               </ion-row>
+
+              <ion-row>
+                <ion-col *ngIf="model.imagen_data != undefined" size="auto" class="selected-img-cont">
+                  <img src="{{image_data.file}}" alt="Imagen seleccionada" height="125px" width="auto">
+                </ion-col>
+                
+                <ion-col>
+                  <ion-row>
+                    <ion-item>
+                      <ion-label>Imagen:</ion-label>
+                      <input type="file" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="handleFileInput($event.target['files'])"
+                      [(ngModel)]="file_field">
+                    </ion-item>
+                  </ion-row>
+                  <ion-row *ngIf="image_data != undefined">
+                    <ion-col>
+                      <ion-col class="text-center" size="12" size-md="auto"><ion-button color="danger" (click)="eliminar_imagen()"  size="small"><ion-icon name="trash"></ion-icon>&nbsp; Eliminar</ion-button></ion-col>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
     
               <ion-row>
                 <ion-col>

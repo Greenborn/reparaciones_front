@@ -52,11 +52,11 @@ export class Tab1Page  extends ApiConsumer  implements OnInit, OnDestroy {
   }
 
   consultar_habilitadas(){
-    this.loadingEspecificData(this.privateObrasService, 'filter[habilitada]=1',   'listado_obras', 'Consultando obras.');
+    this.loadingEspecificData(this.privateObrasService, 'filter[habilitada]=1&expand=imagen',   'listado_obras', 'Consultando obras.');
   }
 
   consultar_todas(){
-    this.loadingEspecificData(this.privateObrasService, '',   'listado_obras', 'Consultando obras.');
+    this.loadingEspecificData(this.privateObrasService, 'expand=imagen',   'listado_obras', 'Consultando obras.');
   }
 
   nueva_nota(obra){
