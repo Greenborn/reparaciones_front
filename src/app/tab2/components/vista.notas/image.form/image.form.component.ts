@@ -26,4 +26,8 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   goBack(){
     this.router.navigate([ this.tab2Service.navigationOrigin ]);
   }
+
+  ingresar(){
+    
+  }
 }
