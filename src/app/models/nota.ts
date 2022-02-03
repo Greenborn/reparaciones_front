@@ -7,4 +7,7 @@ export class Nota {
     public vencimiento:any;
     public orden:number = 0;
     public tipo_nota_id:any = -1;
+
+    public images:any = [];
+    public imagenes:any = [];
 }

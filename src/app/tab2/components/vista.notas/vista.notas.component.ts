@@ -46,7 +46,7 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
       this.loadingEspecificData(this.privateNotaService, 'filter[obra_id]='+this.tab2Service.ver_nota_obra_id+'&expand=categoria,obra',   'notas', 'Consultando notas.');
       this.titulo = "Notas de obra "+ this.tab2Service.ver_nota_obra_nombre;
     } else
-      this.loadingEspecificData(this.privateNotaService,'expand=categoria,obra',   'notas', 'Consultando notas.');
+      this.loadingEspecificData(this.privateNotaService,'expand=categoria,obra,tipoNota',   'notas', 'Consultando notas.');
   }
 
   goBack(){

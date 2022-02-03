@@ -68,16 +68,14 @@ async displayAlert(message: string) {
 
   public img_hfi_result = null;
   public image_data:any;
-  handleFileInput(files: FileList, params:any = {}) {
+
+  public imageOnSuccess:Subject<any> = new Subject();
+  public imageOnError:Subject<any> = new Subject();
+  handleFileInput(files: FileList) {
     let me     = this;
     let file   = files[0];
     let reader = new FileReader();
     
-    let on_error   = ()=>{};
-    let on_success = ()=>{};
-    if (params.hasOwnProperty('on_error'))    on_error   = params.on_error;
-    if (params.hasOwnProperty('on_success'))  on_success = params.on_success;
-
     this.img_hfi_result = null;
    
     if (!file) return;
@@ -85,12 +83,28 @@ async displayAlert(message: string) {
     reader.readAsDataURL(file);
     reader.onload = function (i) {
         me.image_data =  { file: reader.result, name:file.name };
-        on_success();
+        me.imageOnSuccess.next(me.image_data);
     };
     reader.onerror = function (error) {
-        on_error();
+        me.imageOnError.next(error);
         return false;
     };
+  }
+
+  public base64ConvertCallBack:Subject<any> = new Subject();
+  public imgUrlToBase64(url, anydata:any = {}) {
+      let xhr = new XMLHttpRequest();
+      let me = this;
+      xhr.onload = function() {
+          var reader = new FileReader();
+          reader.onloadend = function() {
+            me.base64ConvertCallBack.next({base64:reader.result, anydata:anydata});
+          }
+          reader.readAsDataURL(xhr.response);
+      };
+      xhr.open('GET', url);
+      xhr.responseType = 'blob';
+      xhr.send();
   }
 }
 

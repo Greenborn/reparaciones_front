@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthenticationGuard } from '../modules/autentication/services/auth.guard';
 import { ObrasFormComponent } from '../tab1/components/obras.form/obras.form.component';
+import { ImageFormComponent } from '../tab2/components/vista.notas/image.form/image.form.component';
 import { NotaFormComponent } from '../tab2/components/vista.notas/nota.form/nota.form.component';
 import { VistaNotasComponent } from '../tab2/components/vista.notas/vista.notas.component';
 import { CategoriasFormComponent } from '../tab3/components/categorias.form/categorias.form.component';
@@ -30,6 +31,7 @@ const routes: Routes = [
       { path: 'tab3/editar_estado', component: EstadosFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab3/crear_tipo_nota', component: TiponotaFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab3/editar_tipo_nota', component: TiponotaFormComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab3/vista_imagen', component: ImageFormComponent, canActivate: [AuthenticationGuard]  },
       {
         path: '',
         redirectTo: '/tabs/tab1',

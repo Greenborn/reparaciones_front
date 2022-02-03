@@ -10,6 +10,7 @@ import { EstadosFormComponent } from '../tab3/components/estados.form/estados.fo
 import { CategoriasFormComponent } from '../tab3/components/categorias.form/categorias.form.component';
 import { VistaNotasComponent } from '../tab2/components/vista.notas/vista.notas.component';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { ImageFormComponent } from '../tab2/components/vista.notas/image.form/image.form.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,7 @@ import { ColorPickerModule } from 'ngx-color-picker';
     TabsPageRoutingModule,
   ],
   declarations: [
-    TabsPage, EstadosFormComponent, VistaNotasComponent, CategoriasFormComponent,
+    TabsPage, EstadosFormComponent, VistaNotasComponent, ImageFormComponent, CategoriasFormComponent,
   ]
 })
 export class TabsPageModule {}

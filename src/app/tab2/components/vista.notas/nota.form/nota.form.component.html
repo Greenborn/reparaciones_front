@@ -6,6 +6,10 @@
     <ion-title>
       {{accion}} Nota
     </ion-title>
+    <ion-buttons slot="end">
+        <ion-button (click)="goBack()" color="medium" fill="outline">Volver</ion-button>
+        <ion-button (click)="ingresar()" color="success" fill="outline">Guardar</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -13,7 +17,7 @@
   <ion-grid class="bg1 h-100">
 
     <ion-row>
-      <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
+      <ion-col size="12" size-sm="10" offset-sm="1" size-md="6" offset-md="0">
 
         <ion-card class="nota-form-card">
           <ion-card-header> <ion-card-title>Información</ion-card-title> </ion-card-header>
@@ -88,19 +92,46 @@
                   </ion-item>
                 </ion-col>
               </ion-row>
-    
-              <ion-row>
-                <ion-col>
-                  <ion-button (click)="goBack()" color="medium">Volver</ion-button>
-                  <ion-button (click)="ingresar()">Guardar</ion-button>
-                </ion-col>
-              </ion-row>
-    
+       
             </ion-grid>
           </ion-card-content>
         </ion-card>
 
       </ion-col>
+
+
+      <ion-col  size="12" size-sm="10" offset-sm="1" size-md="6"  offset-md="0">
+
+        <ion-card class="nota-form-card">
+          <ion-card-header> <ion-card-title>Imágenes</ion-card-title> </ion-card-header>
+          
+          <ion-card-content>
+            
+            <ion-grid>
+              <ion-row>
+                <ion-col size="auto">
+                  <label for="FUImage" class="btn btn-add-image">
+                    <ion-icon name="images" style="font-size:3rem;margin-top:1rem;"></ion-icon>
+                    <p>Agregar Imagen</p>
+                  </label>
+                  <input type="file" id="FUImage" name="FUImage" style="visibility:hidden;position: fixed;" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="handleFileInput($event.target.files)">
+                </ion-col>
+
+                <ion-col size="auto" class="selected-img-cont" *ngFor="let imagen of imagenes; let i = index" (click)="ver_imagen(i)">
+                    <img src="{{imagen.file}}" alt="Selected Image" height="125px" width="auto">
+                </ion-col>
+
+                <ion-col *ngIf="imagenes.length == 0">
+                    <div>No se encontraron imágenes</div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+      
+          </ion-card-content>
+        </ion-card>
+
+      </ion-col>
     </ion-row>
+
   </ion-grid>
 </ion-content>
