@@ -56,7 +56,7 @@
                     <ion-row *ngIf="!(obra.imagen == '' || obra.imagen == null || obra.imagen == undefined)"
                               class="text-center obra-img-cont item-valign-center">
                       <ion-col>
-                          <img >
+                          <img src="{{configService.apiUrl(obra.imagen.url)}}">
                       </ion-col>
                     </ion-row>
                   </ion-grid>

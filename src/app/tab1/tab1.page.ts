@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from '../models/ApiConsumer';
+import { ConfigService } from '../services/config.service';
 import { FormateoService } from '../services/formateo.service';
 import { PrivateObrasService } from '../services/private.obras.service';
 import { Tab2Service } from '../tab2/tab2.service';
@@ -23,7 +24,8 @@ export class Tab1Page  extends ApiConsumer  implements OnInit, OnDestroy {
     private router:                Router,
     private tab1Service:           Tab1Service,
     private tab2Service:           Tab2Service,
-    public ref:                    ChangeDetectorRef,
+    public  ref:                   ChangeDetectorRef,
+    public  configService:         ConfigService
   ) {
     super(alertController, loadingController, ref);
   }

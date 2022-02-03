@@ -4,6 +4,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Obra } from 'src/app/models/obra';
+import { ConfigService } from 'src/app/services/config.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 import { Tab1Service } from '../../tab1.service';
 
@@ -21,6 +22,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
     public  loadingController:           LoadingController,
     private tab1Service:                 Tab1Service,
     public ref:                          ChangeDetectorRef,
+    private configService:               ConfigService
   ) {
     super(alertController, loadingController, ref);
   }
@@ -31,6 +33,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
   private router_subs:any;
   private imageOnSuccessSubj:any;
+  private base64ConvertCallBackSubj:any;
 
   ngOnInit() {
     if (this.router_subs == undefined){
@@ -38,15 +41,16 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
         if (event.url.search('crear_obra') != -1) {
           this.accion = 'Nueva';
           this.model = new Obra();
-          this.image_data = undefined;
+          this.eliminar_imagen();
         } else if (event.url.search('editar_obra') != -1){
           this.accion = 'Editar';
-          this.image_data = undefined;
+          this.eliminar_imagen();
           const loading = await this.loadingController.create({ message: "Por favor espere..." });
-          this.privateObrasService.get(this.tab1Service.obra_edit_id).subscribe(
+          this.privateObrasService.get(this.tab1Service.obra_edit_id,'expand=imagen').subscribe(
             ok => {
               loading.dismiss();
-              this.model = ok;
+              this.model = ok;console.log(this.model);
+              this.imgUrlToBase64(this.configService.apiUrl(this.model[`imagen`].url));
             },
             err => {
               loading.dismiss();
@@ -61,6 +65,12 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
         this.model.imagen_data = this.image_data;
       }});
     }
+
+    if (this.base64ConvertCallBackSubj == undefined){
+      this.base64ConvertCallBackSubj = this.base64ConvertCallBack.subscribe({ next:(p) => {
+        this.image_data = { file: p.base64 };console.log(this.image_data);
+      }});
+    }
   }
 
   eliminar_imagen(){
@@ -72,6 +82,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
   OnDestroy(){
     this.router_subs.unsubscribe();
     this.imageOnSuccessSubj.unsubscribe();
+    this.base64ConvertCallBackSubj.unsubscribe();
   }
 
   goBack(){
@@ -80,7 +91,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
   async ingresar(){
     const loading = await this.loadingController.create({ message: "Por favor espere..." });
-
+    loading.present();
     if (this.accion == 'Nueva'){
       this.privateObrasService.post(this.model).subscribe(
         ok => {
