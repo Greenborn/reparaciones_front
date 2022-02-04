@@ -45,7 +45,7 @@
               <ion-col *ngFor="let obra of listado_obras" size="12" size-sm="6" >
 
                 <ion-card>
-                  <ion-grid>
+                  <ion-grid style="padding:0;">
                     <ion-row *ngIf="obra.imagen == '' || obra.imagen == null || obra.imagen == undefined"
                              class="text-center obra-img-cont item-valign-center" >
                       <ion-col>
@@ -55,9 +55,7 @@
 
                     <ion-row *ngIf="!(obra.imagen == '' || obra.imagen == null || obra.imagen == undefined)"
                               class="text-center obra-img-cont item-valign-center">
-                      <ion-col>
-                          <img src="{{configService.apiUrl(obra.imagen.url)}}">
-                      </ion-col>
+                      <img src="{{configService.apiUrl(obra.imagen.url)}}">
                     </ion-row>
                   </ion-grid>
 
