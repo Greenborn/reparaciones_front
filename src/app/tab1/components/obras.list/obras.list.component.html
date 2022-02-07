@@ -1,0 +1,73 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Listado General</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-row>
+      <ion-col>
+        <ion-button color="secondary" (click)="nueva_obra()"><ion-icon name="add-circle"></ion-icon>&nbsp;Agregar Obra</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-segment [value]="obra_filter_enabled">
+          <ion-segment-button value="enabled" (click)="consultar_habilitadas()">
+            Habilitadas
+          </ion-segment-button>
+          <ion-segment-button value="all" (click)="consultar_todas()">
+            Todas
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="listado_obras.length == 0">
+      <ion-col>
+        No se encontraron datos.
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col *ngFor="let obra of listado_obras" size="12" size-sm="6" >
+
+        <ion-card>
+          <ion-grid style="padding:0;">
+            <ion-row *ngIf="obra.imagen == '' || obra.imagen == null || obra.imagen == undefined"
+                     class="text-center obra-img-cont item-valign-center" >
+              <ion-col>
+                  <ion-icon name="images" style="font-size:3rem;margin-top:1rem;"></ion-icon>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="!(obra.imagen == '' || obra.imagen == null || obra.imagen == undefined)"
+                      class="text-center obra-img-cont item-valign-center">
+              <img src="{{configService.apiUrl(obra.imagen.url)}}">
+            </ion-row>
+          </ion-grid>
+
+          <ion-card-header>
+            <ion-card-title>
+              <ion-row>
+                <ion-col class="item-valign-center">{{obra.nombre_alias}}</ion-col>
+                <ion-col size="auto"><ion-button color="secondary" (click)="editar_obra(obra)"         size="small"><ion-icon name="create"></ion-icon></ion-button></ion-col>
+              </ion-row>
+            </ion-card-title> 
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-grid>
+              <ion-row>
+                <ion-col class="text-center" size="12" size-md="auto"><ion-button color="secondary" (click)="nueva_nota(obra)"         size="small"><ion-icon name="create"></ion-icon>&nbsp;Agregar nota</ion-button></ion-col>
+                <ion-col class="text-center" size="12" size-md="auto"><ion-button color="primary"   (click)="ver_notas(obra)"      size="small"><ion-icon name="bookmarks"></ion-icon>&nbsp;Ver notas</ion-button></ion-col>
+                <ion-col class="text-center" size="12" size-md="auto"><ion-button color="danger" (click)="eliminar_obra(obra)"     size="small"><ion-icon name="trash"></ion-icon>&nbsp; Eliminar</ion-button></ion-col>
+                <ion-col class="text-center" size="12" size-md="auto">
+                  <ion-button *ngIf="obra.habilitada == 1" color="warning" (click)="desabilitar_obra(obra)" size="small"><ion-icon name="checkbox"></ion-icon>&nbsp;Deshabilitar</ion-button>
+                  <ion-button *ngIf="obra.habilitada == 0" color="success" (click)="habilitar_obra(obra)" size="small"><ion-icon name="checkbox"></ion-icon>&nbsp;Habilitar</ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-card-content>
+</ion-card>

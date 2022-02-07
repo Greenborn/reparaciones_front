@@ -25,6 +25,7 @@
     "@ionic/angular": "^5.5.2",
     "bootstrap": "^5.0.2",
     "ionic-selectable": "^4.9.0",
+    "ng2-datepicker": "^12.0.0",
     "ngx-barcode-scanner": "^0.3.0",
     "ngx-bootstrap": "^7.0.0",
     "ngx-color-picker": "^11.0.0",
