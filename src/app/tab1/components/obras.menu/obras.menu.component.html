@@ -1,3 +1,55 @@
-<p>
-  obras.menu works!
-</p>
+<ion-content [fullscreen]="false">
+  <ion-grid style="padding:0;" class="h-100">
+    <ion-row>
+      <ion-col>
+        <ion-card style="margin:0;">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-row>
+                <ion-col class="item-valign-center"><h4>Opciones de {{obra.nombre_alias}}</h4></ion-col>
+              </ion-row>
+            </ion-card-title>      
+          </ion-card-header>
+      
+          <ion-card-content>
+            <ion-grid>
+      
+              <ion-row>
+                <ion-col>
+                  <ion-button class="w-100" color="secondary" (click)="nueva_nota(obra)"><ion-icon name="create"></ion-icon>&nbsp;Agregar nota</ion-button>
+                </ion-col>
+              </ion-row>
+            
+              <ion-row>
+                <ion-col>
+                  <ion-button class="w-100" color="primary"   (click)="ver_notas(obra)"><ion-icon name="bookmarks"></ion-icon>&nbsp;Ver notas</ion-button>  
+                </ion-col>
+              </ion-row>
+                
+              <ion-row>
+                <ion-col>
+                  <ion-button class="w-100" color="danger" (click)="eliminar_obra(obra)"><ion-icon name="trash"></ion-icon>&nbsp; Eliminar</ion-button>  
+                </ion-col>
+              </ion-row>
+      
+              <ion-row>
+                <ion-col>
+                  <ion-button *ngIf="obra.habilitada == 1" class="w-100" color="warning" (click)="desabilitar_obra(obra)"><ion-icon name="checkbox"></ion-icon>&nbsp;Deshabilitar</ion-button>
+                  <ion-button *ngIf="obra.habilitada == 0" class="w-100" color="success" (click)="habilitar_obra(obra)"><ion-icon name="checkbox"></ion-icon>&nbsp;Habilitar</ion-button>
+                </ion-col>
+              </ion-row>
+            
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="to-bottom w-100">
+      <ion-col>
+        <ion-button class="w-100" color="medium" (click)="volver()">Volver</ion-button>  
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

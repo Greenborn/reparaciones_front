@@ -55,3 +55,12 @@ ion-card-header{
     display:         flex;
     align-items:     center;
 }
+
+ion-modal {
+  --height:          auto;
+}
+
+.to-bottom{
+    position:        absolute;
+    bottom:          0px;
+}
