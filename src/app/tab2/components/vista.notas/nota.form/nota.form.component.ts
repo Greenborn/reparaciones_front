@@ -42,7 +42,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     public  loadingController:           LoadingController,
     public ref:                          ChangeDetectorRef,
     private router:                      Router,
-    private privateNotaService:          PrivateNotaService,
+    public  privateNotaService:          PrivateNotaService,
     public  privateObrasService:         PrivateObrasService,
     public  privateCategoriaService:     PrivateCategoriaService,
     private privateEstadoService:        PrivateEstadoService,

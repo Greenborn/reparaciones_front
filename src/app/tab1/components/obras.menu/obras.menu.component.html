@@ -6,7 +6,7 @@
           <ion-card-header>
             <ion-card-title>
               <ion-row>
-                <ion-col class="item-valign-center"><h4>Opciones de {{obra.nombre_alias}}</h4></ion-col>
+                <ion-col class="item-valign-center"><h4>Opciones de {{obra['nombre_alias']}}</h4></ion-col>
               </ion-row>
             </ion-card-title>      
           </ion-card-header>
@@ -39,8 +39,8 @@
       
               <ion-row>
                 <ion-col>
-                  <ion-button *ngIf="obra.habilitada == 1" class="w-100" color="warning" (click)="desabilitar_obra(obra)"><ion-icon name="checkbox"></ion-icon>&nbsp;Deshabilitar</ion-button>
-                  <ion-button *ngIf="obra.habilitada == 0" class="w-100" color="success" (click)="habilitar_obra(obra)"><ion-icon name="checkbox"></ion-icon>&nbsp;Habilitar</ion-button>
+                  <ion-button *ngIf="obra['habilitada'] == 1" class="w-100" color="warning" (click)="desabilitar_obra(obra)"><ion-icon name="checkbox"></ion-icon>&nbsp;Deshabilitar</ion-button>
+                  <ion-button *ngIf="obra['habilitada'] == 0" class="w-100" color="success" (click)="habilitar_obra(obra)"><ion-icon name="checkbox"></ion-icon>&nbsp;Habilitar</ion-button>
                 </ion-col>
               </ion-row>
             
