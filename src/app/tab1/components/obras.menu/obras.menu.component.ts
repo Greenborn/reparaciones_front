@@ -44,8 +44,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
   }
 
   editar_obra(obra:any){
-    this.privateObrasService.obra_edit_id = obra.id;
-    this.router.navigate([ '/tabs/tab1/editar_obra' ]);
+    this.privateObrasService.goToEdit(obra.id);
     this.volver();
   }
 

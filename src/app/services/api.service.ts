@@ -16,6 +16,9 @@ export abstract class ApiService<T> {
   public getAllOK:Subject<any> = new Subject();
   public getAllKO:Subject<any> = new Subject();
 
+  public getEd:any;
+  public getEdOk:Subject<any> = new Subject();
+
   constructor(
     @Inject(String) private recurso: string,
     private  http: HttpClient,
@@ -25,11 +28,15 @@ export abstract class ApiService<T> {
 
   abstract get template(): T;
 
-  get<K = T>(id: number, getParams: string = ''): Observable<K> {
-    console.log('get', this.recurso, id)
-    return this.http.get<K>(
-      this.config.apiUrl(`${this.recurso}/${id}?${getParams}`)
-    )
+  get<K = T>(id: number, getParams: string = ''): Observable<K> {  
+    return this.http.get<K>(this.config.apiUrl(`${this.recurso}/${id}?${getParams}`) ).pipe(
+      map((data) => {
+        console.log('get', this.recurso, id);
+        this.getEd = data;
+        this.getEdOk.next(this.getEd);
+        return data;
+      })
+    );
   }
 
   // https://www.yiiframework.com/doc/guide/2.0/en/rest-response-formatting
@@ -50,7 +57,7 @@ export abstract class ApiService<T> {
           this.getAllOK.next(this.all);
           return data.items
         })
-      )
+      );
     }
 
   }

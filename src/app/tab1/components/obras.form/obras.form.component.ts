@@ -32,10 +32,12 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
   private router_subs:any;
   private imageOnSuccessSubj:any;
   private base64ConvertCallBackSubj:any;
+  private getedSubj:any;
 
   ngOnInit() {
     if (this.router_subs == undefined){
       this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
+        this.image_data = null;
         if (event.url.search('crear_obra') != -1) {
           this.accion = 'Nueva';
           this.model = new Obra();
@@ -43,21 +45,17 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
         } else if (event.url.search('editar_obra') != -1){
           this.accion = 'Editar';
           this.eliminar_imagen();
-          const loading = await this.loadingController.create({ message: "Por favor espere..." });
-          this.privateObrasService.get(this.privateObrasService.obra_edit_id,'expand=imagen').subscribe(
-            ok => {
-              loading.dismiss();
-              this.model = ok;
-              if (this.model['imagen']!= null){
-                this.imgUrlToBase64(this.configService.apiUrl(this.model[`imagen`].url));
-              }
-            },
-            err => {
-              loading.dismiss();
-            }
-          );
         }
       });
+    }
+
+    if (this.getedSubj == undefined){
+      this.privateObrasService.getEdOk.subscribe({ next:(p:any) => {
+        this.model = p;
+        if (this.model['imagen']!= null){
+          this.imgUrlToBase64(this.configService.apiUrl(this.model[`imagen`].url));
+        } 
+      }});
     }
 
     if (this.imageOnSuccessSubj == undefined){
@@ -68,7 +66,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
     if (this.base64ConvertCallBackSubj == undefined){
       this.base64ConvertCallBackSubj = this.base64ConvertCallBack.subscribe({ next:(p) => {
-        this.image_data = { file: p.base64 };console.log(this.image_data);
+        this.image_data = { file: p.base64 };
       }});
     }
   }
@@ -83,6 +81,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
     this.router_subs.unsubscribe();
     this.imageOnSuccessSubj.unsubscribe();
     this.base64ConvertCallBackSubj.unsubscribe();
+    this.getedSubj.unsubscribe();
   }
 
   goBack(){

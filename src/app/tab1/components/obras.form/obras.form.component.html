@@ -32,6 +32,7 @@
 
               <ion-row>
                 <ion-col *ngIf="image_data != undefined" size="auto" class="selected-img-cont">
+                  <ion-spinner *ngIf="!image_data.file" style="width:11rem;"></ion-spinner>
                   <img src="{{image_data.file}}" alt="Imagen seleccionada" height="125px" width="auto">
                 </ion-col>
                 

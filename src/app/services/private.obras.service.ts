@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api.service';
 import { ConfigService } from 'src/app/services/config.service';
 
@@ -8,10 +10,14 @@ import { ConfigService } from 'src/app/services/config.service';
 })
 export class PrivateObrasService extends ApiService<any>{
 
-  constructor( http: HttpClient,
-    config: ConfigService) {
-      super('private-obras', http, config)
-     }
+    constructor( 
+      http:                          HttpClient,
+      config:                        ConfigService,
+      private router:                Router,
+      public  loadingController:     LoadingController,
+    ) {
+        super('private-obras', http, config);
+    }
     
     get template(): any {
         return {
@@ -33,5 +39,22 @@ export class PrivateObrasService extends ApiService<any>{
       }
       
       this.getAll(params).subscribe();
+    }
+
+    async goToEdit(id){
+        this.obra_edit_id = id;
+        this.router.navigate([ '/tabs/tab1/editar_obra' ]);
+        const loading = await this.loadingController.create({ message: "Por favor espere..." });
+        loading.present();
+        let tmpSubj = this.get(this.obra_edit_id,'expand=imagen').subscribe(
+          ok => {  
+            tmpSubj.unsubscribe(); 
+            loading.dismiss();
+          },
+          err => { 
+            tmpSubj.unsubscribe(); 
+            loading.dismiss();
+          }
+        );
     }
 }
