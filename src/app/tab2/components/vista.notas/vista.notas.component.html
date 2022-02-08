@@ -28,7 +28,7 @@
             <ion-row>
               <ion-col>
                 <ion-list>
-                  <ion-item  *ngFor="let nota of notas" >
+                  <ion-item  *ngFor="let nota of privateNotaService.all" >
                     <ion-grid style="background-color: {{nota.categoria.color}};">
                       <ion-row>
                         <ion-col>

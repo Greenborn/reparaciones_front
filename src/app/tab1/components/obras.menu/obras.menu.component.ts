@@ -2,8 +2,8 @@ import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
+import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
-import { Tab2Service } from 'src/app/tab2/tab2.service';
 
 @Component({
   selector: 'app-obras.menu',
@@ -20,10 +20,10 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     public  loadingController:     LoadingController,
     public  ref:                   ChangeDetectorRef,
 
-    private tab2Service:           Tab2Service,
     private router:                Router,
     
     private privateObrasService:   PrivateObrasService,
+    private privateNotaService:    PrivateNotaService
   ) { 
     super(alertController, loadingController, ref);
   }
@@ -37,9 +37,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
   }
 
   nueva_nota(obra){
-    this.tab2Service.nueva_nota_obra_id = obra.id;
-    this.tab2Service.navigationOrigin = '/tabs/tab1';
-    this.router.navigate([ '/tabs/tab2/crear_nota' ]);
+    this.privateNotaService.goToNueva({ page:this, obra_id:obra.id, navigationOrigin:'/tabs/tab1' });
     this.volver();
   }
 
@@ -49,9 +47,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
   }
 
   ver_notas(obra:any){
-    this.tab2Service.ver_nota_obra_id     = obra.id;
-    this.tab2Service.ver_nota_obra_nombre = obra.nombre_alias;
-    this.router.navigate([ '/tabs/tab2/notas' ]);
+    this.privateNotaService.goToNotas({ page:this, obra:obra.id, nombre_obra:obra.nombre_alias });
     this.volver();
   }
 

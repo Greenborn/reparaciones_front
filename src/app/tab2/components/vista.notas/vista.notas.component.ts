@@ -4,17 +4,15 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
-import { Tab2Service } from '../../tab2.service';
 
 @Component({
-  selector: 'app-vista.notas',
+  selector: 'app-vista-notas',
   templateUrl: './vista.notas.component.html',
   styleUrls: ['./vista.notas.component.scss'],
 })
 export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestroy  {
 
   public titulo:string = "Notas de obra";
-  public notas:any = [];
 
   private router_subs:any;
 
@@ -23,8 +21,7 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
     public  loadingController:           LoadingController,
     public ref:                          ChangeDetectorRef,
     private router:                      Router,
-    private tab2Service:                 Tab2Service,
-    private privateNotaService:          PrivateNotaService
+    public  privateNotaService:          PrivateNotaService
   ) {
     super(alertController, loadingController, ref);
   }
@@ -33,20 +30,13 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
     if (this.router_subs == undefined){
       this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
         if (event.url.search('notas') != -1) {
-          this.cargar_notas();
+          this.titulo = "Notas de obra";
+          if (this.privateNotaService.ver_nota_obra_id != undefined){
+            this.titulo = "Notas de obra "+ this.privateNotaService.ver_nota_obra_nombre;
+          }
         } 
       });
     }
-    this.cargar_notas();
-  }
-
-  cargar_notas(){
-    this.titulo = "Notas de obra";
-    if (this.tab2Service.ver_nota_obra_id != undefined){
-      this.loadingEspecificData(this.privateNotaService, 'filter[obra_id]='+this.tab2Service.ver_nota_obra_id+'&expand=categoria,obra',   'notas', 'Consultando notas.');
-      this.titulo = "Notas de obra "+ this.tab2Service.ver_nota_obra_nombre;
-    } else
-      this.loadingEspecificData(this.privateNotaService,'expand=categoria,obra,tipoNota',   'notas', 'Consultando notas.');
   }
 
   goBack(){
@@ -54,14 +44,11 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
   }
 
   editar_nota(nota){
-    this.tab2Service.nota_edit_id = nota.id;
-    this.tab2Service.navigationOrigin = '/tabs/tab2';
-    this.router.navigate([ '/tabs/tab2/editar_nota' ]);
+    this.privateNotaService.goToEdit({ page:this, nota_id:nota.id, navigationOrigin:'/tabs/tab2' });
   }
 
   nueva_nota(){
-    this.tab2Service.navigationOrigin = '/tabs/tab2';
-    this.router.navigate([ '/tabs/tab2/crear_nota' ]);
+    this.privateNotaService.goToNueva({ page:this, navigationOrigin:'/tabs/tab2' });
   }
 
   async eliminar_nota(nota){
@@ -90,7 +77,7 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
     this.privateNotaService.delete(nota.id).subscribe(
       ok => {
         loading.dismiss();
-        this.cargar_notas();
+        this.privateNotaService.goToNotas({ page:this });
       },
       err => {
         loading.dismiss();

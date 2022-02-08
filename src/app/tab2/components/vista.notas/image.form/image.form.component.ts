@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
-import { Tab2Service } from 'src/app/tab2/tab2.service';
+import { PrivateNotaService } from 'src/app/services/private.nota.service';
 
 @Component({
   selector: 'app-image.form',
@@ -16,7 +16,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     public  loadingController:           LoadingController,
     public ref:                          ChangeDetectorRef,
     private router:                      Router,
-    private tab2Service:                 Tab2Service,
+    private privateNotaService:          PrivateNotaService
   ) { 
     super(alertController, loadingController, ref);
   }
@@ -24,7 +24,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   ngOnInit() {}
 
   goBack(){
-    this.router.navigate([ this.tab2Service.navigationOrigin ]);
+    this.router.navigate([ this.privateNotaService.navigationOrigin ]);
   }
 
   ingresar(){

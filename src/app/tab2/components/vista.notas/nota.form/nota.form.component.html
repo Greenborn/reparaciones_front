@@ -4,7 +4,7 @@
       <ion-back-button (click)="goBack()"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{accion}} Nota
+      {{privateNotaService.accion}} Nota
     </ion-title>
     <ion-buttons slot="end">
         <ion-button (click)="goBack()" color="medium" fill="outline">Volver</ion-button>
@@ -30,7 +30,7 @@
                   <ion-item>
                     <ion-label>Obra:</ion-label>
                     <ion-select placeholder="Selecionar Obra"  [(ngModel)]="model.obra_id" cancelText="Cancelar">
-                      <ion-select-option *ngFor="let obra of obras" value="{{obra.id}}">{{obra.nombre_alias}}</ion-select-option>
+                      <ion-select-option *ngFor="let obra of privateObrasService.all" value="{{obra.id}}">{{obra.nombre_alias}}</ion-select-option>
                     </ion-select>
                   </ion-item>
                 </ion-col>
@@ -41,7 +41,7 @@
                   <ion-item>
                     <ion-label>Tipo de Nota:</ion-label>
                     <ion-select placeholder="Selecionar Tipo de Nota" style="background-color: {{color_tipo_nota}};"  [(ngModel)]="model.tipo_nota_id" (ionChange)="tiponota_change()" cancelText="Cancelar">
-                      <ion-select-option *ngFor="let tipo_nota of tipo_notas" value="{{tipo_nota.id}}">{{tipo_nota.nombre}}</ion-select-option>
+                      <ion-select-option *ngFor="let tipo_nota of privateTipoNotaService.all" value="{{tipo_nota.id}}">{{tipo_nota.nombre}}</ion-select-option>
                     </ion-select>
                   </ion-item>
                 </ion-col>
@@ -52,7 +52,7 @@
                   <ion-item>
                     <ion-label>Categoría:</ion-label>
                     <ion-select placeholder="Selecionar Categoría" style="background-color: {{color_categoria}};"  [(ngModel)]="model.categoria_id" (ionChange)="categoria_change()" cancelText="Cancelar">
-                      <ion-select-option *ngFor="let categoria of categorias" value="{{categoria.id}}">{{categoria.nombre}}</ion-select-option>
+                      <ion-select-option *ngFor="let categoria of privateCategoriaService.all" value="{{categoria.id}}">{{categoria.nombre}}</ion-select-option>
                     </ion-select>
                   </ion-item>
                 </ion-col>

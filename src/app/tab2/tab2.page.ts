@@ -4,6 +4,7 @@ import { FormateoService } from '../services/formateo.service';
 
 import { ApiConsumer } from '../models/ApiConsumer';
 import { Router } from '@angular/router';
+import { PrivateNotaService } from '../services/private.nota.service';
 
 @Component({
   selector: 'app-tab2',
@@ -17,22 +18,13 @@ export class Tab2Page extends ApiConsumer  {
   constructor(
     public  loadingController:            LoadingController,
     private alertController:              AlertController,
-    public  formateoService:              FormateoService,
-    private  router:                      Router,
+    private privateNotaService:           PrivateNotaService,
     public changeDetectorRef:             ChangeDetectorRef,
   ) {
     super(alertController, loadingController, changeDetectorRef);
-    this.max_date = this.formateoService.getFormatedDate(new Date());
   }
 
   ngOnInit() {
-    this.cargarData();
+    this.privateNotaService.goToNotas({page:this});
   }
-
-  async cargarData(){
-    
-  }
-
-  
-
 }

@@ -5,6 +5,7 @@ import { ObrasFormComponent } from '../tab1/components/obras.form/obras.form.com
 import { ImageFormComponent } from '../tab2/components/vista.notas/image.form/image.form.component';
 import { NotaFormComponent } from '../tab2/components/vista.notas/nota.form/nota.form.component';
 import { VistaNotasComponent } from '../tab2/components/vista.notas/vista.notas.component';
+import { Tab2Page } from '../tab2/tab2.page';
 import { CategoriasFormComponent } from '../tab3/components/categorias.form/categorias.form.component';
 import { EstadosFormComponent } from '../tab3/components/estados.form/estados.form.component';
 import { TiponotaFormComponent } from '../tab3/components/tiponota.list/tiponota.form/tiponota.form.component';
@@ -19,7 +20,7 @@ const routes: Routes = [
       { path: 'tab1/crear_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab1/editar_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]  },
 
-      { path: 'tab2', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab2', component: Tab2Page, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/crear_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab2/editar_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/notas', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
