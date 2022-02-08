@@ -4,7 +4,6 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 import { Tab2Service } from 'src/app/tab2/tab2.service';
-import { Tab1Service } from '../../tab1.service';
 
 @Component({
   selector: 'app-obras.menu',
@@ -22,7 +21,6 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     public  ref:                   ChangeDetectorRef,
 
     private tab2Service:           Tab2Service,
-    private tab1Service:           Tab1Service,
     private router:                Router,
     
     private privateObrasService:   PrivateObrasService,
@@ -42,6 +40,12 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     this.tab2Service.nueva_nota_obra_id = obra.id;
     this.tab2Service.navigationOrigin = '/tabs/tab1';
     this.router.navigate([ '/tabs/tab2/crear_nota' ]);
+    this.volver();
+  }
+
+  editar_obra(obra:any){
+    this.privateObrasService.obra_edit_id = obra.id;
+    this.router.navigate([ '/tabs/tab1/editar_obra' ]);
     this.volver();
   }
 
@@ -79,7 +83,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
       ok => {
         loading.dismiss();
         //this.obra_filter_enabled = 'enabled';
-        this.tab1Service.recargarObras.next();
+        this.privateObrasService.recargarObras();
       },
       err => {
         loading.dismiss();
@@ -97,8 +101,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     this.privateObrasService.put(obra,obra.id).subscribe(
       ok => {
         loading.dismiss();
-        //this.obra_filter_enabled = 'enabled';
-        this.tab1Service.recargarObras.next();
+        this.privateObrasService.recargarObras();
       },
       err => {
         loading.dismiss();
@@ -116,8 +119,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     this.privateObrasService.put(obra,obra.id).subscribe(
       ok => {
         loading.dismiss();
-        //this.obra_filter_enabled = 'enabled';
-        this.tab1Service.recargarObras.next();
+        this.privateObrasService.recargarObras();
       },
       err => {
         loading.dismiss();

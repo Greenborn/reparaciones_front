@@ -6,7 +6,6 @@ import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Obra } from 'src/app/models/obra';
 import { ConfigService } from 'src/app/services/config.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
-import { Tab1Service } from '../../tab1.service';
 
 @Component({
   selector: 'app-obras.form',
@@ -20,7 +19,6 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
     private privateObrasService:         PrivateObrasService,
     private alertController:             AlertController,
     public  loadingController:           LoadingController,
-    private tab1Service:                 Tab1Service,
     public ref:                          ChangeDetectorRef,
     private configService:               ConfigService
   ) {
@@ -46,7 +44,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
           this.accion = 'Editar';
           this.eliminar_imagen();
           const loading = await this.loadingController.create({ message: "Por favor espere..." });
-          this.privateObrasService.get(this.tab1Service.obra_edit_id,'expand=imagen').subscribe(
+          this.privateObrasService.get(this.privateObrasService.obra_edit_id,'expand=imagen').subscribe(
             ok => {
               loading.dismiss();
               this.model = ok;console.log(this.model);
@@ -97,7 +95,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
         ok => {
           super.displayAlert("Nuevo registro de Obra creado.");
           loading.dismiss();
-          this.tab1Service.recargarObras.next();
+          this.privateObrasService.recargarObras();
           this.goBack();
         },
         err => {
@@ -109,7 +107,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
         ok => {
           super.displayAlert("Se ha modificado la obra.");
           loading.dismiss();
-          this.tab1Service.recargarObras.next();
+          this.privateObrasService.recargarObras();
           this.goBack();
         },
         err => {

@@ -51,13 +51,15 @@ async displayAlert(message: string) {
     service.getAll(params).subscribe(
       ok => {
         loading.dismiss();
-        this[dataOut] = ok;
+        if (dataOut != ''){
+          this[dataOut] = ok;
+        }
         this.getAllSubject.next({service:service, data:this[dataOut]});
         this.ref.detectChanges();
       },
       err => {
         loading.dismiss();
-        if (recursionCount > 100){
+        if (recursionCount > 100 && dataOut != ''){
           this[dataOut] = [];
         }
         return this.loadingEspecificData(service, params, dataOut, loadingText,recursionCount+1);

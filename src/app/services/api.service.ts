@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiSerializedResponse } from '../models/ApiResponse';
 import { ConfigService } from './config.service';
@@ -11,8 +11,11 @@ import { ConfigService } from './config.service';
 export abstract class ApiService<T> {
 
   protected fetchAllOnce: boolean = false;
-  protected all: any[];
-  
+
+  public all: any =[];
+  public getAllOK:Subject<any> = new Subject();
+  public getAllKO:Subject<any> = new Subject();
+
   constructor(
     @Inject(String) private recurso: string,
     private  http: HttpClient,
@@ -43,9 +46,8 @@ export abstract class ApiService<T> {
       return this.http.get<ApiSerializedResponse<K>>(url).pipe(
         map((data) => {
           console.log('get all', url, data)
-          if (this.fetchAllOnce) {
-            this.all = data.items
-          }
+          this.all = data.items;
+          this.getAllOK.next(this.all);
           return data.items
         })
       )

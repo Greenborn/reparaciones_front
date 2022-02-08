@@ -18,4 +18,14 @@ export class PrivateObrasService extends ApiService<any>{
             
         }
     }
+
+    public obra_edit_id:number        = 0;
+    public obra_filter_enabled:string = 'enabled';
+    recargarObras(){
+      let params:string = 'filter[habilitada]=1&expand=imagen';
+      if (this.obra_filter_enabled == 'all'){
+        params = 'expand=imagen';
+      }
+      this.getAll(params).subscribe();
+    }
 }

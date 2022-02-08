@@ -13,7 +13,12 @@
       
           <ion-card-content>
             <ion-grid>
-      
+              <ion-row>
+                <ion-col>
+                  <ion-button class="w-100" color="secondary" (click)="editar_obra(obra)"><ion-icon name="create"></ion-icon>&nbsp;Editar</ion-button>
+                </ion-col>
+              </ion-row>
+
               <ion-row>
                 <ion-col>
                   <ion-button class="w-100" color="secondary" (click)="nueva_nota(obra)"><ion-icon name="create"></ion-icon>&nbsp;Agregar nota</ion-button>

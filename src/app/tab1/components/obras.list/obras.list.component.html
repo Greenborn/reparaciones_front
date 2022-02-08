@@ -9,7 +9,7 @@
         <ion-button color="secondary" (click)="nueva_obra()"><ion-icon name="add-circle"></ion-icon>&nbsp;Agregar Obra</ion-button>
       </ion-col>
       <ion-col>
-        <ion-segment [value]="obra_filter_enabled">
+        <ion-segment [value]="privateObrasService.obra_filter_enabled">
           <ion-segment-button value="enabled" (click)="consultar_habilitadas()">
             Habilitadas
           </ion-segment-button>
@@ -20,14 +20,14 @@
       </ion-col>
     </ion-row>
 
-    <ion-row *ngIf="listado_obras.length == 0">
+    <ion-row *ngIf="privateObrasService.all.length == 0">
       <ion-col>
         No se encontraron datos.
       </ion-col>
     </ion-row>
 
     <ion-row>
-      <ion-col *ngFor="let obra of listado_obras" size="12" size-sm="6" >
+      <ion-col *ngFor="let obra of privateObrasService.all" size="12" size-sm="6" >
 
         <ion-card (click)="modal_menu(obra)">
           <ion-grid style="padding:0;">
