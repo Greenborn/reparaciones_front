@@ -8,6 +8,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 
 import { Tab2PageRoutingModule } from './tab2-routing.module';
 import { IonicSelectableModule } from 'ionic-selectable';
+import { VistaNotasComponent } from './components/vista.notas/vista.notas.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,6 @@ import { IonicSelectableModule } from 'ionic-selectable';
     ExploreContainerComponentModule,
     Tab2PageRoutingModule
   ],
-  declarations: [Tab2Page]
+  declarations: [Tab2Page, VistaNotasComponent]
 })
 export class Tab2PageModule {}

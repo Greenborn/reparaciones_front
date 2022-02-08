@@ -4,6 +4,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
+import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
 @Component({
   selector: 'app-vista-notas',
@@ -15,13 +16,15 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
   public titulo:string = "Notas de obra";
 
   private router_subs:any;
+  public obra_id:any;
 
   constructor(
     private alertController:             AlertController,
     public  loadingController:           LoadingController,
     public ref:                          ChangeDetectorRef,
     private router:                      Router,
-    public  privateNotaService:          PrivateNotaService
+    public  privateNotaService:          PrivateNotaService,
+    public  privateObrasService:         PrivateObrasService
   ) {
     super(alertController, loadingController, ref);
   }
@@ -34,9 +37,32 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
           if (this.privateNotaService.ver_nota_obra_id != undefined){
             this.titulo = "Notas de obra "+ this.privateNotaService.ver_nota_obra_nombre;
           }
+
+          if (this.privateObrasService.all != undefined && this.privateObrasService.all.length == 0){
+            this.privateObrasService.recargarObras(this);
+          }
         } 
       });
     }
+
+    this.privateNotaService.goToNotas();
+  }
+
+  clear(){
+    this.obra_id = undefined;
+    this.privateNotaService.goToNotas();
+  }
+
+  obra_seleccionada(){
+    console.log(this.obra_id);
+    let nombre_obra = '';
+    for (let c=0; c < this.privateObrasService.all.length; c++){
+      if (this.privateObrasService.all[c].id == this.obra_id){
+        nombre_obra = this.privateObrasService.all[c].nombre_alias;
+        break;
+      }
+    }
+    this.privateNotaService.goToNotas({ page:this, obra:this.obra_id, nombre_obra:nombre_obra });
   }
 
   goBack(){

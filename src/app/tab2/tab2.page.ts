@@ -22,9 +22,10 @@ export class Tab2Page extends ApiConsumer  {
     public changeDetectorRef:             ChangeDetectorRef,
   ) {
     super(alertController, loadingController, changeDetectorRef);
+    this.privateNotaService.goToNotas({page:this});
   }
 
   ngOnInit() {
-    this.privateNotaService.goToNotas({page:this});
+    
   }
 }

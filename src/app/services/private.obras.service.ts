@@ -38,7 +38,14 @@ export class PrivateObrasService extends ApiService<any>{
         return true;
       }
       
-      this.getAll(params).subscribe();
+      let tmpSubj = this.getAll(params).subscribe(
+        ok => {  
+          tmpSubj.unsubscribe(); 
+        },
+        err => { 
+          tmpSubj.unsubscribe(); 
+        }
+      );
     }
 
     async goToEdit(id){

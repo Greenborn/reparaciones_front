@@ -20,7 +20,7 @@ const routes: Routes = [
       { path: 'tab1/crear_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab1/editar_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]  },
 
-      { path: 'tab2', component: Tab2Page, canActivate: [AuthenticationGuard]  },
+      { path: 'tab2', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/crear_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab2/editar_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/notas', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
