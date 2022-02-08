@@ -38,20 +38,18 @@ export class ObrasListComponent  extends ApiConsumer  implements OnInit, OnDestr
   }
 
   ngOnInit() {
-    this.consultar_habilitadas();
+    this.consultar(this.privateObrasService.obra_filter_enabled);
   }
 
   nueva_obra(){
     this.router.navigate([ '/tabs/tab1/crear_obra' ]);
   }
 
-  consultar_habilitadas(){
-    this.loadingEspecificData(this.privateObrasService, 'filter[habilitada]=1&expand=imagen',   '', 'Consultando obras.');
+  consultar(v:string){
+    this.privateObrasService.obra_filter_enabled = v;
+    this.privateObrasService.recargarObras(this);
   }
 
-  consultar_todas(){
-    this.loadingEspecificData(this.privateObrasService, 'expand=imagen',   '', 'Consultando obras.');
-  }
 
   ngOnDestroy(){
   }

@@ -12,21 +12,18 @@ export abstract class ApiConsumer implements OnDestroy {
   private readonly unsubscribe$: Subject<void> = new Subject();
 
   constructor(
-    // private name: string,
     protected alertCtrl: AlertController,
     protected loadingController: LoadingController,
     protected ref:               ChangeDetectorRef,
   ) { }
 
   protected fetch<T>(callback: CallableFunction): Observable<T> {
-    // console.log(`fetching api desde ${this.name}` ,)
     return callback().pipe(
       takeUntil(this.unsubscribe$)
     )
   }
 
 async displayAlert(message: string) {
-  // this.alertCtrl.dismiss();
   (await this.alertCtrl.create({
     header: 'Info',
     message,
@@ -38,8 +35,6 @@ async displayAlert(message: string) {
   }
 
   ngOnDestroy() {
-  // ionViewWillLeave() {
-    // console.log(`unsuscribed fetch`)
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

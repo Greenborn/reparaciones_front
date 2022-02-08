@@ -82,8 +82,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     this.privateObrasService.delete(obra.id).subscribe(
       ok => {
         loading.dismiss();
-        //this.obra_filter_enabled = 'enabled';
-        this.privateObrasService.recargarObras();
+        this.privateObrasService.recargarObras(this);
       },
       err => {
         loading.dismiss();
@@ -101,7 +100,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     this.privateObrasService.put(obra,obra.id).subscribe(
       ok => {
         loading.dismiss();
-        this.privateObrasService.recargarObras();
+        this.privateObrasService.recargarObras(this);
       },
       err => {
         loading.dismiss();
@@ -119,7 +118,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     this.privateObrasService.put(obra,obra.id).subscribe(
       ok => {
         loading.dismiss();
-        this.privateObrasService.recargarObras();
+        this.privateObrasService.recargarObras(this);
       },
       err => {
         loading.dismiss();

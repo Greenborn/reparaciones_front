@@ -9,11 +9,11 @@
         <ion-button color="secondary" (click)="nueva_obra()"><ion-icon name="add-circle"></ion-icon>&nbsp;Agregar Obra</ion-button>
       </ion-col>
       <ion-col>
-        <ion-segment [value]="privateObrasService.obra_filter_enabled">
-          <ion-segment-button value="enabled" (click)="consultar_habilitadas()">
+        <ion-segment [value]="privateObrasService.obra_filter_enabled" >
+          <ion-segment-button value="enabled" (click)="consultar('enabled')">
             Habilitadas
           </ion-segment-button>
-          <ion-segment-button value="all" (click)="consultar_todas()">
+          <ion-segment-button value="all" (click)="consultar('all')">
             Todas
           </ion-segment-button>
         </ion-segment>

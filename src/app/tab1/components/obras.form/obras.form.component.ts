@@ -47,8 +47,10 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
           this.privateObrasService.get(this.privateObrasService.obra_edit_id,'expand=imagen').subscribe(
             ok => {
               loading.dismiss();
-              this.model = ok;console.log(this.model);
-              this.imgUrlToBase64(this.configService.apiUrl(this.model[`imagen`].url));
+              this.model = ok;
+              if (this.model['imagen']!= null){
+                this.imgUrlToBase64(this.configService.apiUrl(this.model[`imagen`].url));
+              }
             },
             err => {
               loading.dismiss();
@@ -95,7 +97,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
         ok => {
           super.displayAlert("Nuevo registro de Obra creado.");
           loading.dismiss();
-          this.privateObrasService.recargarObras();
+          this.privateObrasService.recargarObras(this);
           this.goBack();
         },
         err => {
@@ -107,7 +109,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
         ok => {
           super.displayAlert("Se ha modificado la obra.");
           loading.dismiss();
-          this.privateObrasService.recargarObras();
+          this.privateObrasService.recargarObras(this);
           this.goBack();
         },
         err => {
