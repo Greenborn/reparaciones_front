@@ -38,12 +38,25 @@
 
             <ion-row>
               <ion-col>
+                <ion-segment [value]="privateNotaService.filtro_vencidas" >
+                  <ion-segment-button value="todas" (click)="consultar('todas')">
+                    Todas ({{privateNotaService.total_count}})
+                  </ion-segment-button>
+                  <ion-segment-button value="vencidas" (click)="consultar('vencidas')">
+                    <span>Vencidas ({{privateNotaService.cant_vencidas}})</span>
+                  </ion-segment-button>
+                </ion-segment>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
                 <ion-list>
                   <ion-item  *ngFor="let nota of privateNotaService.all" >
-                    <ion-grid style="background-color: {{nota.categoria.color}};">
+                    <ion-grid style="background-color: {{getBgColor(nota)}};">
                       <ion-row>
                         <ion-col>
-                          {{nota.obra.nombre_alias}} - {{nota.nota}}
+                          {{nombreObra(nota)}} - {{nota.nota}}
                         </ion-col>
                       </ion-row>
                       <ion-row>

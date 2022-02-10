@@ -15,6 +15,7 @@ export abstract class ApiService<T> {
   public all: any =[];
   public getAllOK:Subject<any> = new Subject();
   public getAllKO:Subject<any> = new Subject();
+  public total_count:number  = 0;
 
   public getEd:any;
   public getEdOk:Subject<any> = new Subject();
@@ -54,6 +55,7 @@ export abstract class ApiService<T> {
         map((data) => {
           console.log('get all', url, data)
           this.all = data.items;
+          this.total_count = data._meta.totalCount;
           this.getAllOK.next(this.all);
           return data.items
         })

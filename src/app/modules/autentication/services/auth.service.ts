@@ -30,6 +30,7 @@ export class AuthService {
 
   async login( model:Login ){
     const loading = await this.loadingController.create({ message: "Por favor espere..." });
+    loading.present();
     this.http.post(this.confGral['apiBaseUrl'] + this.confGral['loginAction'], model,
       { headers: new HttpHeaders({ 'Content-Type':  'application/json' }) }).subscribe(
         data => {

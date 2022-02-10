@@ -45,12 +45,35 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
       });
     }
 
-    this.privateNotaService.goToNotas();
+    this.privateNotaService.goToNotas({ page:this });
   }
 
   clear(){
     this.obra_id = undefined;
-    this.privateNotaService.goToNotas();
+    this.privateNotaService.goToNotas({ page:this });
+  }
+
+  getBgColor(nota:any){
+    if (!nota.hasOwnProperty('categoria')){
+      return '#FFF';
+    }
+    if (!nota.categoria.hasOwnProperty('color')){
+      return '#FFF';
+    }
+    return nota.categoria.color;
+  }
+
+  nombreObra(nota){
+    if (!nota.hasOwnProperty('obra')){
+      return '';
+    }
+    return nota.obra.nombre_alias;
+  }
+  
+
+  consultar(filtro){
+      this.privateNotaService.filtro_vencidas = filtro;
+      this.privateNotaService.goToNotas({ page:this });
   }
 
   obra_seleccionada(){

@@ -13,10 +13,16 @@ export class TabsPage extends ApiConsumer{
   constructor(
     public  loadingController:            LoadingController,
     private alertController:              AlertController,
-    private privateNotaService:           PrivateNotaService,
+    public  privateNotaService:           PrivateNotaService,
     public changeDetectorRef:             ChangeDetectorRef,
   ) {
     super(alertController, loadingController, changeDetectorRef);
+  }
+
+  ngOnInit() {
+    let interval:number = 1000*300;
+    setTimeout(()=>{  this.privateNotaService.pingNotasVencidas({ page:this });  }, interval);
+    this.privateNotaService.pingNotasVencidas({ page:this });
   }
 
 }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { PrivateCategoriaService } from './private.categoria.service';
@@ -20,7 +20,8 @@ export class PrivateNotaService extends ApiService<any>{
     private privateObrasService:     PrivateObrasService,
     private privateCategoriaService: PrivateCategoriaService,
     private privateTipoNotaService:  PrivateTipoNotaService,
-    private loadingController:       LoadingController
+    private loadingController:       LoadingController,
+    private toastController:         ToastController
   ) {
       super('private-nota', http, config)
      }
@@ -31,6 +32,42 @@ export class PrivateNotaService extends ApiService<any>{
         }
     }
 
+    public vencidas:any         = [];
+    public cant_vencidas:number = 0;
+    public filtro_vencidas:string = 'todas';
+    
+    pingNotasVencidas(p){
+      let date:any = new Date();
+      date = date.toISOString();
+      let params = 'filter[vencimiento]=<' + date;
+      this.getAll(params).subscribe(
+        ok => {
+          this.vencidas      = ok;
+          this.cant_vencidas = this.vencidas.length;
+          this.toastVencidas('¡Hay '+this.cant_vencidas + ' notas vencidas!', p);
+        },
+        err => {}
+      );
+    }
+
+    async toastVencidas(text, params){
+      const toast = await this.toastController.create({
+        message: text,
+        buttons: [
+          {
+            side: 'end',
+            icon: 'eye',
+            text: 'Ver',
+            handler: () => {
+              this.filtro_vencidas = 'vencidas';
+              this.goToNotas(params);
+            }
+          }
+        ],
+      });
+      toast.present();
+    }
+
     public ver_nota_obra_id:number;
     public ver_nota_obra_nombre;
     async goToNotas(params:any = {}){
@@ -39,13 +76,21 @@ export class PrivateNotaService extends ApiService<any>{
       }
       if (params.hasOwnProperty('page')){
         let page = params.page;
+        let params_peticion:string = 'expand=categoria,obra,tipoNota';
         this.all = [];
+
         if (params.hasOwnProperty('obra') && params.obra != undefined){
           this.ver_nota_obra_id = params.obra;
-          page.loadingEspecificData(this, 'filter[obra_id]='+this.ver_nota_obra_id+'&expand=categoria,obra',   '', 'Consultando notas.');
-        } else {
-          page.loadingEspecificData(this,'expand=categoria,obra,tipoNota',   '', 'Consultando notas.');
+          params_peticion += '&filter[obra_id]='+this.ver_nota_obra_id;
+        } 
+
+        if (this.filtro_vencidas == 'vencidas'){
+          let date:any = new Date();
+          date = date.toISOString();
+          params_peticion += '&filter[vencimiento]=<' + date;
         }
+
+        page.loadingEspecificData(this, params_peticion,   '', 'Consultando notas.');
       } else {
         const loading = await this.loadingController.create({ message: "Por favor espere..." });
         loading.present();
