@@ -19,14 +19,14 @@ export class Tab3Page extends ApiConsumer  implements OnInit, OnDestroy{
 
   constructor(
     public  loadingController:        LoadingController,
-    private authService:              AuthService,
+    public  authService:              AuthService,
     private alertController:          AlertController,
     public ref:                       ChangeDetectorRef,
     private router:                   Router,
     private tab3Service:              Tab3Service,
-    private privateCategoriaService:  PrivateCategoriaService
+    private privateCategoriaService:  PrivateCategoriaService,
   ) {
-    super(alertController, loadingController, ref);
+    super(alertController, loadingController, ref, authService);
   }
 
   ngOnInit() {

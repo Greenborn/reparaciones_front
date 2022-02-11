@@ -5,6 +5,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Nota } from 'src/app/models/nota';
+import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { FormateoService } from 'src/app/services/formateo.service';
 import { PrivateCategoriaService } from 'src/app/services/private.categoria.service';
@@ -49,9 +50,10 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     private formateoService:             FormateoService,
     public  privateTipoNotaService:      PrivateTipoNotaService,
     private privateImagenService:        PrivateImagenService,
-    private configService:               ConfigService 
+    private configService:               ConfigService,
+    public  authService:                 AuthService, 
   ) {
-    super(alertController, loadingController, ref);
+    super(alertController, loadingController, ref, authService);
 
     if (this.getAllSubj.length == 0){
       this.getAllSubj.push(

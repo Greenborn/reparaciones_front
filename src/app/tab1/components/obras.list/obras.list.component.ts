@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
+import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
@@ -21,9 +22,10 @@ export class ObrasListComponent  extends ApiConsumer  implements OnInit, OnDestr
     public  privateObrasService:   PrivateObrasService,
     private router:                Router,
     public  configService:         ConfigService,
-    public modalController:        ModalController
+    public modalController:        ModalController,
+    public  authService:           AuthService,
   ) { 
-    super(alertController, loadingController, ref);
+    super(alertController, loadingController, ref, authService);
   }
 
   async modal_menu(obra:any){

@@ -23,7 +23,7 @@ export class LoginViewComponent extends ApiConsumer {
     private alertController:    AlertController,
     public changeDetectorRef:   ChangeDetectorRef,
   ) { 
-    super(alertController, loadingController, changeDetectorRef);
+    super(alertController, loadingController, changeDetectorRef, auth);
   }
 
   ngOnInit(): void {

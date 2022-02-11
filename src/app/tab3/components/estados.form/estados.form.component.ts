@@ -4,6 +4,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Estado } from 'src/app/models/estado';
+import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { Tab3Service } from '../../services/tab3.service';
 
@@ -21,13 +22,14 @@ export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDes
 
   constructor(
     private alertController:             AlertController,
+    public  authService:                 AuthService,
     public  loadingController:           LoadingController,
     public ref:                          ChangeDetectorRef,
     private tab3Service:                 Tab3Service,
     private router:                      Router, 
     private privateEstadoService:        PrivateEstadoService
   ) { 
-    super(alertController, loadingController, ref);
+    super(alertController, loadingController, ref, authService);
   }
 
   ngOnInit() {

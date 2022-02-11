@@ -4,6 +4,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Obra } from 'src/app/models/obra';
+import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
@@ -20,9 +21,10 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
     private alertController:             AlertController,
     public  loadingController:           LoadingController,
     public ref:                          ChangeDetectorRef,
-    private configService:               ConfigService
+    private configService:               ConfigService,
+    public  authService:                 AuthService,
   ) {
-    super(alertController, loadingController, ref);
+    super(alertController, loadingController, ref, authService);
   }
 
   public model:Obra    = new Obra();

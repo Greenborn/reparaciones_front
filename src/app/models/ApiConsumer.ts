@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { AlertController, LoadingController } from "@ionic/angular";
 import { Observable, Subject } from "rxjs";
 import { first, takeUntil } from "rxjs/operators";
+import { AuthService } from "../modules/autentication/services/auth.service";
 
 @Component({
   template: ''
@@ -12,9 +13,10 @@ export abstract class ApiConsumer implements OnDestroy {
   private readonly unsubscribe$: Subject<void> = new Subject();
 
   constructor(
-    protected alertCtrl: AlertController,
+    protected alertCtrl:         AlertController,
     protected loadingController: LoadingController,
     protected ref:               ChangeDetectorRef,
+    protected authService:       AuthService,
   ) { }
 
   protected fetch<T>(callback: CallableFunction): Observable<T> {
@@ -54,6 +56,9 @@ async displayAlert(message: string) {
       },
       err => {
         loading.dismiss();
+        if (!this.authService.logedIn()){
+          recursionCount = 200;
+        }
         if (recursionCount > 100 && dataOut != ''){
           this[dataOut] = [];
         }

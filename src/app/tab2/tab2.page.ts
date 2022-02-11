@@ -5,6 +5,7 @@ import { FormateoService } from '../services/formateo.service';
 import { ApiConsumer } from '../models/ApiConsumer';
 import { Router } from '@angular/router';
 import { PrivateNotaService } from '../services/private.nota.service';
+import { AuthService } from '../modules/autentication/services/auth.service';
 
 @Component({
   selector: 'app-tab2',
@@ -20,8 +21,9 @@ export class Tab2Page extends ApiConsumer  {
     private alertController:              AlertController,
     private privateNotaService:           PrivateNotaService,
     public changeDetectorRef:             ChangeDetectorRef,
+    public  authService:                  AuthService,
   ) {
-    super(alertController, loadingController, changeDetectorRef);
+    super(alertController, loadingController, changeDetectorRef, authService);
     this.privateNotaService.goToNotas({page:this});
   }
 

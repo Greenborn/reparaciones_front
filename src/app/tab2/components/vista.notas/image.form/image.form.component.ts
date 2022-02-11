@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
+import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
 
 @Component({
@@ -16,9 +17,10 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     public  loadingController:           LoadingController,
     public ref:                          ChangeDetectorRef,
     private router:                      Router,
-    private privateNotaService:          PrivateNotaService
+    private privateNotaService:          PrivateNotaService,
+    public  authService:                 AuthService,
   ) { 
-    super(alertController, loadingController, ref);
+    super(alertController, loadingController, ref, authService);
   }
 
   ngOnInit() {}

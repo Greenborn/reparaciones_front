@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
+import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
 import { Tab3Service } from '../../services/tab3.service';
 
@@ -20,9 +21,10 @@ export class TiponotaListComponent extends ApiConsumer  implements OnInit, OnDes
     public  ref:                      ChangeDetectorRef,
     private privateTipoNotaService:   PrivateTipoNotaService,
     private router:                   Router,
+    public  authService:              AuthService,
     private tab3Service:              Tab3Service,
   ) {
-    super(alertController, loadingController, ref);
+    super(alertController, loadingController, ref, authService);
   }
   
   ngOnInit() {

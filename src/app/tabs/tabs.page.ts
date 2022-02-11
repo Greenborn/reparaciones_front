@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from '../models/ApiConsumer';
+import { AuthService } from '../modules/autentication/services/auth.service';
 import { PrivateNotaService } from '../services/private.nota.service';
 
 @Component({
@@ -15,8 +16,9 @@ export class TabsPage extends ApiConsumer{
     private alertController:              AlertController,
     public  privateNotaService:           PrivateNotaService,
     public changeDetectorRef:             ChangeDetectorRef,
+    public  authService:                  AuthService,
   ) {
-    super(alertController, loadingController, changeDetectorRef);
+    super(alertController, loadingController, changeDetectorRef, authService);
   }
 
   ngOnInit() {

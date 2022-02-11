@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
+import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
@@ -19,13 +20,14 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     private alertController:       AlertController,
     public  loadingController:     LoadingController,
     public  ref:                   ChangeDetectorRef,
+    public  authService:           AuthService,
 
     private router:                Router,
     
     private privateObrasService:   PrivateObrasService,
     private privateNotaService:    PrivateNotaService
   ) { 
-    super(alertController, loadingController, ref);
+    super(alertController, loadingController, ref, authService);
   }
 
   ngOnInit() {

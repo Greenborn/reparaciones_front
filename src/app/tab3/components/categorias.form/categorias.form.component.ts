@@ -4,6 +4,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Categoria } from 'src/app/models/categoria';
+import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { PrivateCategoriaService } from 'src/app/services/private.categoria.service';
 import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { Tab3Service } from '../../services/tab3.service';
@@ -29,9 +30,10 @@ export class CategoriasFormComponent  extends ApiConsumer  implements OnInit, On
     private router:                      Router,
     private privateCategoriaService:     PrivateCategoriaService,
     private privateEstadoService:        PrivateEstadoService,
-    private tab3Service:                 Tab3Service
-  ) { 
-    super(alertController, loadingController, ref);
+    private tab3Service:                 Tab3Service,
+    public  authService:                 AuthService,
+  ) {  
+    super(alertController, loadingController, ref, authService);
   }
 
   ngOnInit() {

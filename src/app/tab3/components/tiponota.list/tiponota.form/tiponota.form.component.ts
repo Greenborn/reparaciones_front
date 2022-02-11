@@ -4,6 +4,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { TipoNota } from 'src/app/models/tipo.nota';
+import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
 import { Tab3Service } from 'src/app/tab3/services/tab3.service';
 
@@ -25,9 +26,10 @@ export class TiponotaFormComponent  extends ApiConsumer  implements OnInit, OnDe
     public ref:                       ChangeDetectorRef,
     private router:                   Router,
     private privateTipoNotaService:   PrivateTipoNotaService,
-    private tab3Service:              Tab3Service
+    private tab3Service:              Tab3Service,
+    public  authService:              AuthService,
   ) {
-    super(alertController, loadingController, ref);
+    super(alertController, loadingController, ref, authService);
   }
 
   ngOnInit() {
