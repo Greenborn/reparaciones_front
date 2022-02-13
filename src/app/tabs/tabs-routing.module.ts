@@ -32,7 +32,7 @@ const routes: Routes = [
       { path: 'tab3/editar_estado', component: EstadosFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab3/crear_tipo_nota', component: TiponotaFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab3/editar_tipo_nota', component: TiponotaFormComponent, canActivate: [AuthenticationGuard]  },
-      { path: 'tab3/vista_imagen', component: ImageFormComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab2/vista_imagen', component: ImageFormComponent, canActivate: [AuthenticationGuard]  },
       {
         path: '',
         redirectTo: '/tabs/tab1',

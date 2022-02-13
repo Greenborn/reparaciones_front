@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { AuthService } from 'src/app/modules/autentication/services/auth.service';
-import { PrivateNotaService } from 'src/app/services/private.nota.service';
+import { PrivateImagenService } from 'src/app/services/private.imagen.service';
 
 @Component({
   selector: 'app-image.form',
@@ -17,16 +17,27 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     public  loadingController:           LoadingController,
     public ref:                          ChangeDetectorRef,
     private router:                      Router,
-    private privateNotaService:          PrivateNotaService,
+    private privateImageService:         PrivateImagenService,
     public  authService:                 AuthService,
   ) { 
     super(alertController, loadingController, ref, authService);
+
+    if (this.getAllSubj.length == 0){
+      this.getAllSubj.push(this.privateImageService.base64ConvertCallBack.subscribe({ next:(p) => {
+        this.imagen = { file: p.base64, name:p.anydata.url, id:p.anydata.id };
+      }}));
+    }
   }
 
-  ngOnInit() {}
+  private getAllSubj:any = [];
+  public imagen:any;
+
+  ngOnInit() {
+
+  }
 
   goBack(){
-    this.router.navigate([ this.privateNotaService.navigationOrigin ]);
+    this.router.navigate([ this.privateImageService.navigationOrigin ]);
   }
 
   ingresar(){

@@ -162,6 +162,8 @@ export class PrivateNotaService extends ApiService<any>{
       }
 
       if (params.hasOwnProperty('page')){
+        if (params.page.hasOwnProperty('imagenes'))
+          params.page.imagenes = [];
         this.privateObrasService.obra_filter_enabled = 'enabled';
         this.privateObrasService.recargarObras(params.page);                                                        //se recarga el listado de obras
         params.page.loadingEspecificData(this.privateCategoriaService, '',   '', 'Consultando Categorias.');        //se recarga el listado de categorias
@@ -184,7 +186,8 @@ export class PrivateNotaService extends ApiService<any>{
       }
 
       if (params.hasOwnProperty('page')){
-        params.page.imagenes = [];
+        if (params.page.hasOwnProperty('imagenes'))
+          params.page.imagenes = [];
         if (params.hasOwnProperty('nota_id')){
           this.nota_edit_id = params.nota_id;
           const loading = await this.loadingController.create({ message: "Por favor espere..." });

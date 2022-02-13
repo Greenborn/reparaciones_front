@@ -9,3 +9,23 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="bg1 h-100">
+
+    <ion-row>
+      <ion-col *ngIf="imagen">
+        
+        <ion-card class="nota-form-card">
+          <ion-card-header> <ion-card-title>Imagen</ion-card-title> </ion-card-header>
+          
+          <ion-card-content>
+            <img src="{{imagen.file}}" alt="Selected Image" width="auto" >
+          </ion-card-content>
+        </ion-card>
+      
+      </ion-col>
+    </ion-row>
+  
+  </ion-grid>
+</ion-content>
