@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 import { ConfigService } from 'src/app/services/config.service';
@@ -55,6 +56,17 @@ export class PrivateNotaService extends ApiService<any>{
         },
         err => {}
       );
+    }
+
+    put(model: any, id: number, recurso: string = null): Observable<any> {
+      let img:any = [];
+      for (let c=0; c < model.images.length; c++){
+          if (!model.images[c].hasOwnProperty('fromnota')){
+            img.push(model.images[c]);
+          }
+      }
+      model.images = img;
+      return super.put(model, id, recurso);
     }
 
     async toastVencidas(text, params){

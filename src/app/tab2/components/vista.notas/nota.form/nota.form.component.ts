@@ -111,7 +111,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
 
     if (this.base64ConvertCallBackSubj == undefined){
       this.base64ConvertCallBackSubj = this.base64ConvertCallBack.subscribe({ next:(p) => {
-        this.imagenes.push({ file: p.base64, name:p.anydata.url });
+        this.imagenes.push({ file: p.base64, name:p.anydata.url, fromnota: true });
       }});
     }
 
@@ -229,10 +229,6 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   
   goBack(){
     this.router.navigate([ this.privateNotaService.navigationOrigin ]);
-  }
-
-  vencimiento_edit(){
-    console.log(this.model.vencimiento_hora);
   }
 
   deleteImg(i){
