@@ -55,7 +55,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
       this.privateObrasService.getEdOk.subscribe({ next:(p:any) => {
         this.model = p;
         if (this.model['imagen']!= null){
-          this.imgUrlToBase64(this.configService.apiUrl(this.model[`imagen`].url));
+          this.privateObrasService.imgUrlToBase64(this.configService.apiUrl(this.model[`imagen`].url));
         } 
       }});
     }
@@ -67,7 +67,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
     }
 
     if (this.base64ConvertCallBackSubj == undefined){
-      this.base64ConvertCallBackSubj = this.base64ConvertCallBack.subscribe({ next:(p) => {
+      this.base64ConvertCallBackSubj = this.privateObrasService.base64ConvertCallBack.subscribe({ next:(p) => {
         this.image_data = { file: p.base64 };
       }});
     }

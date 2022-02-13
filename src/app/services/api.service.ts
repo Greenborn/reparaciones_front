@@ -119,4 +119,20 @@ export abstract class ApiService<T> {
     ) 
   }
 
+  public base64ConvertCallBack:Subject<any> = new Subject();
+  public imgUrlToBase64(url, anydata:any = {}) {
+      let xhr = new XMLHttpRequest();
+      let me = this;
+      xhr.onload = function() {
+          var reader = new FileReader();
+          reader.onloadend = function() {
+            me.base64ConvertCallBack.next({base64:reader.result, anydata:anydata});
+          }
+          reader.readAsDataURL(xhr.response);
+      };
+      xhr.open('GET', url);
+      xhr.responseType = 'blob';
+      xhr.send();
+  }
+
 }

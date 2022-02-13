@@ -66,7 +66,6 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
               this.model.obra_id = String(this.privateNotaService.nueva_nota_obra_id);
           } else {
               this.model.obra_id = String(this.model.obra_id);
-              this.imgs_notaTo_array();
           }
         }})
       );
@@ -110,15 +109,14 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     }
 
     if (this.base64ConvertCallBackSubj == undefined){
-      this.base64ConvertCallBackSubj = this.base64ConvertCallBack.subscribe({ next:(p) => {
+      this.base64ConvertCallBackSubj = this.privateNotaService.base64ConvertCallBack.subscribe({ next:(p) => {
         this.imagenes.push({ file: p.base64, name:p.anydata.url, fromnota: true });
       }});
     }
 
     if (this.getedSubj == undefined){
-      this.privateNotaService.getEdOk.subscribe({ next:(p:any) => {
+      this.getedSubj = this.privateNotaService.getEdOk.subscribe({ next:(p:any) => {
         this.model = p;
-        this.imgs_notaTo_array();
       }});
     }
   }
@@ -126,12 +124,6 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   ngOnInit() {
   }
 
-  imgs_notaTo_array(){
-    this.imagenes = [];
-    for(let c=0; c < this.model.imagenes.length; c++){
-      this.imgUrlToBase64(this.configService.apiUrl(this.model.imagenes[c].url), this.model.imagenes[c]);
-    }
-  }
 
   ver_imagen(i){
     this.privateNotaService.navigationOrigin = this.thisPage;

@@ -25,7 +25,8 @@ export class PrivateNotaService extends ApiService<any>{
     private privateTipoNotaService:  PrivateTipoNotaService,
     private loadingController:       LoadingController,
     private toastController:         ToastController,
-    private formateoService:         FormateoService
+    private formateoService:         FormateoService,
+    private configService:           ConfigService
   ) {
       super('private-nota', http, config)
      }
@@ -67,6 +68,20 @@ export class PrivateNotaService extends ApiService<any>{
       }
       model.images = img;
       return super.put(model, id, recurso);
+    }
+
+    get(id: number, getParams: string = ''): Observable<any> {  
+      return super.get(id, getParams).pipe(
+        map((data) => {
+          let d = new Date(data.vencimiento);
+          data.vencimiento = this.formateoService.getNgbDatepickerArrayFDate(d);
+          data.vencimiento_hora = this.formateoService.getNgbTimePickerFDate(d);
+          for(let c=0; c < data.imagenes.length; c++){
+            this.imgUrlToBase64(this.configService.apiUrl(data.imagenes[c].url), data.imagenes[c]);
+          }
+          return data;
+        })
+      );
     }
 
     async toastVencidas(text, params){
@@ -169,18 +184,12 @@ export class PrivateNotaService extends ApiService<any>{
       }
 
       if (params.hasOwnProperty('page')){
+        params.page.imagenes = [];
         if (params.hasOwnProperty('nota_id')){
           this.nota_edit_id = params.nota_id;
           const loading = await this.loadingController.create({ message: "Por favor espere..." });
           loading.present();
-          let tmpSubj = this.get(this.nota_edit_id,'expand=imagenes').pipe(
-            map((data) => {
-              let d = new Date(data.vencimiento);
-              data.vencimiento = this.formateoService.getNgbDatepickerArrayFDate(d);
-              data.vencimiento_hora = this.formateoService.getNgbTimePickerFDate(d);
-              return data;
-            })
-          ).subscribe(
+          let tmpSubj = this.get(this.nota_edit_id,'expand=imagenes').subscribe(
             ok => {  
               tmpSubj.unsubscribe(); 
               loading.dismiss();
