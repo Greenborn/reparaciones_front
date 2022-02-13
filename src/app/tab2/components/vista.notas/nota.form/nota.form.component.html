@@ -115,8 +115,16 @@
                   <input type="file" id="FUImage" name="FUImage" style="visibility:hidden;position: fixed;" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="handleFileInput($event.target['files'])">
                 </ion-col>
 
-                <ion-col size="auto" class="selected-img-cont" *ngFor="let imagen of imagenes; let i = index" (click)="ver_imagen(i)">
-                    <img src="{{imagen.file}}" alt="Selected Image" height="125px" width="auto">
+                <ion-col size="12" size-lg="6" class="selected-img-cont" *ngFor="let imagen of imagenes; let i = index" >
+                    <ion-row>
+                      <ion-col>
+                          <img src="{{imagen.file}}" alt="Selected Image" width="auto" >
+                      </ion-col>
+                      <ion-col size="auto">
+                        <ion-row><ion-button color="danger" (click)="deleteImg(imagen)" size="small"><ion-icon name="trash"></ion-icon></ion-button></ion-row>
+                        <ion-row><ion-button color="secondary" (click)="ver_imagen(imagen)" size="small"><ion-icon name="eye"></ion-icon></ion-button></ion-row>
+                      </ion-col>
+                    </ion-row>
                 </ion-col>
 
                 <ion-col *ngIf="imagenes.length == 0">

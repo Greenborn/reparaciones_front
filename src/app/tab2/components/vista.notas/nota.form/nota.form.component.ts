@@ -110,7 +110,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
 
     if (this.base64ConvertCallBackSubj == undefined){
       this.base64ConvertCallBackSubj = this.privateNotaService.base64ConvertCallBack.subscribe({ next:(p) => {
-        this.imagenes.push({ file: p.base64, name:p.anydata.url, fromnota: true });
+        this.imagenes.push({ file: p.base64, name:p.anydata.url, fromnota: true, id:p.anydata.id });
       }});
     }
 
@@ -223,8 +223,44 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     this.router.navigate([ this.privateNotaService.navigationOrigin ]);
   }
 
-  deleteImg(i){
+  async deleteImg(i){
+    for (let c=0; c < this.imagenes.length; c++){
+      if (this.imagenes[c].name == i.name){
+        const alert = await this.alertController.create({
+          header: 'Atención',
+          message: 'Está por eliminar una imagen ¿desea continuar?.',
+          buttons: [{
+            text: 'No',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {}
+          }, {
+            text: 'Si',
+            cssClass: 'danger',
+            handler: () => {
+              this.borrar_img(i);
+            }
+          }]
+        });
+        await alert.present();
+      }
+    }
+  }
 
+  async borrar_img(i:any){
+    const loading = await this.loadingController.create({ message: 'Borrando imagen' });
+    await loading.present();
+    this.privateImagenService.delete(i.id).subscribe(
+      ok => {
+        loading.dismiss();
+        let nota_id = this.privateNotaService.nota_edit_id;
+        this.privateNotaService.goToEdit({ page:this, nota_id:nota_id });
+      },
+      err => {
+        loading.dismiss();
+        this.displayAlert('Ocurrió un error al intentar eliminar la imagen. ');
+      }
+    );
   }
 
 }
