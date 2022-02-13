@@ -1,6 +1,8 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
+
+import { NgbDateStruct, NgbCalendar, NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
@@ -21,6 +23,8 @@ import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.servi
   styleUrls: ['./nota.form.component.scss'],
 })
 export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestroy {
+
+  @ViewChild('dp') dp: NgbDatepicker;
 
   public model:Nota    = new Nota();
   public color_categoria = "#FFF";
@@ -179,7 +183,12 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     }
     const loading = await this.loadingController.create({ message: "Por favor espere..." });
     loading.present();
-    this.model.vencimiento = this.formateoService.getFormatedDate(new Date(this.model.vencimiento));
+    this.model.vencimiento = this.formateoService.getDateNgbDatepickerArray(this.model.vencimiento);
+    this.model.vencimiento.setSeconds(this.model.vencimiento_hora.second);
+    this.model.vencimiento.setHours(this.model.vencimiento_hora.hour);
+    this.model.vencimiento.setMinutes(this.model.vencimiento_hora.minute);
+    this.model.vencimiento = this.formateoService.getFechaISOASP(this.model.vencimiento);
+
     this.model.images = this.imagenes;
 
     if (this.privateNotaService.accion == 'Nueva'){
@@ -220,6 +229,10 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   
   goBack(){
     this.router.navigate([ this.privateNotaService.navigationOrigin ]);
+  }
+
+  vencimiento_edit(){
+    console.log(this.model.vencimiento_hora);
   }
 
   deleteImg(i){

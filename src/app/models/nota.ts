@@ -5,6 +5,7 @@ export class Nota {
     public estado_id:any = -1;
     public obra_id:any = -1;
     public vencimiento:any;
+    public vencimiento_hora:any;
     public orden:number = 0;
     public tipo_nota_id:any = -1;
 

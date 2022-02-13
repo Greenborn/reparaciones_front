@@ -13,18 +13,24 @@ import { AuthInterceptorService } from './modules/autentication/services/auth-in
 import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { NotaFormComponent } from './tab2/components/vista.notas/nota.form/nota.form.component';
+import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateCustomParserFormatter } from 'src/providers/ngb-date-custom-parser-formatter.provider';
+import { NgbDateCustomI18 } from 'src/providers/ngb-date-custom-i18.provider';
 
 
 @NgModule({
     declarations: [
       AppComponent, NotaFormComponent,
     ],
-    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,ColorPickerModule, FormsModule, AutenticationModule, HttpClientModule, IonicSelectableModule],
+    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,ColorPickerModule, FormsModule, AutenticationModule, HttpClientModule, IonicSelectableModule, NgbModule],
     providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{
         provide: HTTP_INTERCEPTORS,
         useClass: AuthInterceptorService,
         multi: true
-      },],
+      },
+      { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter },
+      { provide: NgbDatepickerI18n,      useClass: NgbDateCustomI18 }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

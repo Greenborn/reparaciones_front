@@ -72,6 +72,38 @@ export class FormateoService {
   /////////////////////////
   //// FECHAS          ////
 
+  getFISONgbDatepickerArray(d){
+    if ( !d.hasOwnProperty('year') ){ return d; }
+
+    return new Date(d.year, d.month-1, d.day).toISOString();
+  }
+
+  getFechaISOASP(fecha){
+    let f = this.getArrayFDate(fecha);
+    return <string> f[0]+'-'+f[1]+'-'+f[2]+' '+f[3]+':'+f[4]+':'+f[5]+'.000';
+  }
+
+  getArrayFDate(f){
+    return [f.getFullYear(), f.getMonth()+1, f.getDate(), f.getHours(), f.getMinutes(), f.getSeconds()];
+  }
+
+  getDateNgbDatepickerArray(d){
+    if ( !d.hasOwnProperty('year') ){ return; }
+
+    return new Date(d.year, d.month-1, d.day);
+  }
+
+  getNgbDatepickerArrayFDate(d){
+    let f = new Date(d);
+    return { 'year':  f.getFullYear(),
+             'month': f.getMonth()+1,
+             'day':   f.getDate() };
+  }
+
+  getNgbTimePickerFDate(d){
+    return { hour:d.getHours(), minute:d.getMinutes(), second:d.getSeconds()};
+  }
+
   getTimeStampFDateArr( d:any ){
     if (d === undefined){
       return undefined;

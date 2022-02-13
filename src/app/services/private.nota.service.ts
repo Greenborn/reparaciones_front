@@ -2,8 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
+import { map } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 import { ConfigService } from 'src/app/services/config.service';
+import { FormateoService } from './formateo.service';
 import { PrivateCategoriaService } from './private.categoria.service';
 import { PrivateObrasService } from './private.obras.service';
 import { PrivateTipoNotaService } from './private.tipo.nota.service';
@@ -21,7 +23,8 @@ export class PrivateNotaService extends ApiService<any>{
     private privateCategoriaService: PrivateCategoriaService,
     private privateTipoNotaService:  PrivateTipoNotaService,
     private loadingController:       LoadingController,
-    private toastController:         ToastController
+    private toastController:         ToastController,
+    private formateoService:         FormateoService
   ) {
       super('private-nota', http, config)
      }
@@ -35,6 +38,7 @@ export class PrivateNotaService extends ApiService<any>{
     public vencidas:any         = [];
     public cant_vencidas:number = 0;
     public filtro_vencidas:string = 'todas';
+    public toastShow:boolean = true;
     
     pingNotasVencidas(p){
       let date:any = new Date();
@@ -44,7 +48,10 @@ export class PrivateNotaService extends ApiService<any>{
         ok => {
           this.vencidas      = ok;
           this.cant_vencidas = this.vencidas.length;
-          this.toastVencidas('¡Hay '+this.cant_vencidas + ' notas vencidas!', p);
+          if (this.toastShow){
+              this.toastVencidas('¡Hay '+this.cant_vencidas + ' notas vencidas!', p);
+              this.toastShow = false;
+          }
         },
         err => {}
       );
@@ -53,6 +60,7 @@ export class PrivateNotaService extends ApiService<any>{
     async toastVencidas(text, params){
       const toast = await this.toastController.create({
         message: text,
+        duration: 300000,
         buttons: [
           {
             side: 'end',
@@ -61,6 +69,14 @@ export class PrivateNotaService extends ApiService<any>{
             handler: () => {
               this.filtro_vencidas = 'vencidas';
               this.goToNotas(params);
+            }
+          },
+          {
+            side: 'end',
+            icon: 'close',
+            text: '',
+            handler: () => {
+              toast.dismiss();
             }
           }
         ],
@@ -145,7 +161,14 @@ export class PrivateNotaService extends ApiService<any>{
           this.nota_edit_id = params.nota_id;
           const loading = await this.loadingController.create({ message: "Por favor espere..." });
           loading.present();
-          let tmpSubj = this.get(this.nota_edit_id,'expand=imagenes').subscribe(
+          let tmpSubj = this.get(this.nota_edit_id,'expand=imagenes').pipe(
+            map((data) => {
+              let d = new Date(data.vencimiento);
+              data.vencimiento = this.formateoService.getNgbDatepickerArrayFDate(d);
+              data.vencimiento_hora = this.formateoService.getNgbTimePickerFDate(d);
+              return data;
+            })
+          ).subscribe(
             ok => {  
               tmpSubj.unsubscribe(); 
               loading.dismiss();
