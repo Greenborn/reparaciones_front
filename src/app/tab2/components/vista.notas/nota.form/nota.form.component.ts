@@ -126,7 +126,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
 
 
   ver_imagen(i){
-    this.privateNotaService.navigationOrigin = this.thisPage;
+    this.privateNotaService.navigationOrigin = '/tabs/tab2/editar_nota';
     this.privateImagenService.goToEdit({ page:this, img_id:i.id });
   }
 
