@@ -1,31 +1,19 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Detalle de imagen
-    </ion-title>
-    <ion-buttons slot="end">
-        <ion-button (click)="goBack()" color="medium" fill="outline">Volver</ion-button>
-        <ion-button (click)="ingresar()" color="success" fill="outline">Guardar</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<ion-grid>
+  <ion-row>
+    <!--BARRA DE HERRAMIENTAS-->
+    <ion-col class="item-valign-center">
+      <ion-button (click)="goBack()" color="medium" fill="outline"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="ingresar()" color="medium" fill="outline"><ion-icon name="crop"></ion-icon></ion-button>
+      <ion-button (click)="ingresar()" color="medium" fill="outline"><ion-icon name="brush"></ion-icon></ion-button>
+      <!--<ion-button (click)="ingresar()" color="medium" fill="outline"><ion-icon name="add-circle"></ion-icon></ion-button>
+      <ion-button (click)="ingresar()" color="medium" fill="outline"><ion-icon name="remove-circle"></ion-icon></ion-button>-->
+      <input [(colorPicker)]="herramientas.color" style="width:7rem;" [style.background]="herramientas.color"/>
+      <ion-button (click)="ingresar()" color="success" fill="outline"><ion-icon name="save"></ion-icon></ion-button>
+    </ion-col>
 
-<ion-content [fullscreen]="true">
-  <ion-grid class="bg1 h-100">
-
-    <ion-row>
-      <ion-col *ngIf="imagen">
-        
-        <ion-card class="nota-form-card">
-          <ion-card-header> <ion-card-title>Imagen</ion-card-title> </ion-card-header>
-          
-          <ion-card-content>
-            <img src="{{imagen.file}}" alt="Selected Image" width="auto" >
-          </ion-card-content>
-        </ion-card>
-      
-      </ion-col>
-    </ion-row>
-  
-  </ion-grid>
-</ion-content>
+    <!--AREA DE EDICION-->
+    <ion-col size="12" class="image-cont">
+      <canvas id="areaEdicion" #areaEdicion></canvas>
+    </ion-col>
+  </ion-row>
+</ion-grid>

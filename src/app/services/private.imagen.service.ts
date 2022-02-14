@@ -38,7 +38,7 @@ export class PrivateImagenService extends ApiService<any>{
 
     public img_edit_id:number = 0;
     public accion:string = 'Nueva';
-    public navigationOrigin;
+    public navigationOrigin = '/tabs';
     async goToEdit(params:any = {}){
       this.accion = 'Editar';
       if (params.hasOwnProperty('navigationOrigin')){
@@ -65,6 +65,6 @@ export class PrivateImagenService extends ApiService<any>{
         }
 
       }
-      this.router.navigate([ '/tabs/tab2/vista_imagen' ]);
+      this.router.navigate([ '/vista_imagen' ]);
     }
 }
