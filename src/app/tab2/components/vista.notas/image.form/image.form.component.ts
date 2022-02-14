@@ -5,6 +5,7 @@ import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Imagen } from 'src/app/models/imagen';
 import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { PrivateImagenService } from 'src/app/services/private.imagen.service';
+import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { HerramientaConfig } from './herramienta.config.model';
 
 @Component({
@@ -20,6 +21,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     public ref:                          ChangeDetectorRef,
     private router:                      Router,
     private privateImageService:         PrivateImagenService,
+    private privateNotaService:          PrivateNotaService,
     public  authService:                 AuthService,
   ) { 
     super(alertController, loadingController, ref, authService);    
@@ -80,6 +82,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   }
 
   goBack(){
+    this.privateNotaService.goToEdit({ page:this, nota_id: this.imagen.id_nota });
     this.router.navigate([ this.privateImageService.navigationOrigin ]);
   }
 
@@ -89,6 +92,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     this.model.id_nota     = this.imagen.id_nota;
     this.model.id          = this.imagen.id;
     const loading = await this.loadingController.create({ message: "Guardando cambios..." });
+    loading.present();
     this.privateImageService.put(this.model, this.model.id).subscribe(
       ok => {
         super.displayAlert("Imagen guardada correctamente.");

@@ -70,14 +70,18 @@ export class PrivateNotaService extends ApiService<any>{
       return super.put(model, id, recurso);
     }
 
+    public nota_images:any = [];
     get(id: number, getParams: string = ''): Observable<any> {  
       return super.get(id, getParams).pipe(
         map((data) => {
           let d = new Date(data.vencimiento);
           data.vencimiento = this.formateoService.getNgbDatepickerArrayFDate(d);
           data.vencimiento_hora = this.formateoService.getNgbTimePickerFDate(d);
+          this.nota_images = [];
           for(let c=0; c < data.imagenes.length; c++){
-            this.imgUrlToBase64(this.configService.apiUrl(data.imagenes[c].url), data.imagenes[c]);
+            this.imgUrlToBase64(this.configService.apiUrl(data.imagenes[c].url), data.imagenes[c], (p)=>{
+              this.nota_images.push({ file: p.base64, name:p.anydata.url, fromnota: true, id:p.anydata.id });
+            });
           }
           return data;
         })
@@ -186,8 +190,7 @@ export class PrivateNotaService extends ApiService<any>{
       }
 
       if (params.hasOwnProperty('page')){
-        if (params.page.hasOwnProperty('imagenes'))
-          params.page.imagenes = [];
+        
         if (params.hasOwnProperty('nota_id')){
           this.nota_edit_id = params.nota_id;
           const loading = await this.loadingController.create({ message: "Por favor espere..." });

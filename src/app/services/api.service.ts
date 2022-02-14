@@ -120,12 +120,13 @@ export abstract class ApiService<T> {
   }
 
   public base64ConvertCallBack:Subject<any> = new Subject();
-  public imgUrlToBase64(url, anydata:any = {}) {
+  public imgUrlToBase64(url, anydata:any = {}, callback = (p:any)=>{}) {
       let xhr = new XMLHttpRequest();
       let me = this;
       xhr.onload = function() {
           var reader = new FileReader();
           reader.onloadend = function() {
+            callback({base64:reader.result, anydata:anydata});
             me.base64ConvertCallBack.next({base64:reader.result, anydata:anydata});
           }
           reader.readAsDataURL(xhr.response);

@@ -38,7 +38,6 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   private base64ConvertCallBackSubj:any;
 
   private thisPage:string = '';
-  public imagenes:any = [];
   private imagenes_nota:any = [];
   private getedSubj:any;
 
@@ -104,13 +103,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
 
     if (this.imageOnSuccessSubj == undefined){
       this.imageOnSuccessSubj = this.imageOnSuccess.subscribe({ next:(p) => {
-        this.imagenes.push(p);
-      }});
-    }
-
-    if (this.base64ConvertCallBackSubj == undefined){
-      this.base64ConvertCallBackSubj = this.privateNotaService.base64ConvertCallBack.subscribe({ next:(p) => {
-        this.imagenes.push({ file: p.base64, name:p.anydata.url, fromnota: true, id:p.anydata.id });
+        this.privateNotaService.nota_images.push(p);
       }});
     }
 
@@ -181,7 +174,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     this.model.vencimiento.setMinutes(this.model.vencimiento_hora.minute);
     this.model.vencimiento = this.formateoService.getFechaISOASP(this.model.vencimiento);
 
-    this.model.images = this.imagenes;
+    this.model.images = this.privateNotaService.nota_images;
 
     if (this.privateNotaService.accion == 'Nueva'){
       this.privateNotaService.post(this.model).subscribe(
@@ -224,8 +217,8 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   }
 
   async deleteImg(i){
-    for (let c=0; c < this.imagenes.length; c++){
-      if (this.imagenes[c].name == i.name){
+    for (let c=0; c < this.privateNotaService.nota_images.length; c++){
+      if (this.privateNotaService.nota_images[c].name == i.name){
         const alert = await this.alertController.create({
           header: 'Atención',
           message: 'Está por eliminar una imagen ¿desea continuar?.',
