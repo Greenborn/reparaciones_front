@@ -56,13 +56,14 @@ async displayAlert(message: string) {
       },
       err => {
         loading.dismiss();
-        if (!this.authService.logedIn()){
-          recursionCount = 200;
-        }
+        
         if (recursionCount > 100 && dataOut != ''){
           this[dataOut] = [];
+          return false;
         }
-        return this.loadingEspecificData(service, params, dataOut, loadingText,recursionCount+1);
+        if (this.authService.logedIn()){
+          return this.loadingEspecificData(service, params, dataOut, loadingText,recursionCount+1);
+        }
         
       }
     );
