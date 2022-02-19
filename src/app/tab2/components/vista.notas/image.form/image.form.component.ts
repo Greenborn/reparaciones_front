@@ -137,6 +137,8 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
       this.context.arc(this.herramientas.mouseX,this.herramientas.mouseY,radius,0,(Math.PI/180)*360,true);
       this.context.fillStyle = this.herramientas.color;
       this.context.fill();
+    } else if (this.herramientas.mouse_down && this.herramientas.herramienta_seleccionada == 'recorte'){
+
     }
   }
 

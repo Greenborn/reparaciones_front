@@ -71,6 +71,7 @@ export class PrivateNotaService extends ApiService<any>{
     }
 
     public nota_images:any = [];
+    public nota_documentos:any = [];
     get(id: number, getParams: string = ''): Observable<any> {  
       return super.get(id, getParams).pipe(
         map((data) => {
@@ -78,10 +79,15 @@ export class PrivateNotaService extends ApiService<any>{
           data.vencimiento = this.formateoService.getNgbDatepickerArrayFDate(d);
           data.vencimiento_hora = this.formateoService.getNgbTimePickerFDate(d);
           this.nota_images = [];
+          this.nota_documentos = [];
           for(let c=0; c < data.imagenes.length; c++){
             this.imgUrlToBase64(this.configService.apiUrl(data.imagenes[c].url), data.imagenes[c], (p)=>{
               this.nota_images.push({ file: p.base64, name:p.anydata.url, fromnota: true, id:p.anydata.id });
             });
+          }
+
+          for(let c=0; c < data.documentos.length; c++){
+            this.nota_documentos.push({ file: '', name:data.documentos[c].nombre, fromnota: true, id:data.documentos[c].id, url:data.documentos[c].url });
           }
           return data;
         })
@@ -195,7 +201,7 @@ export class PrivateNotaService extends ApiService<any>{
           this.nota_edit_id = params.nota_id;
           const loading = await this.loadingController.create({ message: "Por favor espere..." });
           loading.present();
-          let tmpSubj = this.get(this.nota_edit_id,'expand=imagenes').subscribe(
+          let tmpSubj = this.get(this.nota_edit_id,'expand=imagenes,documentos').subscribe(
             ok => {  
               tmpSubj.unsubscribe(); 
               loading.dismiss();

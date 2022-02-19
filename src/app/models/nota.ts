@@ -10,5 +10,6 @@ export class Nota {
     public tipo_nota_id:any = -1;
 
     public images:any = [];
+    public documents:any = [];
     public imagenes:any = [];
 }

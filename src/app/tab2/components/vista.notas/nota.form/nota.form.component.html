@@ -97,47 +97,95 @@
 
       </ion-col>
 
+      <ion-col size="12" size-sm="10" offset-sm="1" size-md="6"  offset-md="0">
+        <ion-row>
 
-      <ion-col  size="12" size-sm="10" offset-sm="1" size-md="6"  offset-md="0">
+          <!--Documentos-->
+          <ion-col size="12">
 
-        <ion-card class="nota-form-card">
-          <ion-card-header> <ion-card-title>Imágenes</ion-card-title> </ion-card-header>
+            <ion-card>
+              <ion-card-header> <ion-card-title>Documentos</ion-card-title> </ion-card-header>
+              
+              <ion-card-content>
+                
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="auto">
+                      <ion-button color="secondary" size="small"><ion-icon name="add-circle"></ion-icon>&nbsp;<label for="FUDoc" class="label-btn">Agregar Documento</label></ion-button>
+                      <input type="file" id="FUDoc" name="FUDoc" style="visibility:hidden;position: fixed;" accept=".pdf, .otf, .doc, .docx, .xls, .csv, .ott, .ods, .txt" (change)="handleFileInput($event.target['files'])">
+                    </ion-col>
+                    <ion-col></ion-col>
+
+                    <ion-col size="12" *ngFor="let documento of privateNotaService.nota_documentos; let i = index" >
+                        <ion-row>
+                          <ion-col>
+                              {{documento.name}}
+                          </ion-col>
+                          <ion-col size="auto">
+                            <ion-row><ion-button color="danger" (click)="deleteDoc(documento)" size="small"><ion-icon name="trash"></ion-icon></ion-button></ion-row>
+                            <ion-row><ion-button color="secondary" size="small">
+                              <a *ngIf="documento.fromnota" href="{{configService.apiUrl(documento.url)}}" target="_blank"><ion-icon name="download"></ion-icon></a></ion-button>
+                            </ion-row>
+                          </ion-col>
+                        </ion-row>
+                    </ion-col>
+
+                    <ion-col *ngIf="privateNotaService.nota_documentos.length == 0">
+                        <div>No se encontraron documentos</div>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
           
-          <ion-card-content>
-            
-            <ion-grid>
-              <ion-row>
-                <ion-col size="auto">
-                  <label for="FUImage" class="btn btn-add-image">
-                    <ion-icon name="images" style="font-size:3rem;margin-top:1rem;"></ion-icon>
-                    <p>Agregar Imagen</p>
-                  </label>
-                  <input type="file" id="FUImage" name="FUImage" style="visibility:hidden;position: fixed;" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="handleFileInput($event.target['files'])">
-                </ion-col>
-                <ion-col></ion-col>
+              </ion-card-content>
+            </ion-card>
 
-                <ion-col size="12" size-lg="6" class="selected-img-cont" *ngFor="let imagen of privateNotaService.nota_images; let i = index" >
-                    <ion-row>
-                      <ion-col>
-                          <img src="{{imagen.file}}" alt="Selected Image" width="auto" >
-                      </ion-col>
-                      <ion-col size="auto">
-                        <ion-row><ion-button color="danger" (click)="deleteImg(imagen)" size="small"><ion-icon name="trash"></ion-icon></ion-button></ion-row>
-                        <ion-row><ion-button color="secondary" (click)="ver_imagen(imagen)" size="small"><ion-icon name="eye"></ion-icon></ion-button></ion-row>
-                      </ion-col>
-                    </ion-row>
-                </ion-col>
+          </ion-col>
 
-                <ion-col *ngIf="privateNotaService.nota_images.length == 0">
-                    <div>No se encontraron imágenes</div>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-      
-          </ion-card-content>
-        </ion-card>
+          <!--IMÁGENES-->
+          <ion-col  size="12" >
 
+            <ion-card class="nota-form-card">
+              <ion-card-header> <ion-card-title>Imágenes</ion-card-title> </ion-card-header>
+              
+              <ion-card-content>
+                
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="auto">
+                      <label for="FUImage" class="btn btn-add-image">
+                        <ion-icon name="images" style="font-size:3rem;margin-top:1rem;"></ion-icon>
+                        <p>Agregar Imagen</p>
+                      </label>
+                      <input type="file" id="FUImage" name="FUImage" style="visibility:hidden;position: fixed;" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="handleFileInput($event.target['files'])">
+                    </ion-col>
+                    <ion-col></ion-col>
+
+                    <ion-col size="12" size-lg="6" class="selected-img-cont" *ngFor="let imagen of privateNotaService.nota_images; let i = index" >
+                        <ion-row>
+                          <ion-col>
+                              <img *ngIf="imagen != undefined" src="{{imagen.file}}" alt="Selected Image" width="auto" >
+                          </ion-col>
+                          <ion-col size="auto">
+                            <ion-row><ion-button color="danger" (click)="deleteImg(imagen)" size="small"><ion-icon name="trash"></ion-icon></ion-button></ion-row>
+                            <ion-row><ion-button color="secondary" (click)="ver_imagen(imagen)" size="small"><ion-icon name="eye"></ion-icon></ion-button></ion-row>
+                          </ion-col>
+                        </ion-row>
+                    </ion-col>
+
+                    <ion-col *ngIf="privateNotaService.nota_images.length == 0">
+                        <div>No se encontraron imágenes</div>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+          
+              </ion-card-content>
+            </ion-card>
+
+          </ion-col>
+
+        </ion-row>
       </ion-col>
+      
     </ion-row>
 
   </ion-grid>

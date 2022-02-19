@@ -4,6 +4,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { AuthService } from 'src/app/modules/autentication/services/auth.service';
+import { PrivateDocumentoService } from 'src/app/services/private.documento.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
@@ -26,7 +27,8 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
     public  authService:                 AuthService,
     private router:                      Router,
     public  privateNotaService:          PrivateNotaService,
-    public  privateObrasService:         PrivateObrasService
+    public  privateObrasService:         PrivateObrasService,
+    private privateDocumentoService:     PrivateDocumentoService
   ) {
     super(alertController, loadingController, ref, authService);
   }

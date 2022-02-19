@@ -71,6 +71,8 @@ async displayAlert(message: string) {
 
   public img_hfi_result = null;
   public image_data:any;
+  public file_data:any;
+  public file_data_extension:string;
 
   public imageOnSuccess:Subject<any> = new Subject();
   public imageOnError:Subject<any> = new Subject();
@@ -85,8 +87,17 @@ async displayAlert(message: string) {
 
     reader.readAsDataURL(file);
     reader.onload = function (i) {
-        me.image_data =  { file: reader.result, name:file.name };
-        me.imageOnSuccess.next(me.image_data);
+      me.file_data_extension = String(file.name).split('.').pop();
+      switch (me.file_data_extension){
+        case 'pdf': case 'otf': case 'doc': case 'docx': case 'xls': case 'csv': case 'ott': case 'ods': case 'txt':
+          me.file_data  =  { file: reader.result, name:file.name };
+        break;
+
+        case 'png': case 'jpg': case 'jpeg': case 'webp': case 'bmp':
+          me.image_data =  { file: reader.result, name:file.name };
+        break;
+      }
+      me.imageOnSuccess.next({ file: reader.result, name:file.name, extension: me.file_data_extension });
     };
     reader.onerror = function (error) {
         me.imageOnError.next(error);

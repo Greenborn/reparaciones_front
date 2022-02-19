@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/modules/autentication/services/auth.service
 import { ConfigService } from 'src/app/services/config.service';
 import { FormateoService } from 'src/app/services/formateo.service';
 import { PrivateCategoriaService } from 'src/app/services/private.categoria.service';
+import { PrivateDocumentoService } from 'src/app/services/private.documento.service';
 import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { PrivateImagenService } from 'src/app/services/private.imagen.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
@@ -54,6 +55,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     public  privateTipoNotaService:      PrivateTipoNotaService,
     private privateImagenService:        PrivateImagenService,
     private configService:               ConfigService,
+    public  privateDocumentoService:     PrivateDocumentoService,
     public  authService:                 AuthService, 
   ) {
     super(alertController, loadingController, ref, authService);
@@ -103,7 +105,17 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
 
     if (this.imageOnSuccessSubj == undefined){
       this.imageOnSuccessSubj = this.imageOnSuccess.subscribe({ next:(p) => {
-        this.privateNotaService.nota_images.push(p);
+        console.log(p);
+        switch (p.extension){
+            case 'pdf': case 'otf': case 'doc': case 'docx': case 'xls': case 'csv': case 'ott': case 'ods': case 'txt':
+              this.privateNotaService.nota_documentos.push(p);
+            break;
+    
+            case 'png': case 'jpg': case 'jpeg': case 'webp': case 'bmp':
+              this.privateNotaService.nota_images.push(p);
+            break;
+        }
+        
       }});
     }
 
@@ -115,6 +127,14 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   }
 
   ngOnInit() {
+  }
+
+  descargarDoc(documento){
+
+  }
+
+  deleteDoc(documento){
+
   }
 
 
@@ -175,6 +195,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     this.model.vencimiento = this.formateoService.getFechaISOASP(this.model.vencimiento);
 
     this.model.images = this.privateNotaService.nota_images;
+    this.model.documents = this.privateNotaService.nota_documentos;
 
     if (this.privateNotaService.accion == 'Nueva'){
       this.privateNotaService.post(this.model).subscribe(
