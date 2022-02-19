@@ -129,12 +129,45 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
   ngOnInit() {
   }
 
-  descargarDoc(documento){
+  async deleteDoc(documento, i){
+      if (!documento.hasOwnProperty('fromnota')) {
+        this.privateNotaService.nota_documentos.splice(i);
+        return true;
+      }
 
+      const alert = await this.alertController.create({
+        header: 'Atención',
+        message: 'Está por eliminar el documento ¿desea continuar?.',
+        buttons: [{
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {}
+        }, {
+          text: 'Si',
+          cssClass: 'danger',
+          handler: () => {
+            this.borrar_doc(documento);
+          }
+        }]
+      });
+      await alert.present();
   }
 
-  deleteDoc(documento){
-
+  async borrar_doc(documento){
+    const loading = await this.loadingController.create({ message: 'Borrando documento' });
+    await loading.present();
+    this.privateDocumentoService.delete(documento.id).subscribe(
+      ok => {
+        loading.dismiss();
+        let nota_id = this.privateNotaService.nota_edit_id;
+        this.privateNotaService.goToEdit({ page:this, nota_id:nota_id });
+      },
+      err => {
+        loading.dismiss();
+        this.displayAlert('Ocurrió un error al intentar eliminar la nota. ');
+      }
+    );
   }
 
 

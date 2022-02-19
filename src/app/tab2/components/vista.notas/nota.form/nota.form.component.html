@@ -122,9 +122,9 @@
                               {{documento.name}}
                           </ion-col>
                           <ion-col size="auto">
-                            <ion-row><ion-button color="danger" (click)="deleteDoc(documento)" size="small"><ion-icon name="trash"></ion-icon></ion-button></ion-row>
-                            <ion-row><ion-button color="secondary" size="small">
-                              <a *ngIf="documento.fromnota" href="{{configService.apiUrl(documento.url)}}" target="_blank"><ion-icon name="download"></ion-icon></a></ion-button>
+                            <ion-row><ion-button color="danger" (click)="deleteDoc(documento, i)" size="small"><ion-icon name="trash"></ion-icon></ion-button></ion-row>
+                            <ion-row *ngIf="documento.fromnota"><ion-button color="secondary" size="small">
+                              <a  href="{{configService.apiUrl(documento.url)}}" target="_blank"><ion-icon name="download"></ion-icon></a></ion-button>
                             </ion-row>
                           </ion-col>
                         </ion-row>
