@@ -54,7 +54,7 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
     private formateoService:             FormateoService,
     public  privateTipoNotaService:      PrivateTipoNotaService,
     private privateImagenService:        PrivateImagenService,
-    private configService:               ConfigService,
+    public  configService:               ConfigService,
     public  privateDocumentoService:     PrivateDocumentoService,
     public  authService:                 AuthService, 
   ) {
