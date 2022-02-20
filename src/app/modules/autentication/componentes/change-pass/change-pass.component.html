@@ -1,0 +1,44 @@
+<ion-card class="">
+  <ion-card-header> <ion-card-title>Modificar contraseña</ion-card-title> </ion-card-header>
+          
+  <ion-card-content>
+      <ion-grid>
+      
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Contraseña actual:</ion-label>
+              <ion-input placeholder="********" type="password" [(ngModel)]="model.old_password" [ngModelOptions]="{standalone: true}"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Contraseña nueva:</ion-label>
+              <ion-input placeholder="********" type="password" [(ngModel)]="model.new_password" [ngModelOptions]="{standalone: true}"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Repetir contraseña:</ion-label>
+              <ion-input placeholder="********" type="password" [(ngModel)]="model.repeat_password" [ngModelOptions]="{standalone: true}"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        
+
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="goBack()" color="medium">Volver</ion-button>
+            <ion-button (click)="ingresar()">Guardar</ion-button>
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+  </ion-card-content>
+</ion-card>

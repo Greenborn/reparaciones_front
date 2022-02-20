@@ -7,18 +7,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule }   from '@angular/common/http';
 import { AuthenticationGuard } from './services/auth.guard';
 import { IonicModule } from '@ionic/angular';
+import { ChangePassComponent } from './componentes/change-pass/change-pass.component';
 
 const routes: Routes = [
-  {
-    path: 'login',
-    component: LoginViewComponent,
-    
-  }
+  { path: 'login',   component: LoginViewComponent,        },
+  { path: 'cambiar_pass',  component: ChangePassComponent, }
 ];
 
 @NgModule({
   declarations: [
-    LoginViewComponent,
+    LoginViewComponent, ChangePassComponent
   ],
   imports: [
     CommonModule, IonicModule.forRoot(),

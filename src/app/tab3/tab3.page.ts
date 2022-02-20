@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { ApiConsumer } from '../models/ApiConsumer';
+import { ChangePassComponent } from '../modules/autentication/componentes/change-pass/change-pass.component';
 import { AuthService } from '../modules/autentication/services/auth.service';
 import { PrivateCategoriaService } from '../services/private.categoria.service';
 import { Tab3Service } from './services/tab3.service';
@@ -25,6 +26,7 @@ export class Tab3Page extends ApiConsumer  implements OnInit, OnDestroy{
     private router:                   Router,
     private tab3Service:              Tab3Service,
     private privateCategoriaService:  PrivateCategoriaService,
+    public  modalController:          ModalController,
   ) {
     super(alertController, loadingController, ref, authService);
   }
@@ -53,5 +55,15 @@ export class Tab3Page extends ApiConsumer  implements OnInit, OnDestroy{
 
   ngOnDestroy(){
     this.recargarCategoriasSubs.unsubscribe();
+  }
+
+  async cambiar_pass(){
+    let modal = await this.modalController.create({
+      component: ChangePassComponent,
+      componentProps: {
+        'modal': this.modalController
+      }
+    });
+    return await modal.present();
   }
 }

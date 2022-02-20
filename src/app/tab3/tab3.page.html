@@ -59,7 +59,15 @@
           </ion-card-header>
             
           <ion-card-content>
-            <ion-button color="secondary" (click)="cerrar_session()" ><ion-icon name="exit"></ion-icon>&nbsp;Cerrar sesión</ion-button>
+            <ion-list>
+              <ion-item>
+                <ion-button color="secondary" (click)="cambiar_pass()" ><ion-icon name="key"></ion-icon>&nbsp;Cambiar contraseña</ion-button>
+                <ion-button color="secondary" (click)="cerrar_session()" ><ion-icon name="exit"></ion-icon>&nbsp;Cerrar sesión</ion-button>
+              </ion-item>
+              <ion-item>
+                
+              </ion-item>
+            </ion-list>
           </ion-card-content>
         </ion-card>
       </ion-col>
