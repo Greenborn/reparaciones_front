@@ -109,10 +109,18 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
   mouse_down(){
     this.herramientas.mouse_down = true;
+    this.herramientas.mouse_ant = [];
   }
 
   mouse_up(){
     this.herramientas.mouse_down = false;
+    if (this.herramientas.herramienta_seleccionada == 'pincel'){
+      for (let c=1; c < this.herramientas.mouse_ant.length; c++){
+        this.realizar_trazo( this.herramientas.mouse_ant[c-1].x, this.herramientas.mouse_ant[c-1].y, 
+                              this.herramientas.mouse_ant[c].x, this.herramientas.mouse_ant[c].y, this.herramientas.ancho_trazo );
+      }
+    }
+    this.herramientas.mouse_ant = [];
   }
 
   recorte(){
@@ -128,18 +136,51 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   }
 
   mouse_move(e){
-    let radius = this.herramientas.ancho_trazo;
-    this.herramientas.mouseX = e.clientX - radius + this.canvasCont.scrollLeft;
-    this.herramientas.mouseY = e.clientY - this.canvasCont.offsetTop +radius + this.canvasCont.scrollTop;
-    if (this.herramientas.mouse_down && this.herramientas.herramienta_seleccionada == 'pincel'){
-      this.context.beginPath();
-      this.context.moveTo(this.herramientas.mouseX,this.herramientas.mouseY);
-      this.context.arc(this.herramientas.mouseX,this.herramientas.mouseY,radius,0,(Math.PI/180)*360,true);
-      this.context.fillStyle = this.herramientas.color;
-      this.context.fill();
-    } else if (this.herramientas.mouse_down && this.herramientas.herramienta_seleccionada == 'recorte'){
+    
+    if (this.herramientas.mouse_down){
+
+      if (this.herramientas.herramienta_seleccionada == 'pincel'){
+        let radius = this.herramientas.ancho_trazo;
+        //se obtine la posicion del mouse con respecto al canvas
+        let pos:any = {x:e.clientX - radius - 5 + this.canvasCont.scrollLeft, y:e.clientY - this.canvasCont.offsetTop -radius/2 + this.canvasCont.scrollTop };
+        this.herramientas.mouse_ant.push( pos );
+        this.realizar_punto(pos.x, pos.y, radius);   
+        for (let c=1; c < this.herramientas.mouse_ant.length; c++){
+          this.realizar_trazo( this.herramientas.mouse_ant[c-1].x, this.herramientas.mouse_ant[c-1].y, 
+                                this.herramientas.mouse_ant[c].x, this.herramientas.mouse_ant[c].y, this.herramientas.ancho_trazo );
+        }     
+      } else 
+      if (this.herramientas.herramienta_seleccionada == 'recorte'){
+  
+      }
 
     }
+    
+  }
+
+  realizar_trazo(x1, y1, x2, y2, radius){
+    let limit = 500;
+    x1 = Math.round(x1);
+    x2 = Math.round(x2);
+    y1 = Math.round(y1);
+    y2 = Math.round(y2);
+    while ( !(x1 == x2 && y1 == y2) && limit > 0 ){
+
+      this.realizar_punto(x1,y1,radius);
+
+      if (x1 < x2) { x1 ++; } else if(x1 != x2) { x1 --; }
+      if (y1 < y2) { y1 ++; } else if(y1 != y2) { y1 --; }
+
+      limit --;
+    }
+  }
+
+  realizar_punto(x1, y1, radius){
+      this.context.beginPath();
+      this.context.moveTo(x1,y1);
+      this.context.arc(x1,y1,radius,0,(Math.PI/180)*360,true);
+      this.context.fillStyle = this.herramientas.color;
+      this.context.fill();
   }
 
   reset(){
