@@ -77,6 +77,8 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
             me.areaEdicion.width = Math.floor(nAncho);
             me.areaEdicion.height = Math.floor(nAlto);
             me.context.drawImage(me.canvas_img, 0, 0, Math.floor(nAncho), Math.floor(nAlto));
+
+            me.resize_canvas( me.context , me.herramientas.zoom);
         };
         this.canvas_img.src = this.imagen.file;
   }
@@ -104,7 +106,6 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
         loading.dismiss();
       }
     );
-    console.log();
   }
 
   mouse_down(){
@@ -115,10 +116,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   mouse_up(){
     this.herramientas.mouse_down = false;
     if (this.herramientas.herramienta_seleccionada == 'pincel'){
-      for (let c=1; c < this.herramientas.mouse_ant.length; c++){
-        this.realizar_trazo( this.herramientas.mouse_ant[c-1].x, this.herramientas.mouse_ant[c-1].y, 
-                              this.herramientas.mouse_ant[c].x, this.herramientas.mouse_ant[c].y, this.herramientas.ancho_trazo );
-      }
+      this.dibujar_ruta();
     }
     this.herramientas.mouse_ant = [];
   }
@@ -135,20 +133,27 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     this.herramientas.recorte_btn_color = 'medium';
   }
 
+  getMouseX(e){
+    let zoom_porcent:number = this.herramientas.zoom / 100;
+    return (e.clientX - this.herramientas.ancho_trazo - 5 + this.canvasCont.scrollLeft) / zoom_porcent;
+  }
+
+  getMouseY(e){
+    let zoom_porcent:number = this.herramientas.zoom / 100;
+    return (e.clientY - this.canvasCont.offsetTop -this.herramientas.ancho_trazo/2 + this.canvasCont.scrollTop) / zoom_porcent;
+  }
+
   mouse_move(e){
     
     if (this.herramientas.mouse_down){
 
       if (this.herramientas.herramienta_seleccionada == 'pincel'){
-        let radius = this.herramientas.ancho_trazo;
         //se obtine la posicion del mouse con respecto al canvas
-        let pos:any = {x:e.clientX - radius - 5 + this.canvasCont.scrollLeft, y:e.clientY - this.canvasCont.offsetTop -radius/2 + this.canvasCont.scrollTop };
+        let pos:any = {x:this.getMouseX(e), y: this.getMouseY(e) };
         this.herramientas.mouse_ant.push( pos );
-        this.realizar_punto(pos.x, pos.y, radius);   
-        for (let c=1; c < this.herramientas.mouse_ant.length; c++){
-          this.realizar_trazo( this.herramientas.mouse_ant[c-1].x, this.herramientas.mouse_ant[c-1].y, 
-                                this.herramientas.mouse_ant[c].x, this.herramientas.mouse_ant[c].y, this.herramientas.ancho_trazo );
-        }     
+        this.realizar_punto(pos.x, pos.y, this.herramientas.ancho_trazo);   
+        
+        this.dibujar_ruta();
       } else 
       if (this.herramientas.herramienta_seleccionada == 'recorte'){
   
@@ -156,6 +161,13 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
     }
     
+  }
+
+  dibujar_ruta(){
+    for (let c=1; c < this.herramientas.mouse_ant.length; c++){
+      this.realizar_trazo( this.herramientas.mouse_ant[c-1].x, this.herramientas.mouse_ant[c-1].y, 
+                            this.herramientas.mouse_ant[c].x, this.herramientas.mouse_ant[c].y, this.herramientas.ancho_trazo );
+    }
   }
 
   realizar_trazo(x1, y1, x2, y2, radius){
@@ -181,6 +193,33 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
       this.context.arc(x1,y1,radius,0,(Math.PI/180)*360,true);
       this.context.fillStyle = this.herramientas.color;
       this.context.fill();
+  }
+
+  cambiar_zoom(){
+    if (this.herramientas.zoom < 100){
+      this.herramientas.zoom = 100;
+    } else if (this.herramientas.zoom > 500) {
+      this.herramientas.zoom = 500;
+    }
+    
+    this.resize_canvas( this.context , this.herramientas.zoom);
+  }
+
+  resize_canvas( canvas:any, zoom:number){
+    //se obtiene el tamaño actual del elemento
+    let ancho = canvas.canvas.width;
+    let alto  = canvas.canvas.height;
+    //se redimensiona el control canvas
+    canvas.canvas.style.width  = ancho * (zoom / 100) + 'px';
+    canvas.canvas.style.height = alto * (zoom / 100) + 'px';
+  }
+  
+  cambiar_ancho_trazo(){
+    if (this.herramientas.ancho_trazo < 1){
+      this.herramientas.ancho_trazo = 1;
+    } else if (this.herramientas.ancho_trazo > 10) {
+      this.herramientas.ancho_trazo = 10;
+    }
   }
 
   reset(){
