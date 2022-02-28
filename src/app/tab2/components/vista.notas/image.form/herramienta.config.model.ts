@@ -10,6 +10,9 @@ export class HerramientaConfig {
    public pincel_btn_color:string = 'primary';
    public ancho_trazo:number = 5;
    public recorte_btn_color:string = 'medium';
+   public mover_btn_color:string = 'medium';
 
    public zoom:number = 100;
+
+   public cursor:string = "url('./assets/img/pencil.png'), default";
 }

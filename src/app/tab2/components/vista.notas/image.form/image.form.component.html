@@ -4,6 +4,7 @@
     <ion-col>
       <ion-row class="toolbox-cont">
         <ion-col size="auto" class="p0"><ion-button (click)="goBack()" color="medium" fill="outline"><ion-icon name="arrow-back"></ion-icon></ion-button></ion-col>
+        <ion-col size="auto" class="p0"><ion-button (click)="mover()" color="{{herramientas.mover_btn_color}}" fill="outline"><ion-icon name="move"></ion-icon></ion-button></ion-col>
         <ion-col size="auto" class="p0"><ion-button (click)="recorte()" color="{{herramientas.recorte_btn_color}}" fill="outline"><ion-icon name="crop"></ion-icon></ion-button></ion-col>
         <ion-col size="auto" class="p0"><ion-button (click)="pincel()" color="{{herramientas.pincel_btn_color}}" fill="outline"><ion-icon name="pencil-outline"></ion-icon></ion-button></ion-col>
         <ion-col size="auto" class="p0 item-valign-center"><input [(colorPicker)]="herramientas.color" style="width:7rem;" [style.background]="herramientas.color"/></ion-col>
@@ -21,7 +22,7 @@
     </ion-col>
 
     <!--AREA DE EDICION-->
-    <ion-col size="12" class="image-cont" id="canvasCont">
+    <ion-col size="12" class="image-cont" id="canvasCont" style="cursor: {{herramientas.cursor}};">
       <canvas  (mousedown)="mouse_down()"  (mousemove)="mouse_move($event)" (mouseup)="mouse_up()" id="areaEdicion" #areaEdicion></canvas>
     </ion-col>
   </ion-row>

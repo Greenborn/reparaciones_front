@@ -123,14 +123,26 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
   recorte(){
     this,this.herramientas.herramienta_seleccionada = 'recorte';
-    this.herramientas.pincel_btn_color = 'medium';
+    this.herramientas.pincel_btn_color  = 'medium';
     this.herramientas.recorte_btn_color = 'primary';
+    this.herramientas.mover_btn_color   = 'medium';
+    this.herramientas.cursor            = "crosshair";
   }
 
   pincel(){
     this.herramientas.herramienta_seleccionada = 'pincel';
-    this.herramientas.pincel_btn_color = 'primary';
+    this.herramientas.pincel_btn_color  = 'primary';
     this.herramientas.recorte_btn_color = 'medium';
+    this.herramientas.mover_btn_color   = 'medium';
+    this.herramientas.cursor            = "url('./assets/img/pencil.png'), default";
+  }
+
+  mover(){
+    this.herramientas.herramienta_seleccionada = 'mover';
+    this.herramientas.mover_btn_color   = 'primary';
+    this.herramientas.recorte_btn_color = 'medium';
+    this.herramientas.pincel_btn_color  = 'medium';
+    this.herramientas.cursor            = "move";
   }
 
   getMouseX(e){
@@ -146,21 +158,41 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   mouse_move(e){
     
     if (this.herramientas.mouse_down){
+      let pos:any = {x:this.getMouseX(e), y: this.getMouseY(e) }; //se obtine la posicion del mouse con respecto al canvas
 
-      if (this.herramientas.herramienta_seleccionada == 'pincel'){
-        //se obtine la posicion del mouse con respecto al canvas
-        let pos:any = {x:this.getMouseX(e), y: this.getMouseY(e) };
-        this.herramientas.mouse_ant.push( pos );
-        this.realizar_punto(pos.x, pos.y, this.herramientas.ancho_trazo);   
-        
-        this.dibujar_ruta();
-      } else 
-      if (this.herramientas.herramienta_seleccionada == 'recorte'){
-  
-      }
+      switch (this.herramientas.herramienta_seleccionada){
+        case 'pincel':
+          this.herramientas.mouse_ant.push( pos );
+          this.realizar_punto(pos.x, pos.y, this.herramientas.ancho_trazo);   
+          
+          this.dibujar_ruta();
+        break;
+
+        case 'recorte':
+        break;
+
+        case 'mover':
+          this.herramientas.mouse_ant.push( pos );
+          this.desplazar_en_lienzo();
+        break;
+      } 
 
     }
     
+  }
+
+  desplazar_en_lienzo(){
+    for (let c=1; c < this.herramientas.mouse_ant.length; c++){
+      let diffX = this.herramientas.mouse_ant[c-1].x - this.herramientas.mouse_ant[c].x;
+      let diffY = this.herramientas.mouse_ant[c-1].y - this.herramientas.mouse_ant[c].y;
+
+      this.desplazar_lienzo(diffX, diffY);
+    }
+  }
+
+  desplazar_lienzo(diffX, diffY){
+    this.canvasCont.scrollTop  += diffY;
+    this.canvasCont.scrollLeft += diffX;
   }
 
   dibujar_ruta(){
