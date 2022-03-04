@@ -13,6 +13,10 @@ export class HerramientaConfig {
    public mover_btn_color:string = 'medium';
 
    public zoom:number = 100;
+   public min_zoom:number = 20;
+   public max_zoom:number = 500;
 
    public cursor:string = "url('./assets/img/pencil.png'), default";
+
+   public seleccion_recorte:any = { x1:-1, y1:-1, x2:-1, y2:-1, scs: 10, ancho_trazo: 2 };
 }

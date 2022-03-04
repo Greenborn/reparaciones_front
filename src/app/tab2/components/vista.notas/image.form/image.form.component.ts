@@ -127,6 +127,9 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     this.herramientas.recorte_btn_color = 'primary';
     this.herramientas.mover_btn_color   = 'medium';
     this.herramientas.cursor            = "crosshair";
+
+    //se dibuja la selección
+    this.dibujar_seleccion(this.context, this.herramientas);
   }
 
   pincel(){
@@ -169,6 +172,13 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
         break;
 
         case 'recorte':
+          if (pos.x > this.herramientas.seleccion_recorte.x1 && pos.x < (this.herramientas.seleccion_recorte.x1 + this.herramientas.seleccion_recorte.scs)
+              && pos.y > this.herramientas.seleccion_recorte.y1 && pos.y < (this.herramientas.seleccion_recorte.y1 + this.herramientas.seleccion_recorte.scs)) 
+            {
+              this.herramientas.seleccion_recorte.x1 = pos.x;
+              this.herramientas.seleccion_recorte.y1 = pos.y;
+              this.dibujar_seleccion(this.context, this.herramientas);
+            }
         break;
 
         case 'mover':
@@ -179,6 +189,47 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
     }
     
+  }
+
+  dibujar_seleccion(contexto, herramienta_config){
+    let ancho = contexto.canvas.width;
+    let alto  = contexto.canvas.height;
+    let hc = herramienta_config.seleccion_recorte;
+
+    if (herramienta_config.seleccion_recorte.x1 == -1){
+      hc.x1 = 1;
+      hc.y1 = 1;
+      hc.x2 = ancho;
+      hc.y2 = alto;
+    }
+
+    //se dibujan los cuadrados del extremo de la selección
+    this.dibuja_cuadrado_seleccion(contexto, hc.x1, hc.y1, hc.scs, hc.scs);
+    this.dibuja_cuadrado_seleccion(contexto, hc.x2-hc.scs, hc.y2-hc.scs, hc.scs, hc.scs);
+    this.dibuja_cuadrado_seleccion(contexto, hc.x1, hc.y2-hc.scs, hc.scs, hc.scs);
+    this.dibuja_cuadrado_seleccion(contexto, hc.x2-hc.scs, hc.y1, hc.scs, hc.scs);
+    
+    //se dibujan las lineas que bordean la selección
+    this.dibuja_cuadrado_seleccion(contexto, hc.scs, hc.ancho_trazo,       hc.ancho_trazo, ancho);
+    this.dibuja_cuadrado_seleccion(contexto, hc.scs, alto-hc.ancho_trazo,  hc.ancho_trazo, ancho);
+    this.dibuja_cuadrado_seleccion(contexto, hc.ancho_trazo, hc.scs,       alto, hc.ancho_trazo);
+    this.dibuja_cuadrado_seleccion(contexto, ancho-hc.ancho_trazo, hc.scs, alto, hc.ancho_trazo);
+    
+  }
+
+  dibuja_cuadrado_seleccion(contexto,x,y,alto, ancho){
+    let vx = x + ancho;
+    let vy = y + alto;
+    for (let px = x; px <= vx; px++){
+      for (let py = y; py <= vy; py ++){
+        let pixel          = contexto.getImageData(px,py,1,1).data;
+        let color:string   = 'rgba(' + String(255 - pixel[0]) + ',' + String(255 - pixel[1]) + ',' + String(255 - pixel[2]) + ',1)'; 
+        console.log(color);
+        console.log(px,py);
+        contexto.fillStyle = color;
+        contexto.fillRect(px, py, 1, 1);
+      }
+    }
   }
 
   desplazar_en_lienzo(){
@@ -228,10 +279,10 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   }
 
   cambiar_zoom(){
-    if (this.herramientas.zoom < 100){
-      this.herramientas.zoom = 100;
-    } else if (this.herramientas.zoom > 500) {
-      this.herramientas.zoom = 500;
+    if (this.herramientas.zoom < this.herramientas.min_zoom){
+      this.herramientas.zoom = this.herramientas.min_zoom;
+    } else if (this.herramientas.zoom > this.herramientas.max_zoom) {
+      this.herramientas.zoom = this.herramientas.max_zoom;
     }
     
     this.resize_canvas( this.context , this.herramientas.zoom);
