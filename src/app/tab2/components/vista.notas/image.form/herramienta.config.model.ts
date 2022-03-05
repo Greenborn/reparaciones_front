@@ -1,5 +1,5 @@
 export class HerramientaConfig {
-   public color:any = '#F00';
+   public color:any = '#FF0000';
 
    public mouse_down:boolean = false;
    public mouseX:number = 0;

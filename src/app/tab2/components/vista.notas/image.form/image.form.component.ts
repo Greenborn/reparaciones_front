@@ -32,6 +32,19 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   public model = new Imagen();
   public canvas_img:any;
 
+  private imageDataEdit:any;
+  private imageDataBuf:any;
+  private imageDataBuf8:any;
+  private imageData:any;
+  private imagePixelCount:number;
+  private imageWidth:number;
+
+  private imagenCargada:boolean = false;
+  private cargaImgBuffer:boolean = true;
+  private imagenActualizar:boolean = false;
+  private intevaloActualizacion:number = 1000/30;
+  private intervalo:any = null;
+
   public herramientas:any = new HerramientaConfig();
 
   public areaEdicion:any;
@@ -43,6 +56,11 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     this.canvasCont  = document.getElementById('canvasCont');
     this.context     = this.areaEdicion.getContext('2d');
 
+    if (this.intervalo !== null){
+      clearInterval(this.intervalo);
+    }
+    this.intervalo = setInterval( ()=>{ this.updateCanvas() }, this.intevaloActualizacion );
+
     if (this.getAllSubj.length == 0){
       this.getAllSubj.push(this.privateImageService.base64ConvertCallBack.subscribe({ next:(p) => {
         this.imagen = { file: p.base64, name:p.anydata.url, id:p.anydata.id, url:p.anydata.url, id_nota:p.anydata.id_nota };
@@ -52,7 +70,27 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     }
   }
 
+  updateCanvas(){
+    if (this.imagenCargada){
+        if (this.cargaImgBuffer){
+          this.cargaImgBuffer = false;
+          //se pega la imagen original de fondo (deberia hacerse una sola vez luego de la carga de la imagen)
+          for ( let c=0; c < this.imagePixelCount; c++ ){
+            this.imageData[c]=(255 << 24)      | // alpha
+                            (this.imageDataEdit.data[c*4 -2] << 16) | // blue
+                            (this.imageDataEdit.data[c*4 -3] <<  8) | // green
+                             this.imageDataEdit.data[c*4   ];
+          }
+        }
+        this.imageDataEdit.data.set( this.imageDataBuf8 )
+        this.context.putImageData( this.imageDataEdit, 0, 0);
+        this.imagenActualizar = false;
+    }
+  }
+
   loadImageinCanvas(){
+    this.imagenCargada = false;
+
     this.canvas_img = new Image();
         let me = this;
         this.canvas_img.onload = function() {
@@ -79,6 +117,18 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
             me.context.drawImage(me.canvas_img, 0, 0, Math.floor(nAncho), Math.floor(nAlto));
 
             me.resize_canvas( me.context , me.herramientas.zoom);
+            
+            me.imageDataEdit   = me.context.getImageData(0, 0, anchoimg, altoimg);
+            me.imageDataBuf    = new ArrayBuffer( me.imageDataEdit.data.length );
+            me.imageDataBuf8   = new Uint8ClampedArray( me.imageDataBuf );
+            me.imageData       = new Uint32Array( me.imageDataBuf );
+            me.imagePixelCount = anchoimg * altoimg;
+            me.imageWidth      = anchoimg;
+            
+            me.cargaImgBuffer  = true;
+
+            me.imagenCargada = true;
+
         };
         this.canvas_img.src = this.imagen.file;
   }
@@ -115,12 +165,10 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
   mouse_up(){
     this.herramientas.mouse_down = false;
-    if (this.herramientas.herramienta_seleccionada == 'pincel'){
-      this.dibujar_ruta();
-    }
     this.herramientas.mouse_ant = [];
   }
 
+  private imageDataPreRecorte:any;
   recorte(){
     this,this.herramientas.herramienta_seleccionada = 'recorte';
     this.herramientas.pincel_btn_color  = 'medium';
@@ -129,6 +177,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     this.herramientas.cursor            = "crosshair";
 
     //se dibuja la selección
+    this.imageDataPreRecorte = this.imageData;
     this.dibujar_seleccion(this.context, this.herramientas);
   }
 
@@ -146,6 +195,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     this.herramientas.recorte_btn_color = 'medium';
     this.herramientas.pincel_btn_color  = 'medium';
     this.herramientas.cursor            = "move";
+    this.updateCanvas();
   }
 
   getMouseX(e){
@@ -162,12 +212,10 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     
     if (this.herramientas.mouse_down){
       let pos:any = {x:this.getMouseX(e), y: this.getMouseY(e) }; //se obtine la posicion del mouse con respecto al canvas
-
+      this.imagenActualizar = true;
       switch (this.herramientas.herramienta_seleccionada){
         case 'pincel':
           this.herramientas.mouse_ant.push( pos );
-          this.realizar_punto(pos.x, pos.y, this.herramientas.ancho_trazo);   
-          
           this.dibujar_ruta();
         break;
 
@@ -215,6 +263,8 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     this.dibuja_cuadrado_seleccion(contexto, hc.ancho_trazo, hc.scs,       alto, hc.ancho_trazo);
     this.dibuja_cuadrado_seleccion(contexto, ancho-hc.ancho_trazo, hc.scs, alto, hc.ancho_trazo);
     
+    //Actualizar
+    this.imagenActualizar = true;
   }
 
   dibuja_cuadrado_seleccion(contexto,x,y,alto, ancho){
@@ -222,12 +272,11 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     let vy = y + alto;
     for (let px = x; px <= vx; px++){
       for (let py = y; py <= vy; py ++){
-        let pixel          = contexto.getImageData(px,py,1,1).data;
-        let color:string   = 'rgba(' + String(255 - pixel[0]) + ',' + String(255 - pixel[1]) + ',' + String(255 - pixel[2]) + ',1)'; 
-        console.log(color);
-        console.log(px,py);
-        contexto.fillStyle = color;
-        contexto.fillRect(px, py, 1, 1);
+        let pixel          = contexto.getImageData(px,py,1,1).data; 
+        this.imageData[px + py] = (255            << 24)      | // alpha
+                                  (255 - pixel[2] << 16) | // blue
+                                  (255 - pixel[1] <<  8) | // green
+                                   255 - pixel[0];   
       }
     }
   }
@@ -251,6 +300,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
       this.realizar_trazo( this.herramientas.mouse_ant[c-1].x, this.herramientas.mouse_ant[c-1].y, 
                             this.herramientas.mouse_ant[c].x, this.herramientas.mouse_ant[c].y, this.herramientas.ancho_trazo );
     }
+    this.imagenActualizar = true;
   }
 
   realizar_trazo(x1, y1, x2, y2, radius){
@@ -271,11 +321,11 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   }
 
   realizar_punto(x1, y1, radius){
-      this.context.beginPath();
-      this.context.moveTo(x1,y1);
-      this.context.arc(x1,y1,radius,0,(Math.PI/180)*360,true);
-      this.context.fillStyle = this.herramientas.color;
-      this.context.fill();
+      let strColor:string = String(this.herramientas.color);
+      this.imageData[(y1 * this.imageWidth) + x1] = (255 << 24)      | // alpha
+                                  (parseInt(strColor[5]+strColor[6], 16) << 16) | // blue
+                                  (parseInt(strColor[3]+strColor[4], 16) <<  8) | // green
+                                   parseInt(strColor[1]+strColor[2], 16); 
   }
 
   cambiar_zoom(){
