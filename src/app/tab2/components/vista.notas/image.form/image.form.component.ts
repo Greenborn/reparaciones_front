@@ -74,9 +74,8 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     );
   }
 
-  mouse_down(){
+  mouse_down(e){
     this.herramientas.mouse_down = true;
-    this.herramientas.mouse_ant = [];
   }
 
   mouse_up(){
@@ -148,7 +147,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
       switch (this.herramientas.herramienta_seleccionada){
         case 'pincel':
           this.herramientas.mouse_ant.push( pos );
-          this.lienzo.dibujar_ruta();
+          //this.lienzo.trazo_lapiz(pos.x, pos.y);
         break;
 
         case 'recorte':

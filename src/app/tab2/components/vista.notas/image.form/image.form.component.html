@@ -25,7 +25,7 @@
 
     <!--AREA DE EDICION-->
     <ion-col size="12" class="image-cont" id="canvasCont" style="cursor: {{herramientas.cursor}};">
-      <canvas  (mousedown)="mouse_down()"  (mousemove)="mouse_move($event)" (mouseup)="mouse_up()" id="areaEdicion" #areaEdicion></canvas>
+      <canvas  (mousedown)="mouse_down($event)"  (mousemove)="mouse_move($event)" (mouseup)="mouse_up()" id="areaEdicion" #areaEdicion></canvas>
     </ion-col>
   </ion-row>
 </ion-grid>

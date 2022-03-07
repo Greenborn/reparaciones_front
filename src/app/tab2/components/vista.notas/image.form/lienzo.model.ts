@@ -1,5 +1,7 @@
 import { HerramientaConfig } from "./herramienta.config.model";
 
+const COLA_PIXEL_LIMIT = 5000;
+
 export class LienzoModel {
     public mouseX:number = 0;
     public mouseY:number = 0;
@@ -22,7 +24,6 @@ export class LienzoModel {
     public imageHeigth:number;
 
     public imagenCargada:boolean = false;
-    public cargaImgBuffer:boolean = true;
     public imagenActualizar:boolean = false;
 
     constructor(params){
@@ -36,25 +37,96 @@ export class LienzoModel {
         this.intervaloActualizacion = setInterval( ()=>{ this.updateCanvas() }, this.intevaloActualizacionMs );
     }
 
+    public mousePosCnt:number = 1;
+
+    //Se usan estos arreglos y así separados por cuestiones de rendimiento
+    //ya que se van a hacer millones de iteraciones
+    // igual habria que ver como el llamado a funciones afecta en el rendimiento
+    // pero por ahora el tiempo es acotado, cosa para ver mas tarde
+    public colaPixelesR:any = new Uint8Array(COLA_PIXEL_LIMIT);
+    public colaPixelesG:any = new Uint8Array(COLA_PIXEL_LIMIT);
+    public colaPixelesB:any = new Uint8Array(COLA_PIXEL_LIMIT);
+    public colaPixelesX:any = new Uint32Array(COLA_PIXEL_LIMIT);
+    public colaPixelesY:any = new Uint32Array(COLA_PIXEL_LIMIT);
+    public colaPixelesP:any = new Uint32Array(COLA_PIXEL_LIMIT);
+
     updateCanvas(){
-        if (this.imagenCargada){
-            if (this.cargaImgBuffer){
-              this.cargaImgBuffer = false;
-              //se pega la imagen original de fondo (deberia hacerse una sola vez luego de la carga de la imagen)
-              for ( let c=0; c < this.imagePixelCount; c++ ){
-                this.imageData[c]=(255 << 24)      | // alpha
-                                (this.imageDataEdit.data[c*4 -2] << 16) | // blue
-                                (this.imageDataEdit.data[c*4 -3] <<  8) | // green
-                                 this.imageDataEdit.data[c*4   ];
-              }
-            }
+        //si la imagen no esta cargada, salimos
+        if (!this.imagenCargada){
+            return false;
+        }
+
+        //si no hay que hacer actualizacion salimos
+        if (!this.imagenActualizar){
+            return false;
+        }
+        this.imagenActualizar = false;
+
+        //si se tiene seleccionado el lapiz, se completa el trazo agregando los pixeles a la cola
+        if (this.herramientas.herramienta_seleccionada == 'pincel'){
+            let mposL = this.herramientas.mouse_ant.length;
+            if (mposL > 1){
+                for (let c=1; c < mposL; c++){
+                    let x1 = Math.round(this.herramientas.mouse_ant[c-1].x);
+                    let y1 = Math.round(this.herramientas.mouse_ant[c-1].y);
+                            
+                    let x2 = Math.round(this.herramientas.mouse_ant[c].x);
+                    let y2 = Math.round(this.herramientas.mouse_ant[c].y);
     
-            if (this.herramientas.herramienta_seleccionada == 'recorte'){
-              this.dibujar_seleccion();
+                    let seguro = 1000;
+                    while ( !(x1 == x2 && y1 == y2) && seguro > 0 ){
+                        if (x1 < x2) { x1 ++; } else if (x1 > x2 ) { x1 --; }
+                        if (y1 < y2) { y1 ++; } else if (y1 > y2 ) { y1 --; }
+                                
+                        this.trazo_lapiz(x1,y1);
+                        seguro --;
+                    }
+                }
+                let aux = this.herramientas.mouse_ant[mposL-1];
+                this.herramientas.mouse_ant = [];
+                this.herramientas.mouse_ant.push(aux);
             }
-            this.imageDataEdit.data.set( this.imageDataBuf8 )
-            this.context.putImageData( this.imageDataEdit, 0, 0);
-            this.imagenActualizar = false;
+            
+        }
+
+        //se recorre la cola de pixeles
+        for (let c = 0; c < COLA_PIXEL_LIMIT; c++){
+            if (this.colaPixelesX[c] < 0 || this.colaPixelesY[c] < 0 || 
+                this.colaPixelesX[c] > this.imageWidth || this.colaPixelesY[c] > this.imageHeigth){
+                continue;
+            }
+
+            if (this.colaPixelesP[c] == 0){
+                break;
+            }
+            
+            this.imageData[(this.colaPixelesY[c] * this.imageWidth) + this.colaPixelesX[c]] = (255 << 24)      | // alpha
+                                    (this.colaPixelesB[c] << 16) | // blue
+                                    (this.colaPixelesG[c] <<  8) | // green
+                                     this.colaPixelesR[c];
+        }
+
+        //se vacia la cola de pixeles
+        this.colaPixelesR = new Uint8Array(COLA_PIXEL_LIMIT);
+        this.colaPixelesG = new Uint8Array(COLA_PIXEL_LIMIT);
+        this.colaPixelesB = new Uint8Array(COLA_PIXEL_LIMIT);
+        this.colaPixelesX = new Uint32Array(COLA_PIXEL_LIMIT);
+        this.colaPixelesY = new Uint32Array(COLA_PIXEL_LIMIT); 
+        this.colaPixelesP = new Uint32Array(COLA_PIXEL_LIMIT); 
+        this.ci = 0;
+        
+        //se pega la imagen en el canvas
+        this.imageDataEdit.data.set( this.imageDataBuf8 )
+        this.context.putImageData( this.imageDataEdit, 0, 0);
+    }
+
+    pegarImagenFondo(){
+        //se pega la imagen original de fondo (deberia hacerse una sola vez luego de la carga de la imagen)
+        for ( let c=0; c < this.imagePixelCount; c++ ){
+              this.imageData[c]=(255 << 24)      | // alpha
+                              (this.imageDataEdit.data[c*4 -2] << 16) | // blue
+                              (this.imageDataEdit.data[c*4 -3] <<  8) | // green
+                               this.imageDataEdit.data[c*4   ];
         }
     }
 
@@ -94,9 +166,8 @@ export class LienzoModel {
             me.imagePixelCount = anchoimg * altoimg;
             me.imageWidth      = anchoimg;
             me.imageHeigth     = altoimg;
-            
-            me.cargaImgBuffer  = true;
 
+            me.pegarImagenFondo();
             me.imagenCargada = true;
         }
 
@@ -167,56 +238,39 @@ export class LienzoModel {
             
           }
         }
-        this.realizar_punto(x,y,10,{r:255,g:0,b:0});
+        this.realizar_punto(x,y,10, 255, 0, 0);
       }
 
-      realizar_punto(x1, y1, radius, color){
+    private ci:number = 0;
+    realizar_punto(x1, y1, radius, R, G, B){
         for ( let cx=0; cx <= radius; cx++){
           for ( let cy=0; cy <= radius; cy++){
-              let px = x1 + cx;
-              let py = y1 + cy;
+            let px = x1 + cx;
+            let py = y1 + cy;
+
+            if (this.ci>COLA_PIXEL_LIMIT){
+                break;
+            }
   
-              if ( !(px < 0 || py < 0 || px > this.imageWidth || py > this.imageHeigth) ){
-                this.imageData[(py * this.imageWidth) + px] = (255 << 24)      | // alpha
-                                    (color.b << 16) | // blue
-                                    (color.g <<  8) | // green
-                                     color.r;
-              }
-  
+            this.colaPixelesR[this.ci] = R;
+            this.colaPixelesG[this.ci] = G;
+            this.colaPixelesB[this.ci] = B;
+            this.colaPixelesX[this.ci] = px;
+            this.colaPixelesY[this.ci] = py; 
+            this.colaPixelesP[this.ci] = 1; 
+            this.ci++;  
           }
         }     
     }
 
-    realizar_trazo(x1, y1, x2, y2, radius){
-        let limit = 500;
-        x1 = Math.round(x1);
-        x2 = Math.round(x2);
-        y1 = Math.round(y1);
-        y2 = Math.round(y2);
-    
+    trazo_lapiz(x1:number, y1:number){
+        let radius          = this.herramientas.ancho_trazo;
         let strColor:string = String(this.herramientas.color);
-        let color = { 
-          r: parseInt(strColor[1]+strColor[2], 16), 
-          g: parseInt(strColor[3]+strColor[4], 16),
-          b: parseInt(strColor[5]+strColor[6], 16)
-        };
-    
-        while ( !(x1 == x2 && y1 == y2) && limit > 0 ){
-    
-          this.realizar_punto(x1,y1,radius, color);
-    
-          if (x1 < x2) { x1 ++; } else if(x1 != x2) { x1 --; }
-          if (y1 < y2) { y1 ++; } else if(y1 != y2) { y1 --; }
-    
-          limit --;
-        }
-      }
+        let R:number        = parseInt(strColor[1]+strColor[2], 16); 
+        let G:number        = parseInt(strColor[3]+strColor[4], 16);
+        let B:number        = parseInt(strColor[5]+strColor[6], 16);
+        
+        this.realizar_punto(x1, y1, radius, R, G, B);  
+    }
 
-    dibujar_ruta(){
-        for (let c=1; c < this.herramientas.mouse_ant.length; c++){
-          this.realizar_trazo( this.herramientas.mouse_ant[c-1].x, this.herramientas.mouse_ant[c-1].y, 
-                                this.herramientas.mouse_ant[c].x, this.herramientas.mouse_ant[c].y, this.herramientas.ancho_trazo );
-        }
-        this.imagenActualizar = true;
-      }
 }
