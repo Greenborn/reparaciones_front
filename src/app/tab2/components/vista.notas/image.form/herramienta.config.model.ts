@@ -18,5 +18,5 @@ export class HerramientaConfig {
 
    public cursor:string = "url('./assets/img/pencil.png'), default";
 
-   public seleccion_recorte:any = { x1:-1, y1:-1, x2:-1, y2:-1, scs: 10, ancho_trazo: 2 };
+   public seleccion_recorte:any = { x1:-1, y1:-1, x2:-1, y2:-1, scs: 20, ancho_trazo: 2 };
 }

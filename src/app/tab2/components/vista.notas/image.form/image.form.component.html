@@ -12,7 +12,9 @@
           <input type="number" [(ngModel)]="herramientas.ancho_trazo" min="0" max="10" style="width:6rem;" (change)="cambiar_ancho_trazo()" />
         </ion-col>
         <ion-col size="auto" class="p0 item-valign-center">
-          <input type="number" [(ngModel)]="herramientas.zoom" min="{{herramientas.min_zoom}}" max="{{herramientas.max_zoom}}" style="width:6rem;" step="10" (change)="cambiar_zoom()"/>
+          <input type="number" [(ngModel)]="herramientas.zoom" 
+                 min="{{herramientas.min_zoom}}" max="{{herramientas.max_zoom}}" style="width:6rem;" step="10" 
+                 (change)="lienzo.cambiar_zoom()"/>
         </ion-col>
         <ion-col size="auto" class="p0"><ion-button (click)="reset()" color="medium" fill="outline"><ion-icon name="return-up-back-outline"></ion-icon></ion-button></ion-col>
         <ion-col size="auto" class="p0"><ion-button (click)="ingresar()" color="success" fill="outline"><ion-icon name="save"></ion-icon></ion-button></ion-col>
