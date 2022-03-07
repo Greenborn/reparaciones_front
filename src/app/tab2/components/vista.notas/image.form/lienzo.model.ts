@@ -94,14 +94,22 @@ export class LienzoModel {
                 continue;
             }
 
-            if (this.colaPixelesP[c] == 0){
+            if (this.colaPixelesP[c] == 0){ // no hay pixel que dibujar
                 break;
             }
             
-            this.imageData[(this.colaPixelesY[c] * this.imageWidth) + this.colaPixelesX[c]] = (255 << 24)      | // alpha
-                                    (this.colaPixelesB[c] << 16) | // blue
-                                    (this.colaPixelesG[c] <<  8) | // green
-                                     this.colaPixelesR[c];
+            if (this.colaPixelesP[c] == 1){ //color normal
+                this.imageData[(this.colaPixelesY[c] * this.imageWidth) + this.colaPixelesX[c]] = (255 << 24)      | // alpha
+                                        (this.colaPixelesB[c] << 16) | // blue
+                                        (this.colaPixelesG[c] <<  8) | // green
+                                        this.colaPixelesR[c];
+            } else if (this.colaPixelesP[c] == 2) { // invertir color
+                let color = this.toColor(this.imageDataPreRecorte[(this.colaPixelesY[c] * this.imageWidth) + this.colaPixelesX[c]]);
+                this.imageData[(this.colaPixelesY[c] * this.imageWidth) + this.colaPixelesX[c]] = (255 << 24)      | // alpha
+                                        (255 - color[0] << 16) | // blue
+                                        (255 - color[1] <<  8) | // green
+                                         255 - color[2];
+            }
         }
 
         //se vacia la cola de pixeles
@@ -189,19 +197,20 @@ export class LienzoModel {
         this.copiaImageData(this.imageData, this.imageDataPreRecorte);
         let hc    = this.herramientas.seleccion_recorte;
 
-        let imgData = this.imageData;
+        let imgData = this.imageDataEdit.data;
         //se dibujan los cuadrados del extremo de la selección
         this.dibuja_cuadrado_seleccion(imgData, hc.x1,        hc.y1,        hc.scs, hc.scs);
         this.dibuja_cuadrado_seleccion(imgData, hc.x2-hc.scs, hc.y2-hc.scs, hc.scs, hc.scs);
         this.dibuja_cuadrado_seleccion(imgData, hc.x1, hc.y2-hc.scs, hc.scs, hc.scs);
         this.dibuja_cuadrado_seleccion(imgData, hc.x2-hc.scs, hc.y1, hc.scs, hc.scs);
         
-        //se dibujan las lineas que bordean la selección
-        this.dibuja_cuadrado_seleccion(this.imageData, hc.scs, hc.ancho_trazo,       hc.ancho_trazo, hc.x2);
-        this.dibuja_cuadrado_seleccion(this.imageData, hc.scs, hc.y2-hc.ancho_trazo,  hc.ancho_trazo, hc.x2);
-        this.dibuja_cuadrado_seleccion(this.imageData, hc.ancho_trazo, hc.scs,       hc.y2, hc.ancho_trazo);
-        this.dibuja_cuadrado_seleccion(this.imageData, hc.x2-hc.ancho_trazo, hc.scs, hc.y2, hc.ancho_trazo);
-        
+        //se dibujan las lineas que bordean la selecciónhc.ancho_trazo
+        this.dibuja_cuadrado_seleccion(this.imageData, hc.x1, hc.y1,                  hc.ancho_trazo, Math.abs(hc.x1-hc.x2));
+        this.dibuja_cuadrado_seleccion(this.imageData, hc.x1, hc.y2 - hc.ancho_trazo, hc.ancho_trazo, Math.abs(hc.x1-hc.x2));
+
+        this.dibuja_cuadrado_seleccion(this.imageData, hc.x1,                  hc.y1, Math.abs(hc.y1-hc.y2), hc.ancho_trazo);
+        this.dibuja_cuadrado_seleccion(this.imageData, hc.x2 - hc.ancho_trazo, hc.y1, Math.abs(hc.y1-hc.y2), hc.ancho_trazo);
+
         //Actualizar
         this.imagenActualizar = true;
       }
@@ -212,17 +221,22 @@ export class LienzoModel {
 
         for (let px = x; px <= vx; px++){
           for (let py = y; py <= vy; py ++){
-            let color = this.toColor(imgData[(py * this.imageWidth) + px]);
-            this.realizarPixel(px,py, 
+            //let color = this.toColor(imgData[(py * this.imageWidth) + px]);
+
+           // (this.imageDataEdit.data[c*4 -2] << 16) | // blue
+            //                  (this.imageDataEdit.data[c*4 -3] <<  8) | // green
+             //                  this.imageDataEdit.data[c*4   ];
+            /*this.realizarPixel(px,py, 
                 255-color[2], 
                 255-color[1], 
-                255-color[0]);
+                255-color[0]);*/
+            this.realizarPixel(px,py, -1, -1, -1);
           }
         }
         
       }
 
-     toColor(num) {
+    toColor(num) {
         num >>>= 0;
         var b = num & 0xFF,
             g = (num & 0xFF00) >>> 8,
@@ -250,7 +264,11 @@ export class LienzoModel {
             this.colaPixelesB[this.ci] = B;
             this.colaPixelesX[this.ci] = px;
             this.colaPixelesY[this.ci] = py; 
-            this.colaPixelesP[this.ci] = 1; 
+
+            if (R == -1 && G == -1 && B == -1){
+                this.colaPixelesP[this.ci] = 2;     //si es 2 se invierte el color
+            } else 
+                this.colaPixelesP[this.ci] = 1;     //color normal
             this.ci++; 
         }
     }
@@ -288,7 +306,35 @@ export class LienzoModel {
             break;
     
             case 'recorte':
-              this.dibujar_seleccion();
+                let dist_m:number = 4;
+                //Se comprueba si el mouse esta en el punto superior izquierdo de la seleccion
+                if ( Math.abs(this.herramientas.mouseX - this.herramientas.seleccion_recorte.x1) <= this.herramientas.seleccion_recorte.scs * dist_m
+                    && Math.abs(this.herramientas.mouseY - this.herramientas.seleccion_recorte.y1) <= this.herramientas.seleccion_recorte.scs * dist_m){
+                        this.herramientas.seleccion_recorte.x1 = this.herramientas.mouseX;
+                        this.herramientas.seleccion_recorte.y1 = this.herramientas.mouseY;
+                    }
+
+                //Se comprueba si el mouse está en la esquina superior derecha
+                if ( Math.abs(this.herramientas.mouseX - this.herramientas.seleccion_recorte.x2) <= this.herramientas.seleccion_recorte.scs * dist_m
+                    && Math.abs(this.herramientas.mouseY - this.herramientas.seleccion_recorte.y1) <= this.herramientas.seleccion_recorte.scs * dist_m){
+                        this.herramientas.seleccion_recorte.x2 = this.herramientas.mouseX;
+                        this.herramientas.seleccion_recorte.y1 = this.herramientas.mouseY;
+                    }
+
+                //Se comprueba si el mouse está en la esquina inferior izquierda
+                if ( Math.abs(this.herramientas.mouseX - this.herramientas.seleccion_recorte.x1) <= this.herramientas.seleccion_recorte.scs * dist_m
+                    && Math.abs(this.herramientas.mouseY - this.herramientas.seleccion_recorte.y2) <= this.herramientas.seleccion_recorte.scs * dist_m){
+                        this.herramientas.seleccion_recorte.x1 = this.herramientas.mouseX;
+                        this.herramientas.seleccion_recorte.y2 = this.herramientas.mouseY;
+                    }
+
+                //Se comprueba si el mouse está en la esquina inferior derecha
+                if ( Math.abs(this.herramientas.mouseX - this.herramientas.seleccion_recorte.x2) <= this.herramientas.seleccion_recorte.scs * dist_m
+                    && Math.abs(this.herramientas.mouseY - this.herramientas.seleccion_recorte.y2) <= this.herramientas.seleccion_recorte.scs * dist_m){
+                        this.herramientas.seleccion_recorte.x2 = this.herramientas.mouseX;
+                        this.herramientas.seleccion_recorte.y2 = this.herramientas.mouseY;
+                    }
+                this.dibujar_seleccion();
             break;
     
             case 'mover':

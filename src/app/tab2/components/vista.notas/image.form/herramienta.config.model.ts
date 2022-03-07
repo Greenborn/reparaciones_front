@@ -24,20 +24,22 @@ export class HerramientaConfig {
    public lienzo:LienzoModel;
 
    recorte(){
-      this.herramienta_seleccionada = 'recorte';
-      this.pincel_btn_color  = 'medium';
-      this.recorte_btn_color = 'primary';
-      this.mover_btn_color   = 'medium';
-      this.cursor            = "crosshair";
-  
-      //se dibuja la selección
-      this.seleccion_recorte.x1 = 1;
-      this.seleccion_recorte.y1 = 1;
-      this.seleccion_recorte.x2 = this.lienzo.imageWidth;
-      this.seleccion_recorte.y2 = this.lienzo.imageHeigth;
-  
-      this.lienzo.copiaImageData(this.lienzo.imageDataPreRecorte, this.lienzo.imageData);
-      this.lienzo.dibujar_seleccion();
+      if (this.herramienta_seleccionada != 'recorte'){
+         this.herramienta_seleccionada = 'recorte';
+         this.pincel_btn_color  = 'medium';
+         this.recorte_btn_color = 'primary';
+         this.mover_btn_color   = 'medium';
+         this.cursor            = "crosshair";
+   
+         //se dibuja la selección
+         this.seleccion_recorte.x1 = 1;
+         this.seleccion_recorte.y1 = 1;
+         this.seleccion_recorte.x2 = this.lienzo.imageWidth;
+         this.seleccion_recorte.y2 = this.lienzo.imageHeigth;
+      
+         this.lienzo.copiaImageData(this.lienzo.imageDataPreRecorte, this.lienzo.imageData);
+         this.lienzo.dibujar_seleccion();
+      }
    }
   
    pincel(){
