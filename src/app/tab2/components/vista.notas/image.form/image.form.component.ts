@@ -32,13 +32,16 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   public imagen:any;
   public model = new Imagen();
 
-  public herramientas:any = new HerramientaConfig();
+  public herramientas:HerramientaConfig;
   public lienzo:LienzoModel;
 
   ngOnInit() {
     
+    this.herramientas = new HerramientaConfig();
     this.lienzo = new LienzoModel(
-      { areaEdicion:'areaEdicion', canvasCont:'canvasCont', herramientas:this.herramientas, fps:30 });
+      { areaEdicion:'areaEdicion', canvasCont:'canvasCont', herramientas:this.herramientas, fps:30 }
+    );
+    this.herramientas.lienzo = this.lienzo;
 
     if (this.getAllSubj.length == 0){
       this.getAllSubj.push(this.privateImageService.base64ConvertCallBack.subscribe({ next:(p) => {
@@ -72,110 +75,6 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
         loading.dismiss();
       }
     );
-  }
-
-  mouse_down(e){
-    this.herramientas.mouse_down = true;
-  }
-
-  mouse_up(){
-    this.herramientas.mouse_down = false;
-    this.herramientas.mouse_ant = [];
-  }
-
-  
-  recorte(){
-    this.herramientas.herramienta_seleccionada = 'recorte';
-    this.herramientas.pincel_btn_color  = 'medium';
-    this.herramientas.recorte_btn_color = 'primary';
-    this.herramientas.mover_btn_color   = 'medium';
-    this.herramientas.cursor            = "crosshair";
-
-    //se dibuja la selección
-    this.herramientas.x1 = 1;
-    this.herramientas.y1 = 1;
-    this.herramientas.x2 = this.lienzo.imageWidth;
-    this.herramientas.y2 = this.lienzo.imageHeigth;
-
-    this.lienzo.copiaImageData(this.lienzo.imageDataPreRecorte, this.lienzo.imageData);
-  }
-
-  
-
-  pincel(){
-    if (this.lienzo.imageDataPreRecorte.length != 0){
-      this.lienzo.copiaImageData(this.lienzo.imageData, this.lienzo.imageDataPreRecorte);
-      this.lienzo.imagenActualizar = true;
-    }
-
-    this.herramientas.herramienta_seleccionada = 'pincel';
-    this.herramientas.pincel_btn_color  = 'primary';
-    this.herramientas.recorte_btn_color = 'medium';
-    this.herramientas.mover_btn_color   = 'medium';
-    this.herramientas.cursor            = "url('./assets/img/pencil.png'), default";
-  }
-
-  mover(){
-    if (this.lienzo.imageDataPreRecorte.length != 0){
-      this.lienzo.copiaImageData(this.lienzo.imageData, this.lienzo.imageDataPreRecorte);
-      this.lienzo.imagenActualizar = true;
-    }
-
-    this.herramientas.herramienta_seleccionada = 'mover';
-    this.herramientas.mover_btn_color   = 'primary';
-    this.herramientas.recorte_btn_color = 'medium';
-    this.herramientas.pincel_btn_color  = 'medium';
-    this.herramientas.cursor            = "move";  }
-
-  getMouseX(e){
-    let zoom_porcent:number = this.herramientas.zoom / 100;
-    return (e.clientX - this.herramientas.ancho_trazo - 5 + this.lienzo.canvasCont.scrollLeft) / zoom_porcent;
-  }
-
-  getMouseY(e){
-    let zoom_porcent:number = this.herramientas.zoom / 100;
-    return (e.clientY - this.lienzo.canvasCont.offsetTop -this.herramientas.ancho_trazo/2 + this.lienzo.canvasCont.scrollTop) / zoom_porcent;
-  }
-
-  mouse_move(e){
-    this.herramientas.mouseX = this.getMouseX(e);
-    this.herramientas.mouseY = this.getMouseY(e);
-
-    if (this.herramientas.mouse_down){
-      let pos:any = {x:this.getMouseX(e), y: this.getMouseY(e) }; //se obtine la posicion del mouse con respecto al canvas
-      this.lienzo.imagenActualizar = true;
-      switch (this.herramientas.herramienta_seleccionada){
-        case 'pincel':
-          this.herramientas.mouse_ant.push( pos );
-          //this.lienzo.trazo_lapiz(pos.x, pos.y);
-        break;
-
-        case 'recorte':
-          
-        break;
-
-        case 'mover':
-          this.herramientas.mouse_ant.push( pos );
-          this.desplazar_en_lienzo();
-        break;
-      } 
-
-    }
-    
-  }
-
-  desplazar_en_lienzo(){
-    for (let c=1; c < this.herramientas.mouse_ant.length; c++){
-      let diffX = this.herramientas.mouse_ant[c-1].x - this.herramientas.mouse_ant[c].x;
-      let diffY = this.herramientas.mouse_ant[c-1].y - this.herramientas.mouse_ant[c].y;
-
-      this.desplazar_lienzo(diffX, diffY);
-    }
-  }
-
-  desplazar_lienzo(diffX, diffY){
-    this.lienzo.canvasCont.scrollTop  += diffY;
-    this.lienzo.canvasCont.scrollLeft += diffX;
   }
   
   cambiar_ancho_trazo(){

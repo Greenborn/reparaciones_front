@@ -1,6 +1,6 @@
 import { HerramientaConfig } from "./herramienta.config.model";
 
-const COLA_PIXEL_LIMIT = 5000;
+const COLA_PIXEL_LIMIT = 100000;
 
 export class LienzoModel {
     public mouseX:number = 0;
@@ -36,8 +36,6 @@ export class LienzoModel {
 
         this.intervaloActualizacion = setInterval( ()=>{ this.updateCanvas() }, this.intevaloActualizacionMs );
     }
-
-    public mousePosCnt:number = 1;
 
     //Se usan estos arreglos y así separados por cuestiones de rendimiento
     //ya que se van a hacer millones de iteraciones
@@ -135,37 +133,22 @@ export class LienzoModel {
         let me  = this;
 
         img.onload = function() {
-            let anchoCont = me.canvasCont.offsetWidth;
-            let altoCont  = me.canvasCont.offsetHeight;
-            let anchoimg = img.width;
-            let altoimg  = img.height;
-            let nAlto; let nAncho;
+            me.imageWidth  = img.width;
+            me.imageHeigth = img.height;
 
-            if(anchoimg >= altoimg) {
-                nAncho = anchoCont;
-                nAlto = nAncho * altoimg / anchoimg;
-            }
-            else {
-                nAlto  = altoCont;
-                nAncho = anchoimg / altoimg * nAlto;
-            }
-            
-            console.log(nAncho,',',nAlto);
-            me.areaEdicion.style.width = Math.floor(nAncho)+'px';
-            me.areaEdicion.style.height = Math.floor(nAlto)+'px';
-            me.areaEdicion.width = Math.floor(nAncho);
-            me.areaEdicion.height = Math.floor(nAlto);
-            me.context.drawImage(img, 0, 0, Math.floor(nAncho), Math.floor(nAlto));
+            me.areaEdicion.style.width = Math.floor(me.imageWidth)+'px';
+            me.areaEdicion.style.height = Math.floor(me.imageHeigth)+'px';
+            me.areaEdicion.width = Math.floor(me.imageWidth);
+            me.areaEdicion.height = Math.floor(me.imageHeigth);
+            me.context.drawImage(img, 0, 0, Math.floor(me.imageWidth), Math.floor(me.imageHeigth));
 
             me.resize_canvas( me.context , me.herramientas.zoom);
             
-            me.imageDataEdit   = me.context.getImageData(0, 0, anchoimg, altoimg);
+            me.imageDataEdit   = me.context.getImageData(0, 0, me.imageWidth, me.imageHeigth);
             me.imageDataBuf    = new ArrayBuffer( me.imageDataEdit.data.length );
             me.imageDataBuf8   = new Uint8ClampedArray( me.imageDataBuf );
             me.imageData       = new Uint32Array( me.imageDataBuf );
-            me.imagePixelCount = anchoimg * altoimg;
-            me.imageWidth      = anchoimg;
-            me.imageHeigth     = altoimg;
+            me.imagePixelCount = me.imageWidth * me.imageHeigth;
 
             me.pegarImagenFondo();
             me.imagenCargada = true;
@@ -204,21 +187,21 @@ export class LienzoModel {
 
       dibujar_seleccion(){
         this.copiaImageData(this.imageData, this.imageDataPreRecorte);
-        
-    
+        let hc    = this.herramientas.seleccion_recorte;
+
+        let imgData = this.imageData;
         //se dibujan los cuadrados del extremo de la selección
-        this.dibuja_cuadrado_seleccion(this.imageData, this.herramientas.mouseX, this.herramientas.mouseY, 10, 10);
-        
-        /*this.dibuja_cuadrado_seleccion(imgData, hc.x2-hc.scs, hc.y2-hc.scs, hc.scs, hc.scs);
+        this.dibuja_cuadrado_seleccion(imgData, hc.x1,        hc.y1,        hc.scs, hc.scs);
+        this.dibuja_cuadrado_seleccion(imgData, hc.x2-hc.scs, hc.y2-hc.scs, hc.scs, hc.scs);
         this.dibuja_cuadrado_seleccion(imgData, hc.x1, hc.y2-hc.scs, hc.scs, hc.scs);
         this.dibuja_cuadrado_seleccion(imgData, hc.x2-hc.scs, hc.y1, hc.scs, hc.scs);
         
         //se dibujan las lineas que bordean la selección
-        this.dibuja_cuadrado_seleccion(imgData, hc.scs, hc.ancho_trazo,       hc.ancho_trazo, ancho);
-        this.dibuja_cuadrado_seleccion(imgData, hc.scs, alto-hc.ancho_trazo,  hc.ancho_trazo, ancho);
-        this.dibuja_cuadrado_seleccion(imgData, hc.ancho_trazo, hc.scs,       alto, hc.ancho_trazo);
-        this.dibuja_cuadrado_seleccion(imgData, ancho-hc.ancho_trazo, hc.scs, alto, hc.ancho_trazo);
-        */
+        this.dibuja_cuadrado_seleccion(this.imageData, hc.scs, hc.ancho_trazo,       hc.ancho_trazo, hc.x2);
+        this.dibuja_cuadrado_seleccion(this.imageData, hc.scs, hc.y2-hc.ancho_trazo,  hc.ancho_trazo, hc.x2);
+        this.dibuja_cuadrado_seleccion(this.imageData, hc.ancho_trazo, hc.scs,       hc.y2, hc.ancho_trazo);
+        this.dibuja_cuadrado_seleccion(this.imageData, hc.x2-hc.ancho_trazo, hc.scs, hc.y2, hc.ancho_trazo);
+        
         //Actualizar
         this.imagenActualizar = true;
       }
@@ -226,20 +209,27 @@ export class LienzoModel {
       dibuja_cuadrado_seleccion(imgData, x, y, alto, ancho){
         let vx = x + ancho;
         let vy = y + alto;
-    
+
         for (let px = x; px <= vx; px++){
           for (let py = y; py <= vy; py ++){
-            let pixel:any = { 
-                            'r': imgData[((py * this.imageWidth) + px)*4],
-                            'g': imgData[((py * this.imageWidth) + px)*4 -3],
-                            'b': imgData[((py * this.imageWidth) + px)*4 -2]
-                        };
-    
-            
+            let color = this.toColor(imgData[(py * this.imageWidth) + px]);
+            this.realizarPixel(px,py, 
+                255-color[2], 
+                255-color[1], 
+                255-color[0]);
           }
         }
-        this.realizar_punto(x,y,10, 255, 0, 0);
+        
       }
+
+     toColor(num) {
+        num >>>= 0;
+        var b = num & 0xFF,
+            g = (num & 0xFF00) >>> 8,
+            r = (num & 0xFF0000) >>> 16,
+            a = ( (num & 0xFF000000) >>> 24 ) / 255 ;
+        return [r, g, b, a];
+    }
 
     private ci:number = 0;
     realizar_punto(x1, y1, radius, R, G, B){
@@ -247,20 +237,22 @@ export class LienzoModel {
           for ( let cy=0; cy <= radius; cy++){
             let px = x1 + cx;
             let py = y1 + cy;
-
-            if (this.ci>COLA_PIXEL_LIMIT){
-                break;
-            }
   
+            this.realizarPixel(px, py, R, G, B);
+          }
+        }     
+    }
+
+    realizarPixel(px, py, R, G, B){
+        if (this.ci<COLA_PIXEL_LIMIT){
             this.colaPixelesR[this.ci] = R;
             this.colaPixelesG[this.ci] = G;
             this.colaPixelesB[this.ci] = B;
             this.colaPixelesX[this.ci] = px;
             this.colaPixelesY[this.ci] = py; 
             this.colaPixelesP[this.ci] = 1; 
-            this.ci++;  
-          }
-        }     
+            this.ci++; 
+        }
     }
 
     trazo_lapiz(x1:number, y1:number){
@@ -273,4 +265,63 @@ export class LienzoModel {
         this.realizar_punto(x1, y1, radius, R, G, B);  
     }
 
+    mouse_down(e){
+        this.herramientas.mouse_down = true;
+    }
+    
+    mouse_up(){
+        this.herramientas.mouse_down = false;
+        this.herramientas.mouse_ant = [];
+    }
+
+    mouse_move(e){
+        this.herramientas.mouseX = this.getMouseX(e);
+        this.herramientas.mouseY = this.getMouseY(e);
+    
+        if (this.herramientas.mouse_down){
+          let pos:any = {x:this.herramientas.mouseX, y: this.herramientas.mouseY }; //se obtine la posicion del mouse con respecto al canvas
+          this.imagenActualizar = true;
+          switch (this.herramientas.herramienta_seleccionada){
+            case 'pincel':
+              this.herramientas.mouse_ant.push( pos );
+              //this.lienzo.trazo_lapiz(pos.x, pos.y);
+            break;
+    
+            case 'recorte':
+              this.dibujar_seleccion();
+            break;
+    
+            case 'mover':
+              this.herramientas.mouse_ant.push( pos );
+              this.desplazar_en_lienzo();
+            break;
+          } 
+    
+        }
+        
+    }
+
+    getMouseX(e){
+        let zoom_porcent:number = this.herramientas.zoom / 100;
+        return (e.clientX - this.herramientas.ancho_trazo - 5 + this.canvasCont.scrollLeft) / zoom_porcent;
+    }
+    
+    getMouseY(e){
+        let zoom_porcent:number = this.herramientas.zoom / 100;
+        return (e.clientY - this.canvasCont.offsetTop -this.herramientas.ancho_trazo/2 + this.canvasCont.scrollTop) / zoom_porcent;
+    }
+
+    desplazar_en_lienzo(){
+        for (let c=1; c < this.herramientas.mouse_ant.length; c++){
+          let diffX = this.herramientas.mouse_ant[c-1].x - this.herramientas.mouse_ant[c].x;
+          let diffY = this.herramientas.mouse_ant[c-1].y - this.herramientas.mouse_ant[c].y;
+    
+          this.desplazar_lienzo(diffX, diffY);
+        }
+      }
+    
+    desplazar_lienzo(diffX, diffY){
+        this.canvasCont.scrollTop  += diffY;
+        this.canvasCont.scrollLeft += diffX;
+    }
 }
