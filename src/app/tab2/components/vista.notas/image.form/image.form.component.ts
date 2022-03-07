@@ -37,7 +37,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
   ngOnInit() {
     
-    this.herramientas = new HerramientaConfig();
+    this.herramientas = new HerramientaConfig({page:this});
     this.lienzo = new LienzoModel(
       { areaEdicion:'areaEdicion', canvasCont:'canvasCont', herramientas:this.herramientas, fps:30 }
     );

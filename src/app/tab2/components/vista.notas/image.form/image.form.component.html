@@ -6,7 +6,15 @@
         <ion-col size="auto" class="p0"><ion-button (click)="goBack()" color="medium" fill="outline"><ion-icon name="arrow-back"></ion-icon></ion-button></ion-col>
         
         <ion-col size="auto" class="p0"><ion-button (click)="herramientas.mover()" color="{{herramientas.mover_btn_color}}" fill="outline"><ion-icon name="move"></ion-icon></ion-button></ion-col>
-        <ion-col size="auto" class="p0"><ion-button (click)="herramientas.recorte()" color="{{herramientas.recorte_btn_color}}" fill="outline"><ion-icon name="crop"></ion-icon></ion-button></ion-col>
+        <ion-col size="auto" class="p0">
+          <ion-button (click)="herramientas.recorte()" color="{{herramientas.recorte_btn_color}}" fill="outline"><ion-icon name="crop"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col size="auto" class="p0" *ngIf="herramientas.herramienta_seleccionada == 'recorte'">
+          <ion-button (click)="herramientas.aplicarRecorte()" color="medium" fill="outline">
+            Aplicar recorte
+          </ion-button>
+        </ion-col>
         <ion-col size="auto" class="p0"><ion-button (click)="herramientas.pincel()" color="{{herramientas.pincel_btn_color}}" fill="outline"><ion-icon name="pencil-outline"></ion-icon></ion-button></ion-col>
         
         <ion-col size="auto" class="p0 item-valign-center"><input [(colorPicker)]="herramientas.color" style="width:7rem;" [style.background]="herramientas.color"/></ion-col>

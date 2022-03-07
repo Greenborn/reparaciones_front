@@ -15,11 +15,11 @@ export class LienzoModel {
 
     public herramientas:HerramientaConfig;
 
-    private imageDataEdit:any;
-    private imageDataBuf:any;
-    private imageDataBuf8:any;
+    public imageDataEdit:any;
+    public imageDataBuf:any;
+    public imageDataBuf8:any;
     public imageData:any;
-    private imagePixelCount:number;
+    public imagePixelCount:number;
     public imageWidth:number;
     public imageHeigth:number;
 
@@ -221,15 +221,6 @@ export class LienzoModel {
 
         for (let px = x; px <= vx; px++){
           for (let py = y; py <= vy; py ++){
-            //let color = this.toColor(imgData[(py * this.imageWidth) + px]);
-
-           // (this.imageDataEdit.data[c*4 -2] << 16) | // blue
-            //                  (this.imageDataEdit.data[c*4 -3] <<  8) | // green
-             //                  this.imageDataEdit.data[c*4   ];
-            /*this.realizarPixel(px,py, 
-                255-color[2], 
-                255-color[1], 
-                255-color[0]);*/
             this.realizarPixel(px,py, -1, -1, -1);
           }
         }
