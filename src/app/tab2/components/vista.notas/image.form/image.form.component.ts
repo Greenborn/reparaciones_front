@@ -38,6 +38,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   private imageData:any;
   private imagePixelCount:number;
   private imageWidth:number;
+  private imageHeigth:number;
 
   private imagenCargada:boolean = false;
   private cargaImgBuffer:boolean = true;
@@ -124,6 +125,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
             me.imageData       = new Uint32Array( me.imageDataBuf );
             me.imagePixelCount = anchoimg * altoimg;
             me.imageWidth      = anchoimg;
+            me.imageHeigth     = altoimg;
             
             me.cargaImgBuffer  = true;
 
@@ -322,10 +324,28 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
   realizar_punto(x1, y1, radius){
       let strColor:string = String(this.herramientas.color);
-      this.imageData[(y1 * this.imageWidth) + x1] = (255 << 24)      | // alpha
-                                  (parseInt(strColor[5]+strColor[6], 16) << 16) | // blue
-                                  (parseInt(strColor[3]+strColor[4], 16) <<  8) | // green
-                                   parseInt(strColor[1]+strColor[2], 16); 
+      
+      let color = { 
+                      r: parseInt(strColor[1]+strColor[2], 16), 
+                      g: parseInt(strColor[3]+strColor[4], 16),
+                      b: parseInt(strColor[5]+strColor[6], 16)
+                  };
+                  
+      for ( let cx=0; cx <= radius; cx++){
+        for ( let cy=0; cy <= radius; cy++){
+            let px = x1 + cx;
+            let py = y1 + cy;
+
+            if (px < 0 || py < 0 || px > this.imageWidth || py > this.imageHeigth ){
+              continue;
+            }
+
+            this.imageData[(py * this.imageWidth) + px] = (255 << 24)      | // alpha
+                                  (color.b << 16) | // blue
+                                  (color.g <<  8) | // green
+                                   color.r;
+        }
+      }     
   }
 
   cambiar_zoom(){
