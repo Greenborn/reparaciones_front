@@ -31,7 +31,6 @@ export class PrivateObrasService extends ApiServiceBase{
 
     //Estados
     public operacion_actual:string = 'Nueva';
-    public file_field:any;
     //paginas
     public page:any;
 
@@ -168,7 +167,6 @@ export class PrivateObrasService extends ApiServiceBase{
 
     eliminar_info_imagen(){
         this.image_data              = undefined;
-        this.file_field              = '';
     }
 
     /// NAVEGACION

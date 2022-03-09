@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button (click)="goBack()"></ion-back-button>
+      <ion-back-button (click)="privateObrasService.goBack()"></ion-back-button>
     </ion-buttons>
     <ion-title>
       {{privateObrasService.operacion_actual}} Obra
@@ -40,8 +40,7 @@
                   <ion-row>
                     <ion-item>
                       <ion-label>Imagen:</ion-label>
-                      <input type="file" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="privateObrasService.handleFileInput($event.target['files'])"
-                      [(ngModel)]="file_field">
+                      <input type="file" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="privateObrasService.handleFileInput($event.target['files'])">
                     </ion-item>
                   </ion-row>
                   <ion-row *ngIf="privateObrasService.image_data != undefined">

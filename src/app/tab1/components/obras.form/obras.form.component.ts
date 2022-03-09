@@ -15,7 +15,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
 
     constructor(
         private router:                      Router,
-        private privateObrasService:         PrivateObrasService,
+        public privateObrasService:         PrivateObrasService,
         private alertController:             AlertController,
         public  loadingController:           LoadingController,
         public ref:                          ChangeDetectorRef,
