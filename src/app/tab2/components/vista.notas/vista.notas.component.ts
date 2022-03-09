@@ -42,9 +42,9 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
             this.titulo = "Notas de obra "+ this.privateNotaService.ver_nota_obra_nombre;
           }
 
-          if (this.privateObrasService.all != undefined && this.privateObrasService.all.length == 0){
-            this.privateObrasService.recargarObras(this);
-          }
+          //[REFACTORIZAR] if (this.privateObrasService.all != undefined && this.privateObrasService.all.length == 0){
+            //[REFACTORIZAR] this.privateObrasService.recargarObras(this);
+          //[REFACTORIZAR] }
         } 
       });
     }
@@ -83,13 +83,13 @@ export class VistaNotasComponent extends ApiConsumer  implements OnInit, OnDestr
   obra_seleccionada(){
     console.log(this.obra_id);
     let nombre_obra = '';
-    for (let c=0; c < this.privateObrasService.all.length; c++){
-      if (this.privateObrasService.all[c].id == this.obra_id){
-        nombre_obra = this.privateObrasService.all[c].nombre_alias;
-        break;
-      }
-    }
-    this.privateNotaService.goToNotas({ page:this, obra:this.obra_id, nombre_obra:nombre_obra });
+   //[REFACTORIZAR]  for (let c=0; c < this.privateObrasService.all.length; c++){
+      //[REFACTORIZAR] if (this.privateObrasService.all[c].id == this.obra_id){
+        //[REFACTORIZAR] nombre_obra = this.privateObrasService.all[c].nombre_alias;
+        //[REFACTORIZAR] break;
+      //[REFACTORIZAR] }
+    //[REFACTORIZAR] }
+    //[REFACTORIZAR] this.privateNotaService.goToNotas({ page:this, obra:this.obra_id, nombre_obra:nombre_obra });
   }
 
   goBack(){

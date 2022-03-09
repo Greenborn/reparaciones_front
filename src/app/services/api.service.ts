@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { ApiSerializedResponse } from '../models/ApiResponse';
 import { ConfigService } from './config.service';
 
@@ -10,12 +10,28 @@ import { ConfigService } from './config.service';
 })
 export abstract class ApiService<T> {
 
-  protected fetchAllOnce: boolean = false;
-
   public all: any =[];
   public getAllOK:Subject<any> = new Subject();
   public getAllKO:Subject<any> = new Subject();
   public total_count:number  = 0;
+
+  public one:any;
+  public getOneOK:Subject<any> = new Subject();
+  public getOneKO:Subject<any> = new Subject();
+
+  public deleted_id:number;
+  public deletedOK:Subject<any> = new Subject();
+  public deletedKO:Subject<any> = new Subject();
+
+  public edited_id:number;
+  public editedOK:Subject<any> = new Subject();
+  public editedKO:Subject<any> = new Subject();
+
+  
+
+  
+  protected fetchAllOnce: boolean = false;
+
 
   public getEd:any;
   public getEdOk:Subject<any> = new Subject();
@@ -29,13 +45,15 @@ export abstract class ApiService<T> {
 
   abstract get template(): T;
 
-  get<K = T>(id: number, getParams: string = ''): Observable<K> {  
+  get<K = T>(id: number, getParams: string = ''): Observable<any> {  
     return this.http.get<K>(this.config.apiUrl(`${this.recurso}/${id}?${getParams}`) ).pipe(
-      map((data) => {
-        console.log('get', this.recurso, id);
+      map((data) => {console.log(data);
         this.getEd = data;
         this.getEdOk.next(this.getEd);
         return data;
+      }),catchError(error => {
+        console.log(error);
+        return throwError(error)
       })
     );
   }

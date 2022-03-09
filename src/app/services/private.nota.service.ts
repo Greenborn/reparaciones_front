@@ -174,8 +174,8 @@ export class PrivateNotaService extends ApiService<any>{
       if (params.hasOwnProperty('page')){
         if (params.page.hasOwnProperty('imagenes'))
           params.page.imagenes = [];
-        this.privateObrasService.obra_filter_enabled = 'enabled';
-        this.privateObrasService.recargarObras(params.page);                                                        //se recarga el listado de obras
+   //[REFACTORIZAR]     this.privateObrasService.obra_filter_enabled = 'enabled';
+    //[REFACTORIZAR]     this.privateObrasService.recargarObras(params.page);                                                        //se recarga el listado de obras
         params.page.loadingEspecificData(this.privateCategoriaService, '',   '', 'Consultando Categorias.');        //se recarga el listado de categorias
         params.page.loadingEspecificData(this.privateTipoNotaService, '',   '', 'Consultando Tipos de notas.');     //se recarga el listado de tipos de notas
 
@@ -213,8 +213,8 @@ export class PrivateNotaService extends ApiService<any>{
           );
         }
 
-        this.privateObrasService.obra_filter_enabled = 'enabled';
-        this.privateObrasService.recargarObras(params.page);                                                        //se recarga el listado de obras
+        //[REFACTORIZAR] this.privateObrasService.obra_filter_enabled = 'enabled';
+        //[REFACTORIZAR] this.privateObrasService.recargarObras(params.page);                                                        //se recarga el listado de obras
         params.page.loadingEspecificData(this.privateCategoriaService, '',   '', 'Consultando Categorias.');        //se recarga el listado de categorias
         params.page.loadingEspecificData(this.privateTipoNotaService, '',   '', 'Consultando Tipos de notas.');     //se recarga el listado de tipos de notas
       }

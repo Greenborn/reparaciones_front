@@ -18,7 +18,7 @@ const routes: Routes = [
     children: [
       { path: 'tab1',  loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule),  canActivate: [AuthenticationGuard]  },
       { path: 'tab1/crear_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]   },
-      { path: 'tab1/editar_obra', component: ObrasFormComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab1/editar_obra/:id', component: ObrasFormComponent, canActivate: [AuthenticationGuard]  },
 
       { path: 'tab2', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/crear_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]   },

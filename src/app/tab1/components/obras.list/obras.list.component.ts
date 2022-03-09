@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
@@ -12,6 +12,7 @@ import { ObrasMenuComponent } from '../obras.menu/obras.menu.component';
   selector: 'app-obras-list',
   templateUrl: './obras.list.component.html',
   styleUrls: ['./obras.list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObrasListComponent  extends ApiConsumer  implements OnInit, OnDestroy {
 
@@ -28,32 +29,41 @@ export class ObrasListComponent  extends ApiConsumer  implements OnInit, OnDestr
     super(alertController, loadingController, ref, authService);
   }
 
-  async modal_menu(obra:any){
-    let modal = await this.modalController.create({
-      component: ObrasMenuComponent,
-      componentProps: {
-        'obra':  obra,
-        'modal': this.modalController
-      }
-    });
-    return await modal.present();
-  }
+    async modal_menu(obra:any){
+        let modal:any = await this.modalController.create({
+            component: ObrasMenuComponent,
+            componentProps: {
+            'obra':  obra,
+            'modal': this.modalController
+            },
+            
+        });
+        modal.onDidDismiss().then(() => {
+            this.ref.markForCheck(); 
+        });
+        return await modal.present();
+    }
 
-  ngOnInit() {
-    this.consultar(this.privateObrasService.obra_filter_enabled);
-  }
+    ngOnInit() {
+        this.privateObrasService.page = this;
+        this.consultar(this.privateObrasService.obra_filter_enabled);
+    }
 
-  nueva_obra(){
-    this.router.navigate([ '/tabs/tab1/crear_obra' ]);
-  }
+    nueva_obra(){
+        this.privateObrasService.goToCreate();
+    }
 
-  consultar(v:string){
-    this.privateObrasService.obra_filter_enabled = v;
-    this.privateObrasService.recargarObras(this);
-  }
+    consultar(v:string){
+        this.privateObrasService.obra_filter_enabled = v;
+        this.privateObrasService.recargarObras({
+            callback: ()=>{
+                this.ref.markForCheck();
+            }
+        });
+    }
 
 
-  ngOnDestroy(){
-  }
+    ngOnDestroy(){
+    }
 
 }

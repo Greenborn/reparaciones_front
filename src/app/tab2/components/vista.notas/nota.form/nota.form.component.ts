@@ -62,13 +62,13 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
 
     if (this.getAllSubj.length == 0){
       this.getAllSubj.push(
-        this.privateObrasService.getAllOK.subscribe({ next:(data) => {
-          if (this.privateNotaService.accion == 'Nueva'){
-              this.model.obra_id = String(this.privateNotaService.nueva_nota_obra_id);
-          } else {
-              this.model.obra_id = String(this.model.obra_id);
-          }
-        }})
+        //[REFACTORIZAR] this.privateObrasService.getAllOK.subscribe({ next:(data) => {
+          //[REFACTORIZAR] if (this.privateNotaService.accion == 'Nueva'){
+              //[REFACTORIZAR] this.model.obra_id = String(this.privateNotaService.nueva_nota_obra_id);
+          //[REFACTORIZAR] } else {
+              //[REFACTORIZAR] this.model.obra_id = String(this.model.obra_id);
+          //[REFACTORIZAR] }
+//[REFACTORIZAR]         }})
       );
       this.getAllSubj.push(
         this.privateCategoriaService.getAllOK.subscribe({ next:(data) => {

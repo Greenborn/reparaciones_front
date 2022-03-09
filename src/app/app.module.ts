@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS }   from '@angular/common/http';
 
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicModule, IonicRouteStrategy, NavParams } from '@ionic/angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,7 +20,7 @@ import { NgbDateCustomI18 } from 'src/providers/ngb-date-custom-i18.provider';
 
 @NgModule({
     declarations: [
-      AppComponent, NotaFormComponent,
+      AppComponent, NotaFormComponent
     ],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,ColorPickerModule, FormsModule, AutenticationModule, HttpClientModule, IonicSelectableModule, NgbModule],
     providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{

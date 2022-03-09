@@ -4,7 +4,7 @@
       <ion-back-button (click)="goBack()"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{accion}} Obra
+      {{privateObrasService.operacion_actual}} Obra
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,7 +12,7 @@
 <ion-content [fullscreen]="true">
   <ion-grid class="bg1 h-100">
 
-    <ion-row>
+    <ion-row *ngIf="privateObrasService.modelo_edit != undefined">
       <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
 
         <ion-card class="">
@@ -25,26 +25,26 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Dirección / Alias:</ion-label>
-                    <ion-input placeholder="Dirección / alias" type="text" [(ngModel)]="model.nombre_alias"></ion-input>
+                    <ion-input placeholder="Dirección / alias" type="text" [(ngModel)]="privateObrasService.modelo_edit.nombre_alias"></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-row>
 
               <ion-row>
-                <ion-col *ngIf="image_data != undefined" size="auto" class="selected-img-cont">
-                  <ion-spinner *ngIf="!image_data.file" style="width:11rem;"></ion-spinner>
-                  <img src="{{image_data.file}}" alt="Imagen seleccionada" height="125px" width="auto">
+                <ion-col *ngIf="privateObrasService.image_data != undefined" size="auto" class="selected-img-cont">
+                  <ion-spinner *ngIf="!privateObrasService.image_data.file" style="width:11rem;"></ion-spinner>
+                  <img src="{{privateObrasService.image_data.file}}" alt="Imagen seleccionada" height="125px" width="auto">
                 </ion-col>
                 
                 <ion-col>
                   <ion-row>
                     <ion-item>
                       <ion-label>Imagen:</ion-label>
-                      <input type="file" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="handleFileInput($event.target['files'])"
+                      <input type="file" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="privateObrasService.handleFileInput($event.target['files'])"
                       [(ngModel)]="file_field">
                     </ion-item>
                   </ion-row>
-                  <ion-row *ngIf="image_data != undefined">
+                  <ion-row *ngIf="privateObrasService.image_data != undefined">
                     <ion-col>
                       <ion-col class="text-center" size="12" size-md="auto"><ion-button color="danger" (click)="eliminar_imagen()"  size="small"><ion-icon name="trash"></ion-icon>&nbsp; Eliminar</ion-button></ion-col>
                     </ion-col>
@@ -54,8 +54,8 @@
     
               <ion-row>
                 <ion-col>
-                  <ion-button (click)="goBack()" color="medium">Volver</ion-button>
-                  <ion-button (click)="ingresar()">Guardar</ion-button>
+                  <ion-button (click)="privateObrasService.goBack()" color="medium">Volver</ion-button>
+                  <ion-button (click)="privateObrasService.guardar_modelo()">Guardar</ion-button>
                 </ion-col>
               </ion-row>
     

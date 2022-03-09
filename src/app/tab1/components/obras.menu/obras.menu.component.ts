@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { AuthService } from 'src/app/modules/autentication/services/auth.service';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
@@ -16,113 +17,86 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
   @Input() obra: string;
   @Input() modal: any;
 
-  constructor(
-    private alertController:       AlertController,
-    public  loadingController:     LoadingController,
-    public  ref:                   ChangeDetectorRef,
-    public  authService:           AuthService,
+    constructor(
+        private alertController:       AlertController,
+        public  loadingController:     LoadingController,
+        public  ref:                   ChangeDetectorRef,
+        public  authService:           AuthService,
 
-    private router:                Router,
-    
-    private privateObrasService:   PrivateObrasService,
-    private privateNotaService:    PrivateNotaService
-  ) { 
-    super(alertController, loadingController, ref, authService);
-  }
+        private router:                Router,
 
-  ngOnInit() {
+        private privateObrasService:   PrivateObrasService,
+        private privateNotaService:    PrivateNotaService,
+        private appUIUtilsService:     AppUIUtilsService,
+    ) { 
+        super(alertController, loadingController, ref, authService);
+    }
 
-  }
+    private editedSubj:any;
 
-  volver(){
-    this.modal.dismiss();
-  }
+    ngOnInit() {
+    }
 
-  nueva_nota(obra){
-    this.privateNotaService.goToNueva({ page:this, obra_id:obra.id, navigationOrigin:'/tabs/tab1' });
-    this.volver();
-  }
+    OnDestroy(){
+        this.editedSubj.unsubscribe();
+    }
 
-  editar_obra(obra:any){
-    this.privateObrasService.goToEdit(obra.id);
-    this.volver();
-  }
+    volver(){
+        this.modal.dismiss('d');
+    }
 
-  ver_notas(obra:any){
-    this.privateNotaService.goToNotas({ page:this, obra:obra.id, nombre_obra:obra.nombre_alias });
-    this.volver();
-  }
+    nueva_nota(obra){
+        this.privateNotaService.goToNueva({ page:this, obra_id:obra.id, navigationOrigin:'/tabs/tab1' });
+        this.volver();
+    }
 
-  async eliminar_obra(obra:any){
-    const alert = await this.alertController.create({
-      header: 'Atención',
-      message: 'Está por eliminar la obra "' + obra.nombre_alias + '" y se perderán sus notas asociadas ¿desea continuar?.',
-      buttons: [{
-        text: 'No',
-        role: 'cancel',
-        cssClass: 'secondary',
-        handler: () => {}
-      }, {
-        text: 'Si',
-        cssClass: 'danger',
-        handler: () => {
-          this.borrar_obra(obra);
-        }
-      }]
-    });
-    await alert.present();
-  }
+    editar_obra(obra:any){
+        this.privateObrasService.goToEdit(obra.id);
+        this.volver();
+    }
 
-  async borrar_obra(obra:any){
-    const loading = await this.loadingController.create({ message: 'Borrando obra: ' + obra.nombre_alias});
-    await loading.present();
-    this.privateObrasService.delete(obra.id).subscribe(
-      ok => {
-        loading.dismiss();
-        this.privateObrasService.recargarObras(this);
-      },
-      err => {
-        loading.dismiss();
-        this.displayAlert('Ocurrió un error al intentar eliminar la obra: ' + obra.nombre_alias);
-      }
-    );
-    this.volver();
-  }
+    ver_notas(obra:any){
+        this.privateNotaService.goToNotas({ page:this, obra:obra.id, nombre_obra:obra.nombre_alias });
+        this.volver();
+    }
 
-  async desabilitar_obra(obra:any){
-    obra.habilitada = 0;
-    const loading = await this.loadingController.create({ message: 'Desabilitando obra: ' + obra.nombre_alias});
-    await loading.present();
+    async eliminar_obra(obra:any){
+        const alert = await this.alertController.create({
+                header: 'Atención',
+                message: 'Está por eliminar la obra "' + obra.nombre_alias + '" y se perderán sus notas asociadas ¿desea continuar?.',
+                buttons: [{
+                text: 'No',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: () => {}
+            }, {
+                text: 'Si',
+                cssClass: 'danger',
+                handler: () => {
+                    //luego de borrar se fuerza la deteccion de cambios
+                    //se pasa por aca por que al parecer necesita ser llamado desde una pagina
+                    this.privateObrasService.borrar_obra(obra);
+                    this.volver();
+                }
+            }]
+        });
+        await alert.present();
+    }
 
-    this.privateObrasService.put(obra,obra.id).subscribe(
-      ok => {
-        loading.dismiss();
-        this.privateObrasService.recargarObras(this);
-      },
-      err => {
-        loading.dismiss();
-        this.displayAlert('Ocurrió un error al intentar editar la obra: ' + obra.nombre_alias);
-      }
-    );
-    this.volver();
-  }
+    async desabilitar_obra(obra:any){
+        obra.habilitada = 0;
+        this.appUIUtilsService.presentLoading({ message: 'Desabilitando obra: ' + obra.nombre_alias});
+        
+        this.privateObrasService.put(obra,obra.id);
+        this.volver();
+    }
 
-  async habilitar_obra(obra:any){
-    obra.habilitada = 1;
-    const loading = await this.loadingController.create({ message: 'Habilitando obra: ' + obra.nombre_alias});
-    await loading.present();
-
-    this.privateObrasService.put(obra,obra.id).subscribe(
-      ok => {
-        loading.dismiss();
-        this.privateObrasService.recargarObras(this);
-      },
-      err => {
-        loading.dismiss();
-        this.displayAlert('Ocurrió un error al intentar editar la obra: ' + obra.nombre_alias);
-      }
-    );
-    this.volver();
-  }
+    async habilitar_obra(obra:any){
+        obra.habilitada = 1;
+        this.appUIUtilsService.presentLoading({ message: 'Habilitando obra: ' + obra.nombre_alias});
+        
+        this.privateObrasService.put(obra,obra.id);
+        this.volver();
+    }
 
 }

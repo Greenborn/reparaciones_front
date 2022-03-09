@@ -25,6 +25,24 @@ export abstract class ApiConsumer implements OnDestroy {
     )
   }
 
+  private loading:any = null;
+    async presentLoading( loadingParams ){
+        //si ya hay un loading instanciado lo cerramos y reemplazom por el nuevo
+        if (this.loading !== null){
+            this.loading.dismiss();
+            this.loading = null;
+        }
+        this.loading = await this.loadingController.create( loadingParams );
+        this.loading.present();
+    }
+
+    dissmisLoading(){
+        if (this.loading !== null){
+            this.loading.dismiss();
+            this.loading = null;
+        }
+    }
+
 async displayAlert(message: string) {
   (await this.alertCtrl.create({
     header: 'Info',

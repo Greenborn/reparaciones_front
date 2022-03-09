@@ -4,4 +4,5 @@ export class Obra {
     public habilitada:number = 1;
     public imagen_id:any;
     public imagen_data:any;
+    public no_image:boolean = false;
 }
