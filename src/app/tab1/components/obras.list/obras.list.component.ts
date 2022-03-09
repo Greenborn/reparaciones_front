@@ -12,7 +12,6 @@ import { ObrasMenuComponent } from '../obras.menu/obras.menu.component';
   selector: 'app-obras-list',
   templateUrl: './obras.list.component.html',
   styleUrls: ['./obras.list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObrasListComponent  extends ApiConsumer  implements OnInit, OnDestroy {
 
@@ -29,6 +28,9 @@ export class ObrasListComponent  extends ApiConsumer  implements OnInit, OnDestr
     super(alertController, loadingController, ref, authService);
   }
 
+    public listadoObras:any = [];
+    private listadoObraSubj:any;
+
     async modal_menu(obra:any){
         let modal:any = await this.modalController.create({
             component: ObrasMenuComponent,
@@ -39,14 +41,21 @@ export class ObrasListComponent  extends ApiConsumer  implements OnInit, OnDestr
             
         });
         modal.onDidDismiss().then(() => {
-            this.ref.markForCheck(); 
+         
         });
         return await modal.present();
     }
 
     ngOnInit() {
-        this.privateObrasService.page = this;
-        this.consultar(this.privateObrasService.obra_filter_enabled);
+        this.listadoObraSubj = this.privateObrasService.getAllOK.subscribe(
+            { next:(p:any) => {
+                this.listadoObras = this.privateObrasService.all;
+                this.ref.detectChanges();
+            } }
+        );
+        setTimeout(() => {
+            this.consultar(this.privateObrasService.obra_filter_enabled);
+        }, 500);
     }
 
     nueva_obra(){
@@ -55,15 +64,12 @@ export class ObrasListComponent  extends ApiConsumer  implements OnInit, OnDestr
 
     consultar(v:string){
         this.privateObrasService.obra_filter_enabled = v;
-        this.privateObrasService.recargarObras({
-            callback: ()=>{
-                this.ref.markForCheck();
-            }
-        });
+        this.privateObrasService.recargarObras();
     }
 
 
     ngOnDestroy(){
+        this.listadoObraSubj.unsubscribe();
     }
 
 }

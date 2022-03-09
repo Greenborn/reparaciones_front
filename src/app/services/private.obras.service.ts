@@ -115,6 +115,7 @@ export class PrivateObrasService extends ApiServiceBase{
         /// DELETE
         this.subscripciones.push( this.deletedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
+            this.appUIUtilsService.displayAlert('Obra eliminada correctamente.');
             this.recargarObras();
         }}));
 
@@ -157,6 +158,7 @@ export class PrivateObrasService extends ApiServiceBase{
         }
 
         this.getAll( filter+'&expand=imagen' );
+        this.router.navigate([ '/tabs/tab1' ]);
     }
 
     ///Borrandoprivate extra_del_params:any = {};
