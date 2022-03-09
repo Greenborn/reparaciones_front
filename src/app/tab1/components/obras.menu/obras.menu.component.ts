@@ -1,8 +1,5 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
-import { AuthService } from 'src/app/modules/autentication/services/auth.service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
@@ -12,24 +9,18 @@ import { PrivateObrasService } from 'src/app/services/private.obras.service';
   templateUrl: './obras.menu.component.html',
   styleUrls: ['./obras.menu.component.scss'],
 })
-export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestroy {
+export class ObrasMenuComponent implements OnInit, OnDestroy {
 
   @Input() obra: string;
   @Input() modal: any;
 
     constructor(
         private alertController:       AlertController,
-        public  loadingController:     LoadingController,
-        public  ref:                   ChangeDetectorRef,
-        public  authService:           AuthService,
-
-        private router:                Router,
 
         private privateObrasService:   PrivateObrasService,
         private privateNotaService:    PrivateNotaService,
         private appUIUtilsService:     AppUIUtilsService,
     ) { 
-        super(alertController, loadingController, ref, authService);
     }
 
     private editedSubj:any;
@@ -37,7 +28,7 @@ export class ObrasMenuComponent  extends ApiConsumer  implements OnInit, OnDestr
     ngOnInit() {
     }
 
-    OnDestroy(){
+    ngOnDestroy(){
         this.editedSubj.unsubscribe();
     }
 

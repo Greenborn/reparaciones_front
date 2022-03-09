@@ -1,9 +1,6 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Obra } from 'src/app/models/obra';
-import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
 @Component({
@@ -11,20 +8,12 @@ import { PrivateObrasService } from 'src/app/services/private.obras.service';
   templateUrl: './obras.form.component.html',
   styleUrls: ['./obras.form.component.scss'],
 })
-export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestroy {
+export class ObrasFormComponent  implements OnInit, OnDestroy {
 
     constructor(
-        private router:                      Router,
-        public privateObrasService:         PrivateObrasService,
-        private alertController:             AlertController,
-        public  loadingController:           LoadingController,
-        public ref:                          ChangeDetectorRef,
-        
-        private activatedRoute:              ActivatedRoute,
-        public  authService:                 AuthService,
-        
+        public privateObrasService:         PrivateObrasService,        
+        private activatedRoute:             ActivatedRoute,
     ) {
-        super(alertController, loadingController, ref, authService);
     }
 
     public model:Obra    = new Obra();
@@ -40,7 +29,7 @@ export class ObrasFormComponent extends ApiConsumer  implements OnInit, OnDestro
        })
     }
 
-    OnDestroy(){
+    ngOnDestroy(){
         this.routeSubj.unsubscribe();
     }
 
