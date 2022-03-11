@@ -8,29 +8,29 @@ import { ConfigService } from './config.service';
 })
 export abstract class ApiServiceBase {
 
-    public all: any =[];
-    public meta:any;
-    public getAllOK:Subject<any> = new Subject();
-    public getAllKO:Subject<any> = new Subject();
-    public total_count:number  = 0;
+    abstract all: any;
+    abstract meta:any;
+    abstract getAllOK:Subject<any>;
+    abstract getAllKO:Subject<any>;
+    abstract total_count:number;
 
-    public one:any;
-    public getOneOK:Subject<any> = new Subject();
-    public getOneKO:Subject<any> = new Subject();
+    abstract one:any;
+    abstract getOneOK:Subject<any>;
+    abstract getOneKO:Subject<any>;
 
-    public deleted_id:number;
-    public deletedOK:Subject<any> = new Subject();
-    public deletedKO:Subject<any> = new Subject();
+    abstract deleted_id:number;
+    abstract deletedOK:Subject<any>;
+    abstract deletedKO:Subject<any>;
 
-    public edited_id:number;
-    public editedOK:Subject<any> = new Subject();
-    public editedKO:Subject<any> = new Subject();
+    abstract edited_id:number;
+    abstract editedOK:Subject<any>;
+    abstract editedKO:Subject<any>;
 
-    public post_id:number;
-    public postedOK:Subject<any> = new Subject();
-    public postedKO:Subject<any> = new Subject();
+    abstract post_id:number;
+    abstract postedOK:Subject<any>;
+    abstract postedKO:Subject<any>;
 
-    public last_err:any;
+    abstract last_err:any;
 
 
     constructor(
@@ -53,14 +53,21 @@ export abstract class ApiServiceBase {
         );
     }
 
-    public getAll( getParams:string = '' ){
+    public getAll( params:any = {} ){
+        let getParams:string = '';
+        if (params.hasOwnProperty('getParams')){
+            getParams = params.getParams; 
+        }
+
         this.http.get(this.config.apiUrl(`${this.recurso}?${getParams}`) ).subscribe(
-            ok  => { 
+            (ok:any)  => { 
                 this.all  = ok['items']; 
                 this.meta = ok['_meta'];
                 this.getAllOK.next(ok);  
+
+                if ( params.hasOwnProperty('callback') ){ params.callback(); }
             },
-            err => { this.last_err = err; this.getAllKO.next(err); }
+            (err) => { this.last_err = err; this.getAllKO.next(err); }
         );
     }
 
@@ -104,13 +111,13 @@ export abstract class ApiServiceBase {
         xhr.send();
     }
 
-    public img_hfi_result = null;
-    public image_data:any;
-    public file_data:any;
-    public file_data_extension:string;
+    abstract img_hfi_result;
+    abstract image_data;
+    abstract file_data;
+    abstract file_data_extension;
 
-    public imageOnSuccess:Subject<any> = new Subject();
-    public imageOnError:Subject<any> = new Subject();
+    abstract imageOnSuccess:Subject<any>;
+    abstract imageOnError:Subject<any>;
     handleFileInput(files: FileList) {
         let me     = this;
         let file   = files[0];

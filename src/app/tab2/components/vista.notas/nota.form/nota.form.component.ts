@@ -1,141 +1,116 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
-import { NgbDateStruct, NgbCalendar, NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 
-import { filter } from 'rxjs/operators';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
-import { Nota } from 'src/app/models/nota';
 import { AuthService } from 'src/app/modules/autentication/services/auth.service';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { FormateoService } from 'src/app/services/formateo.service';
-import { PrivateCategoriaService } from 'src/app/services/private.categoria.service';
+import { PrivateCategoriaService2 } from 'src/app/services/private.categoria.service2';
+
 import { PrivateDocumentoService } from 'src/app/services/private.documento.service';
-import { PrivateEstadoService } from 'src/app/services/private.estado.service';
+import { PrivateEstadoService2 } from 'src/app/services/private.estado.service2';
 import { PrivateImagenService } from 'src/app/services/private.imagen.service';
-import { PrivateNotaService } from 'src/app/services/private.nota.service';
+import { PrivateNotaService2 } from 'src/app/services/private.nota.service2';
+
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
-import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
+
+import { PrivateTipoNotaService2 } from 'src/app/services/private.tipo.nota.service2';
 
 @Component({
   selector: 'app-nota.form',
   templateUrl: './nota.form.component.html',
   styleUrls: ['./nota.form.component.scss'],
 })
-export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestroy {
+export class NotaFormComponent  implements OnInit, OnDestroy {
 
   @ViewChild('dp') dp: NgbDatepicker;
 
-  public model:Nota    = new Nota();
   public color_categoria = "#FFF";
   public color_tipo_nota = "#FFF";
   public estados:any = [];
 
-  private router_subs:any;
-  
-  private getAllSubj:any = [];
-  private imageOnSuccessSubj:any;
-  private base64ConvertCallBackSubj:any;
-
-  private thisPage:string = '';
-  private imagenes_nota:any = [];
-  private getedSubj:any;
+  private subcripciones:any = [];
 
   constructor(
-    private alertController:             AlertController,
-    public  loadingController:           LoadingController,
-    public ref:                          ChangeDetectorRef,
-    private router:                      Router,
-    public  privateNotaService:          PrivateNotaService,
+    public  privateNotaService:          PrivateNotaService2,
+
     public  privateObrasService:         PrivateObrasService,
-    public  privateCategoriaService:     PrivateCategoriaService,
-    private privateEstadoService:        PrivateEstadoService,
+    public  privateCategoriaService:     PrivateCategoriaService2,
+    private privateEstadoService:        PrivateEstadoService2,
+
     private formateoService:             FormateoService,
-    public  privateTipoNotaService:      PrivateTipoNotaService,
+    public  privateTipoNotaService:      PrivateTipoNotaService2,
     private privateImagenService:        PrivateImagenService,
     public  configService:               ConfigService,
     public  privateDocumentoService:     PrivateDocumentoService,
     public  authService:                 AuthService, 
-  ) {
-    super(alertController, loadingController, ref, authService);
-
-    if (this.getAllSubj.length == 0){
-      this.getAllSubj.push(
-        //[REFACTORIZAR] this.privateObrasService.getAllOK.subscribe({ next:(data) => {
-          //[REFACTORIZAR] if (this.privateNotaService.accion == 'Nueva'){
-              //[REFACTORIZAR] this.model.obra_id = String(this.privateNotaService.nueva_nota_obra_id);
-          //[REFACTORIZAR] } else {
-              //[REFACTORIZAR] this.model.obra_id = String(this.model.obra_id);
-          //[REFACTORIZAR] }
-//[REFACTORIZAR]         }})
-      );
-      this.getAllSubj.push(
-        this.privateCategoriaService.getAllOK.subscribe({ next:(data) => {
-          this.model.categoria_id = String(this.model.categoria_id);
-        }})
-      );
-
-      this.getAllSubj.push(
-        this.privateTipoNotaService.getAllOK.subscribe({ next:(data) => {
-          this.model.tipo_nota_id = String(this.model.tipo_nota_id);
-        }})
-      );
-
-      this.getAllSubj.push(
-        this.privateEstadoService.getAllOK.subscribe({ next:(data) => {
-          this.model.estado_id = String(this.model.estado_id);
-        }})
-      );
-    }
-
-    if (this.router_subs == undefined){
-      this.router_subs = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(async (event: NavigationEnd) => {
-        if (event.url.search('crear_nota') != -1) {
-          this.model = new Nota();
-          this.thisPage = '/tabs/tab2/crear_nota';
-          this.color_categoria = "#FFF";
-          this.color_tipo_nota = "#FFF";
-        } else 
-        if (event.url.search('editar_nota') != -1){
-          this.thisPage = '/tabs/tab2/editar_nota';
-        }
-      });
-    }
-
-    if (this.imageOnSuccessSubj == undefined){
-      this.imageOnSuccessSubj = this.imageOnSuccess.subscribe({ next:(p) => {
-        console.log(p);
-        switch (p.extension){
-            case 'pdf': case 'otf': case 'doc': case 'docx': case 'xls': case 'csv': case 'ott': case 'ods': case 'txt':
-              this.privateNotaService.nota_documentos.push(p);
-            break;
     
-            case 'png': case 'jpg': case 'jpeg': case 'webp': case 'bmp':
-              this.privateNotaService.nota_images.push(p);
-            break;
-        }
+    private appUIUtilsService:           AppUIUtilsService, 
+    private activatedRoute:              ActivatedRoute
+    ) {
+
+    }
+
+    ngOnInit() {
+        //SUBSCRIPCIONES
+        this.subcripciones.push(
+            this.activatedRoute.paramMap.subscribe(async params => { 
+                this.privateNotaService.inic_modelo();
+
+                let id:any = params.get('id_obra');
+                if (id !== null){
+                    this.privateNotaService.modelo_edit.obra_id = String(id);
+                }
+            })
+        );
         
-      }});
-    }
+        //NOS ASEGURAMOS DE CARGAR EL LISTADO DE OBRAS
+        //SOLO LAS QUE ESTAN HABILITADAS
+        if (this.privateObrasService.all.length == 0){
+            this.appUIUtilsService.presentLoading({ message: 'Consultando listado de obras...' });
 
-    if (this.getedSubj == undefined){
-      this.getedSubj = this.privateNotaService.getEdOk.subscribe({ next:(p:any) => {
-        this.model = p;
-      }});
-    }
-  }
+            this.privateObrasService.getAll({
+                getParams: 'filter[habilitada]=1',
+                callback: ()=>{ 
+                    this.appUIUtilsService.dissmisLoading();
+                }
+            });
+        }
 
-  ngOnInit() {
-  }
+        //NOS ASEGURAMOS DE CARGAR LAS TIPOS DE NOTAS
+        if (this.privateTipoNotaService.all.length == 0){
+            this.appUIUtilsService.presentLoading({ message: 'Consultando listado de tipos de notas...' });
+
+            this.privateTipoNotaService.getAll({
+                getParams: '',
+                callback: ()=>{
+                    this.appUIUtilsService.dissmisLoading();
+                }
+            });
+        }
+
+        //NOS ASEGURAMOS DE CARGAR LAS CATEGORIAS
+        if (this.privateCategoriaService.all.length == 0){
+            this.appUIUtilsService.presentLoading({ message: 'Consultando listado de categorias...' });
+
+            this.privateCategoriaService.getAll({
+                getParams: '',
+                callback: ()=>{
+                    this.appUIUtilsService.dissmisLoading();
+                }
+            });
+        }        
+    }
 
   async deleteDoc(documento, i){
-      if (!documento.hasOwnProperty('fromnota')) {
-        this.privateNotaService.nota_documentos.splice(i);
-        return true;
-      }
+     //[REFACTORIZAR] if (!documento.hasOwnProperty('fromnota')) {
+       //[REFACTORIZAR] this.privateNotaService.nota_documentos.splice(i);
+    //[REFACTORIZAR]    return true;
+    //[REFACTORIZAR]  }
 
-      const alert = await this.alertController.create({
+     /* const alert = await this.alertController.create({
         header: 'Atención',
         message: 'Está por eliminar el documento ¿desea continuar?.',
         buttons: [{
@@ -151,128 +126,88 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
           }
         }]
       });
-      await alert.present();
+      await alert.present();*/
   }
 
   async borrar_doc(documento){
-    const loading = await this.loadingController.create({ message: 'Borrando documento' });
+    /*const loading = await this.loadingController.create({ message: 'Borrando documento' });
     await loading.present();
     this.privateDocumentoService.delete(documento.id).subscribe(
       ok => {
         loading.dismiss();
-        let nota_id = this.privateNotaService.nota_edit_id;
-        this.privateNotaService.goToEdit({ page:this, nota_id:nota_id });
+     //[REFACTORIZAR]   let nota_id = this.privateNotaService.nota_edit_id;
+    //[REFACTORIZAR]    this.privateNotaService.goToEdit({ page:this, nota_id:nota_id });
       },
       err => {
         loading.dismiss();
-        this.displayAlert('Ocurrió un error al intentar eliminar la nota. ');
+        this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota. ');
       }
-    );
+    );*/
   }
 
 
   ver_imagen(i){
-    this.privateNotaService.navigationOrigin = '/tabs/tab2/editar_nota';
+   //[REFACTORIZAR] this.privateNotaService.navigationOrigin = '/tabs/tab2/editar_nota';
     this.privateImagenService.goToEdit({ page:this, img_id:i.id });
   }
 
-  categoria_change(){
-    for (let c=0; c < this.privateCategoriaService.all.length; c++){
-      if (this.privateCategoriaService.all[c].id == this.model.categoria_id){
-        this.color_categoria = this.privateCategoriaService.all[c].color;
-        this.cargar_estados(this.model.categoria_id);
-        break;
-      } 
-    }
-  }
-
-  tiponota_change(){
-    for (let c=0; c<this.privateTipoNotaService.all.length; c++){
-      if (this.privateTipoNotaService.all[c].id == this.model.tipo_nota_id){
-        this.color_tipo_nota = this.privateTipoNotaService.all[c].color;
-        break;
-      }
-    }
-  }
-
-  cargar_estados(id){
-    this.loadingEspecificData(this.privateEstadoService, 'filter[categoria_id]='+id,   'estados', 'Consultando Estados.');
-  }
-
-  async ingresar(){
-    if ( !this.model.hasOwnProperty('nota') || this.model.nota == ''){
-      super.displayAlert("Es necesario completar el texto correspondiente a la nota."); return false;
-    }
-
-    if ( !this.model.hasOwnProperty('categoria_id') || this.model.categoria_id == -1){
-      super.displayAlert("Es necesario definir una categoría."); return false;
-    }
-
-    if ( !this.model.hasOwnProperty('estado_id') || this.model.estado_id == -1){
-      super.displayAlert("Es necesario definir un estado."); return false;
-    }
-    
-    if ( !this.model.hasOwnProperty('obra_id') || this.model.obra_id == undefined ||  this.model.obra_id == "undefined"){
-      super.displayAlert("Es necesario definir una obra."); return false;
-    }
-
-    if ( !this.model.hasOwnProperty('vencimiento') || this.model.vencimiento == undefined){
-      super.displayAlert("Es necesario definir una fecha de vencimiento."); return false;
-    }
-    const loading = await this.loadingController.create({ message: "Por favor espere..." });
-    loading.present();
-    this.model.vencimiento = this.formateoService.getDateNgbDatepickerArray(this.model.vencimiento);
-    this.model.vencimiento.setSeconds(this.model.vencimiento_hora.second);
-    this.model.vencimiento.setHours(this.model.vencimiento_hora.hour);
-    this.model.vencimiento.setMinutes(this.model.vencimiento_hora.minute);
-    this.model.vencimiento = this.formateoService.getFechaISOASP(this.model.vencimiento);
-
-    this.model.images = this.privateNotaService.nota_images;
-    this.model.documents = this.privateNotaService.nota_documentos;
-
-    if (this.privateNotaService.accion == 'Nueva'){
-      this.privateNotaService.post(this.model).subscribe(
-        ok => {
-          super.displayAlert("Nuevo registro de Nota creado.");
-          loading.dismiss();
-          this.privateNotaService.goToNotas({ page:this });
-        },
-        err => {
-          super.displayAlert("Ha ocurrido un error, revise los datos del formulario o reintente mas tarde.");
-          loading.dismiss();
+    categoria_change(){
+        for (let c=0; c < this.privateCategoriaService.all.length; c++){
+            if (this.privateCategoriaService.all[c].id == this.privateNotaService.modelo_edit.categoria_id){
+                this.color_categoria = this.privateCategoriaService.all[c].color;
+                this.cargar_estados(this.privateNotaService.modelo_edit.categoria_id);
+                break;
+            } 
         }
-      );
-    }  else if (this.privateNotaService.accion == 'Editar'){
-      this.privateNotaService.put(this.model, this.model.id).subscribe(
-        ok => {
-          super.displayAlert("Se ha modificado la nota.");
-          loading.dismiss();
-          this.privateNotaService.goToNotas({ page:this, obra:this.model.obra_id, nombre_obre:this.privateNotaService.ver_nota_obra_nombre });
-        },
-        err => {
-          loading.dismiss();
-        }
-      );
     }
-  }
 
-  OnDestroy(){
-    this.router_subs.unsubscribe();
-    for (let c=0; c<this.getAllSubj.length;c++){
-      this.getAllSubj[c].unsubscribe();
+    tiponota_change(){
+        for (let c=0; c<this.privateTipoNotaService.all.length; c++){
+            if (this.privateTipoNotaService.all[c].id == this.privateNotaService.modelo_edit.tipo_nota_id){
+                this.color_tipo_nota = this.privateTipoNotaService.all[c].color;
+                break;
+            }
+        }
     }
-    this.imageOnSuccessSubj.unsubscribe();
-    this.getedSubj.unsubscribe();
-    this.base64ConvertCallBackSubj.unsubscribe();
-  }
+
+    cargar_estados(id){
+        //SE CARGAN LOS ESTADOS
+        this.appUIUtilsService.presentLoading({ message: 'Consultando listado de estados...' });
+
+        this.privateEstadoService.getAll({
+            getParams: 'filter[categoria_id]='+id,
+            callback: ()=>{ console.log(this.privateCategoriaService.all);
+                this.appUIUtilsService.dissmisLoading();
+            }
+        });
+    }
+
+    async ingresar(){
+
+        let validacionResult = this.privateNotaService.modelo_edit.datosValidos(); 
+        if ( !validacionResult.success ){
+            this.appUIUtilsService.displayAlert( validacionResult.msg );
+            return false;
+        }
+
+        this.privateNotaService.modelo_edit.preparar_envio( this.formateoService, this.privateNotaService );
+
+        this.privateNotaService.guardar_modelo();
+    }
+
+    ngOnDestroy(){
+        for (let c=0; c < this.subcripciones.length; c++){
+            this.subcripciones[c].unsubscribe();
+        }
+    }
   
   goBack(){
-    this.router.navigate([ this.privateNotaService.navigationOrigin ]);
+    //[REFACTORIZAR]this.router.navigate([ this.privateNotaService.navigationOrigin ]);
   }
 
   async deleteImg(i){
-    for (let c=0; c < this.privateNotaService.nota_images.length; c++){
-      if (this.privateNotaService.nota_images[c].name == i.name){
+    //[REFACTORIZAR]for (let c=0; c < this.privateNotaService.nota_images.length; c++){
+    /*  if (this.privateNotaService.nota_images[c].name == i.name){
         const alert = await this.alertController.create({
           header: 'Atención',
           message: 'Está por eliminar una imagen ¿desea continuar?.',
@@ -291,11 +226,11 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
         });
         await alert.present();
       }
-    }
+    }*/
   }
 
   async borrar_img(i:any){
-    const loading = await this.loadingController.create({ message: 'Borrando imagen' });
+   /* const loading = await this.loadingController.create({ message: 'Borrando imagen' });
     await loading.present();
     this.privateImagenService.delete(i.id).subscribe(
       ok => {
@@ -305,9 +240,9 @@ export class NotaFormComponent  extends ApiConsumer  implements OnInit, OnDestro
       },
       err => {
         loading.dismiss();
-        this.displayAlert('Ocurrió un error al intentar eliminar la imagen. ');
+        this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la imagen. ');
       }
-    );
+    );*/
   }
 
 }

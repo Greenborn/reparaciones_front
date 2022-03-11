@@ -124,40 +124,7 @@ export class PrivateNotaService extends ApiService<any>{
     public ver_nota_obra_id:number;
     public ver_nota_obra_nombre;
     async goToNotas(params:any = {}){
-      if (params.hasOwnProperty('nombre_obra')){
-        this.ver_nota_obra_nombre = params.nombre_obra;
-      }
-      if (params.hasOwnProperty('page')){
-        let page = params.page;
-        let params_peticion:string = 'expand=categoria,obra,tipoNota';
-        this.all = [];
-
-        if (params.hasOwnProperty('obra') && params.obra != undefined){
-          this.ver_nota_obra_id = params.obra;
-          params_peticion += '&filter[obra_id]='+this.ver_nota_obra_id;
-        } 
-
-        if (this.filtro_vencidas == 'vencidas'){
-          let date:any = new Date();
-          date = date.toISOString();
-          params_peticion += '&filter[vencimiento]=<' + date;
-        }
-
-        page.loadingEspecificData(this, params_peticion,   '', 'Consultando notas.');
-      } else {
-        const loading = await this.loadingController.create({ message: "Por favor espere..." });
-        loading.present();
-        let tmpSubj = this.getAll('expand=categoria,obra,tipoNota').subscribe(
-          ok => {  
-            tmpSubj.unsubscribe(); 
-            loading.dismiss();
-          },
-          err => { 
-            tmpSubj.unsubscribe(); 
-            loading.dismiss();
-          }
-        );
-      }
+      
       
       this.router.navigate([ '/tabs/tab2/notas' ]);
     }

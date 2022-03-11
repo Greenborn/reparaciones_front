@@ -22,6 +22,7 @@ const routes: Routes = [
 
       { path: 'tab2', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/crear_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]   },
+      { path: 'tab2/crear_nota/:id_obra', component: NotaFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab2/editar_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/notas', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
       

@@ -4,7 +4,7 @@
       <ion-back-button (click)="goBack()"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{titulo}}
+      {{privateNotaService.titulo_vista_notas}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -40,7 +40,7 @@
               <ion-col>
                 <ion-segment [value]="privateNotaService.filtro_vencidas" >
                   <ion-segment-button value="todas" (click)="consultar('todas')">
-                    Todas ({{privateNotaService.total_count}})
+                    Todas ({{privateNotaService.all.length}})
                   </ion-segment-button>
                   <ion-segment-button value="vencidas" (click)="consultar('vencidas')">
                     <span>Vencidas ({{privateNotaService.cant_vencidas}})</span>

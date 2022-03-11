@@ -16,11 +16,12 @@ import { NotaFormComponent } from './tab2/components/vista.notas/nota.form/nota.
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateCustomParserFormatter } from 'src/providers/ngb-date-custom-parser-formatter.provider';
 import { NgbDateCustomI18 } from 'src/providers/ngb-date-custom-i18.provider';
+import { LoadingComponent } from './components/loading/loading.component';
 
 
 @NgModule({
     declarations: [
-      AppComponent, NotaFormComponent
+      AppComponent, NotaFormComponent, LoadingComponent
     ],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,ColorPickerModule, FormsModule, AutenticationModule, HttpClientModule, IonicSelectableModule, NgbModule],
     providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{

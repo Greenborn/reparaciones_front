@@ -1,17 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
-import { Obra } from '../models/obra';
+import { Nota } from '../models/nota';
 import { ApiServiceBase } from './api.service.base';
 import { AppUIUtilsService } from './app.ui.utils.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PrivateObrasService extends ApiServiceBase{
+export class PrivateNotaService2 extends ApiServiceBase{
 
     all: any =[];
     meta:any;
@@ -49,9 +48,8 @@ export class PrivateObrasService extends ApiServiceBase{
       config:                        ConfigService,
       private router:                Router,
       private appUIUtilsService:     AppUIUtilsService,
-      private loadingController:     LoadingController
     ) {
-        super('private-obras', http, config);
+        super('private-nota', http, config);
         this.defSubscripcionesAPI();
     }
 
@@ -59,7 +57,7 @@ export class PrivateObrasService extends ApiServiceBase{
     private subscripciones:any = [];
 
     //modelos
-    public modelo_edit:Obra;
+    public modelo_edit:Nota;
 
     //Estados
     public operacion_actual:string = 'Nueva';
@@ -76,21 +74,18 @@ export class PrivateObrasService extends ApiServiceBase{
             this.put(this.modelo_edit, this.modelo_edit.id);
         }
     }
-    
 
-    public defSubscripcionesAPI(){
-        
-
-        //////////// OBRA
+    defSubscripcionesAPI(){
+        //////////// NOTAS
         //GET ALL
         this.subscripciones.push( this.getAllOK.subscribe({ next:(p:any) => {
-            
+            this.appUIUtilsService.dissmisLoading();
         }}));
 
-        //ERROR AL INTENTAR OBTENER LISTA DE OBRAS
+        //ERROR AL INTENTAR OBTENER LISTA DE NOTAS
         this.subscripciones.push( this.getAllKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de obras.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de notas.');
             console.log(this.last_err);
         }}));
 
@@ -98,15 +93,12 @@ export class PrivateObrasService extends ApiServiceBase{
         this.subscripciones.push( this.getOneOK.subscribe({ next:(p:any) => {
             this.modelo_edit = this.one;
             this.appUIUtilsService.dissmisLoading();
-            if (this.modelo_edit['imagen']!= null){
-                this.imgUrlToBase64(this.config.apiUrl(this.modelo_edit[`imagen`].url));
-            } 
         }}));
 
-        //ERROR AL INTENTAR OBTENER OBRA
+        //ERROR AL INTENTAR OBTENER Nota
         this.subscripciones.push( this.getOneKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la obra.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la nota.');
             console.log(this.last_err);
         }}));
 
@@ -114,29 +106,29 @@ export class PrivateObrasService extends ApiServiceBase{
         this.subscripciones.push( this.postedOK.subscribe({ next:(p:any) => {
                 this.appUIUtilsService.displayAlert("Nuevo registro de Obra creado.");
                 this.appUIUtilsService.dissmisLoading();
-                this.recargarObras(this);
+                this.getNotas();
                 this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.postedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la obra.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la nota.');
             console.log(this.last_err);
         }}));
 
         //PUT 
         this.subscripciones.push( this.editedOK.subscribe({ next:(p:any) => {
-                this.appUIUtilsService.displayAlert("Se ha modificado la obra.");
+                this.appUIUtilsService.displayAlert("Se ha modificado la nota.");
                 this.appUIUtilsService.dissmisLoading();
-                this.recargarObras();
+                this.getNotas();
                 this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.editedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la obra.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la nota.');
             console.log(this.last_err);
         }}));
 
@@ -144,84 +136,93 @@ export class PrivateObrasService extends ApiServiceBase{
         this.subscripciones.push( this.deletedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
             this.appUIUtilsService.displayAlert('Obra eliminada correctamente.');
-            this.recargarObras();
+            this.getNotas();
         }}));
 
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading(); 
-            this.recargarObras();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la obra.');
-        }}));
-
-
-        //////////////////////// MANEJO DE IMAGENES
-        this.subscripciones.push( this.imageOnSuccess.subscribe({ next:(p:any) => {
-            this.modelo_edit.imagen_data = this.image_data;
-        }}));
-
-        this.subscripciones.push( this.base64ConvertCallBack.subscribe({ next:(p) => {
-            this.image_data = { file: p.base64 };
+            this.getNotas();
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota.');
         }}));
     }
 
-    public desubscriptAPI(){
-        for (let c=0; c < this.subscripciones.length; c++){
-            this.subscripciones[c].unsubscribe();
+
+    // NOTAS VENCIDAS
+    public cant_vencidas:number   = 0;
+    public notas_vencidas:any     = [];
+    public filtro_vencidas:string = 'todas';
+
+    obtenerNotasVencidas(){
+        let date:any = new Date();
+        date         = date.toISOString();
+
+        let params = 'filter[vencimiento]=<' + date;
+        this.getAll( { getParams:params, callback:() => {
+            this.notas_vencidas = this.all;
+            this.cant_vencidas  = this.all.length;
+        } });
+    }
+
+    //NAVEGACION
+    //NUEVA NOTA
+    public nota_documentos:any = [];
+    public nota_images:any     = [];
+    goToNueva( params:any = {} ){
+        let ruta:string = '/tabs/tab2/crear_nota';
+        if ( params.hasOwnProperty('obra_id') ){
+            ruta += '/' + params.obra_id;
         }
+        this.router.navigate([ ruta ]);
     }
 
-    public obra_filter_enabled:string = 'enabled';
-
-     public recargarObras( params:any = {} ){
-        let filter:string    = '';
-        let paramsGetAll:any = {};
-        this.appUIUtilsService.presentLoading({ message: 'Consultando listado de obras...' });
-
-        if ( this.obra_filter_enabled == 'enabled' ){
-            filter = 'filter[habilitada]=1';
-        }
-
-        paramsGetAll.getParams = String(filter+'&expand=imagen');
-        paramsGetAll.callback  = () => {
-            this.appUIUtilsService.dissmisLoading();
-
-            if ( params.hasOwnProperty('callback') ){
-                params.callback();
-            }
-        };
-
-        this.getAll( paramsGetAll );
-        this.router.navigate([ '/tabs/tab1' ]);
-    }
-
-    ///Borrandoprivate extra_del_params:any = {};
-    borrar_obra(obra:Obra){
-        this.appUIUtilsService.presentLoading({ message: 'Borrando obra: ' + obra.nombre_alias});
-        this.delete(obra.id);
-    }
-
-    eliminar_info_imagen(){
-        this.image_data              = undefined;
-    }
-
-    /// NAVEGACION
-    goToEdit( id:number ){
-        this.router.navigate([ '/tabs/tab1/editar_obra/'+id ]);
-        this.operacion_actual = 'Editar';
-        this.appUIUtilsService.presentLoading({ message: 'Consultando obra...' });
-        this.modelo_edit      = undefined;
-        this.get(id, 'expand=imagen');
-    }
-
-    goToCreate(){
-        this.router.navigate([ '/tabs/tab1/crear_obra' ]);
-        this.modelo_edit      = new Obra();
-        this.eliminar_info_imagen();
-        this.operacion_actual = 'Nueva';
+    inic_modelo( params:any = {}){
+        this.modelo_edit = new Nota( params );
     }
 
     goBack(){
-        this.router.navigate([ '/tabs/tab1' ]);
+
     }
-    
+
+    //VISTA DE NOTAS
+    public ver_nota_obra_nombre:string;
+    public ver_nota_obra_id:number;
+    public titulo_vista_notas:string = 'Notas de obra';
+
+    goToNotas( params:any = {} ){ //OBTINE LAS NOTAS Y NAVEGA A LA VISTA DE NOTAS
+        this.titulo_vista_notas = 'Notas de obra';
+
+        if (params.hasOwnProperty('nombre_obra')){
+            this.ver_nota_obra_nombre = params.nombre_obra;
+            this.titulo_vista_notas += ' ' + this.ver_nota_obra_nombre; 
+        }
+
+        this.getNotas( params );
+
+        this.router.navigate([ '/tabs/tab2/notas' ]);
+    }
+
+    getNotas( params:any = {} ){ //HACE LA RECARGA DE NOTAS SIN OCUPARSE DE CUESTIONES DE LA VISTA
+        let paramsGetAll:any = { getParams:'' };
+        if (params.hasOwnProperty('getParams')){
+            paramsGetAll.getParams = params.getParams;
+        }
+
+        if (params.hasOwnProperty('obra') && params.obra != undefined){
+            this.ver_nota_obra_id = params.obra;
+            paramsGetAll.getParams += '&filter[obra_id]='+this.ver_nota_obra_id;
+        } 
+
+        if (this.filtro_vencidas == 'vencidas') {
+            let date:any            = new Date();
+            date                    = date.toISOString();
+            paramsGetAll.getParams += '&filter[vencimiento]=<' + date;
+        }
+
+        paramsGetAll.callback = () => {
+            this.appUIUtilsService.dissmisLoading();
+        };
+
+        this.appUIUtilsService.presentLoading({ message: 'Consultando listado de notas...' });
+        this.getAll( paramsGetAll );
+    }
 }

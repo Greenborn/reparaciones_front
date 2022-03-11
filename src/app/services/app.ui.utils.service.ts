@@ -11,8 +11,6 @@ export class AppUIUtilsService {
         public loadingController: LoadingController
     ) { }
 
-    
-
     async displayAlert(message: string, header:string = 'Info') {
         (await this.alertCtrl.create({
           header: header,
@@ -24,21 +22,15 @@ export class AppUIUtilsService {
         })).present()
     }
 
-    private loading:any = null;
-    async presentLoading( loadingParams ){
-        //si ya hay un loading instanciado lo cerramos y reemplazom por el nuevo
-        if (this.loading !== null){
-            this.loading.dismiss();
-            this.loading = null;
-        }
-        this.loading = await this.loadingController.create( loadingParams );
-        this.loading.present();
-    }
 
-    dissmisLoading(){ 
-        if (this.loading !== null){
-            this.loading.dismiss();
-            this.loading = null;
-        }
+    public loadingMsg:string;
+    public loadingPresent:boolean = false;
+    presentLoading( params ) {
+        this.loadingPresent = true;
+        this.loadingMsg = params.message;
+    }
+    
+    dissmisLoading() {
+        this.loadingPresent = false;
     }
 }

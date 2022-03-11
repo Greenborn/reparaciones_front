@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
-import { PrivateNotaService } from 'src/app/services/private.nota.service';
+import { PrivateNotaService2 } from 'src/app/services/private.nota.service2';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
 @Component({
@@ -18,26 +18,23 @@ export class ObrasMenuComponent implements OnInit, OnDestroy {
         private alertController:       AlertController,
 
         private privateObrasService:   PrivateObrasService,
-        private privateNotaService:    PrivateNotaService,
+        private privateNotaService:    PrivateNotaService2,
         private appUIUtilsService:     AppUIUtilsService,
     ) { 
     }
-
-    private editedSubj:any;
 
     ngOnInit() {
     }
 
     ngOnDestroy(){
-        this.editedSubj.unsubscribe();
     }
 
     volver(){
-        this.modal.dismiss('d');
+        this.modal.dismiss();
     }
 
     nueva_nota(obra){
-        this.privateNotaService.goToNueva({ page:this, obra_id:obra.id, navigationOrigin:'/tabs/tab1' });
+        this.privateNotaService.goToNueva({ obra_id:obra.id, navigationOrigin:'/tabs/tab1' });
         this.volver();
     }
 
@@ -47,7 +44,11 @@ export class ObrasMenuComponent implements OnInit, OnDestroy {
     }
 
     ver_notas(obra:any){
-        this.privateNotaService.goToNotas({ page:this, obra:obra.id, nombre_obra:obra.nombre_alias });
+        this.privateNotaService.goToNotas({ 
+            obra:        obra.id, 
+            nombre_obra: obra.nombre_alias, 
+            getParams:   'expand=categoria,obra,tipoNota'
+        });
         this.volver();
     }
 

@@ -4,14 +4,15 @@ import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
-import { Obra } from '../models/obra';
+import { TipoNota } from '../models/tipo.nota';
+
 import { ApiServiceBase } from './api.service.base';
 import { AppUIUtilsService } from './app.ui.utils.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PrivateObrasService extends ApiServiceBase{
+export class PrivateEstadoService2 extends ApiServiceBase{
 
     all: any =[];
     meta:any;
@@ -51,7 +52,7 @@ export class PrivateObrasService extends ApiServiceBase{
       private appUIUtilsService:     AppUIUtilsService,
       private loadingController:     LoadingController
     ) {
-        super('private-obras', http, config);
+        super('private-estado', http, config);
         this.defSubscripcionesAPI();
     }
 
@@ -59,7 +60,7 @@ export class PrivateObrasService extends ApiServiceBase{
     private subscripciones:any = [];
 
     //modelos
-    public modelo_edit:Obra;
+    public modelo_edit:TipoNota;
 
     //Estados
     public operacion_actual:string = 'Nueva';
@@ -76,21 +77,18 @@ export class PrivateObrasService extends ApiServiceBase{
             this.put(this.modelo_edit, this.modelo_edit.id);
         }
     }
-    
 
-    public defSubscripcionesAPI(){
-        
-
-        //////////// OBRA
+    defSubscripcionesAPI(){
+        //////////// NOTAS
         //GET ALL
         this.subscripciones.push( this.getAllOK.subscribe({ next:(p:any) => {
-            
+            this.appUIUtilsService.dissmisLoading();
         }}));
 
-        //ERROR AL INTENTAR OBTENER LISTA DE OBRAS
+        //ERROR AL INTENTAR OBTENER LISTA DE NOTAS
         this.subscripciones.push( this.getAllKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de obras.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de notas.');
             console.log(this.last_err);
         }}));
 
@@ -98,15 +96,12 @@ export class PrivateObrasService extends ApiServiceBase{
         this.subscripciones.push( this.getOneOK.subscribe({ next:(p:any) => {
             this.modelo_edit = this.one;
             this.appUIUtilsService.dissmisLoading();
-            if (this.modelo_edit['imagen']!= null){
-                this.imgUrlToBase64(this.config.apiUrl(this.modelo_edit[`imagen`].url));
-            } 
         }}));
 
-        //ERROR AL INTENTAR OBTENER OBRA
+        //ERROR AL INTENTAR OBTENER Nota
         this.subscripciones.push( this.getOneKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la obra.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la nota.');
             console.log(this.last_err);
         }}));
 
@@ -114,7 +109,7 @@ export class PrivateObrasService extends ApiServiceBase{
         this.subscripciones.push( this.postedOK.subscribe({ next:(p:any) => {
                 this.appUIUtilsService.displayAlert("Nuevo registro de Obra creado.");
                 this.appUIUtilsService.dissmisLoading();
-                this.recargarObras(this);
+                this.getTipoNotas();
                 this.goBack();
         }}));
 
@@ -129,7 +124,7 @@ export class PrivateObrasService extends ApiServiceBase{
         this.subscripciones.push( this.editedOK.subscribe({ next:(p:any) => {
                 this.appUIUtilsService.displayAlert("Se ha modificado la obra.");
                 this.appUIUtilsService.dissmisLoading();
-                this.recargarObras();
+                this.getTipoNotas();
                 this.goBack();
         }}));
 
@@ -144,84 +139,30 @@ export class PrivateObrasService extends ApiServiceBase{
         this.subscripciones.push( this.deletedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
             this.appUIUtilsService.displayAlert('Obra eliminada correctamente.');
-            this.recargarObras();
+            this.getTipoNotas();
         }}));
 
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading(); 
-            this.recargarObras();
+            this.getTipoNotas();
             this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la obra.');
         }}));
-
-
-        //////////////////////// MANEJO DE IMAGENES
-        this.subscripciones.push( this.imageOnSuccess.subscribe({ next:(p:any) => {
-            this.modelo_edit.imagen_data = this.image_data;
-        }}));
-
-        this.subscripciones.push( this.base64ConvertCallBack.subscribe({ next:(p) => {
-            this.image_data = { file: p.base64 };
-        }}));
     }
 
-    public desubscriptAPI(){
-        for (let c=0; c < this.subscripciones.length; c++){
-            this.subscripciones[c].unsubscribe();
-        }
-    }
 
-    public obra_filter_enabled:string = 'enabled';
-
-     public recargarObras( params:any = {} ){
-        let filter:string    = '';
-        let paramsGetAll:any = {};
-        this.appUIUtilsService.presentLoading({ message: 'Consultando listado de obras...' });
-
-        if ( this.obra_filter_enabled == 'enabled' ){
-            filter = 'filter[habilitada]=1';
-        }
-
-        paramsGetAll.getParams = String(filter+'&expand=imagen');
-        paramsGetAll.callback  = () => {
-            this.appUIUtilsService.dissmisLoading();
-
-            if ( params.hasOwnProperty('callback') ){
-                params.callback();
-            }
-        };
-
-        this.getAll( paramsGetAll );
-        this.router.navigate([ '/tabs/tab1' ]);
-    }
-
-    ///Borrandoprivate extra_del_params:any = {};
-    borrar_obra(obra:Obra){
-        this.appUIUtilsService.presentLoading({ message: 'Borrando obra: ' + obra.nombre_alias});
-        this.delete(obra.id);
-    }
-
-    eliminar_info_imagen(){
-        this.image_data              = undefined;
-    }
-
-    /// NAVEGACION
-    goToEdit( id:number ){
-        this.router.navigate([ '/tabs/tab1/editar_obra/'+id ]);
-        this.operacion_actual = 'Editar';
-        this.appUIUtilsService.presentLoading({ message: 'Consultando obra...' });
-        this.modelo_edit      = undefined;
-        this.get(id, 'expand=imagen');
-    }
-
-    goToCreate(){
-        this.router.navigate([ '/tabs/tab1/crear_obra' ]);
-        this.modelo_edit      = new Obra();
-        this.eliminar_info_imagen();
-        this.operacion_actual = 'Nueva';
+    //NAVEGACION
+    //NUEVO TIPO de NOTA
+    goToNueva( params ){
+        this.modelo_edit = new TipoNota();
+        this.router.navigate([ '/tabs/tab2/crear_nota' ]);
     }
 
     goBack(){
-        this.router.navigate([ '/tabs/tab1' ]);
+
+    }
+
+    getTipoNotas(){
+
     }
     
 }

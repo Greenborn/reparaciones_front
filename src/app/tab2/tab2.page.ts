@@ -19,12 +19,12 @@ export class Tab2Page extends ApiConsumer  {
   constructor(
     public  loadingController:            LoadingController,
     private alertController:              AlertController,
-    private privateNotaService:           PrivateNotaService,
+   //[REFACTORIZAR] private privateNotaService:           PrivateNotaService,
     public changeDetectorRef:             ChangeDetectorRef,
     public  authService:                  AuthService,
   ) {
     super(alertController, loadingController, changeDetectorRef, authService);
-    this.privateNotaService.goToNotas({page:this});
+    //[REFACTORIZAR]this.privateNotaService.goToNotas({page:this});
   }
 
   ngOnInit() {

@@ -26,7 +26,7 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Obra:</ion-label>
-                    <ion-select placeholder="Selecionar Obra"  [(ngModel)]="model.obra_id" cancelText="Cancelar">
+                    <ion-select placeholder="Selecionar Obra"  [(ngModel)]="privateNotaService.modelo_edit.obra_id" cancelText="Cancelar">
                       <ion-select-option *ngFor="let obra of privateObrasService.all" value="{{obra.id}}">{{obra.nombre_alias}}</ion-select-option>
                     </ion-select>
                   </ion-item>
@@ -37,7 +37,7 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Tipo de Nota:</ion-label>
-                    <ion-select placeholder="Selecionar Tipo de Nota" style="background-color: {{color_tipo_nota}};"  [(ngModel)]="model.tipo_nota_id" (ionChange)="tiponota_change()" cancelText="Cancelar">
+                    <ion-select placeholder="Selecionar Tipo de Nota" style="background-color: {{color_tipo_nota}};"  [(ngModel)]="privateNotaService.modelo_edit.tipo_nota_id" (ionChange)="tiponota_change()" cancelText="Cancelar">
                       <ion-select-option *ngFor="let tipo_nota of privateTipoNotaService.all" value="{{tipo_nota.id}}">{{tipo_nota.nombre}}</ion-select-option>
                     </ion-select>
                   </ion-item>
@@ -48,7 +48,7 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Categoría:</ion-label>
-                    <ion-select placeholder="Selecionar Categoría" style="background-color: {{color_categoria}};"  [(ngModel)]="model.categoria_id" (ionChange)="categoria_change()" cancelText="Cancelar">
+                    <ion-select placeholder="Selecionar Categoría" style="background-color: {{color_categoria}};"  [(ngModel)]="privateNotaService.modelo_edit.categoria_id" (ionChange)="categoria_change()" cancelText="Cancelar">
                       <ion-select-option *ngFor="let categoria of privateCategoriaService.all" value="{{categoria.id}}">{{categoria.nombre}}</ion-select-option>
                     </ion-select>
                   </ion-item>
@@ -59,7 +59,7 @@
                 <ion-col>
                   <ion-item>
                     <ion-label position="floating">Nota</ion-label>
-                    <ion-textarea  rows="5" placeholder="Nueva nota" type="textarea" [(ngModel)]="model.nota"></ion-textarea>
+                    <ion-textarea  rows="5" placeholder="Nueva nota" type="textarea" [(ngModel)]="privateNotaService.modelo_edit.nota"></ion-textarea>
                   </ion-item>
                 </ion-col>
               </ion-row>
@@ -68,8 +68,8 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Estado:</ion-label>
-                    <ion-select placeholder="Selecionar Estado" [(ngModel)]="model.estado_id" cancelText="Cancelar">
-                      <ion-select-option *ngFor="let estado of estados" value="{{estado.id}}">{{estado.nombre}}</ion-select-option>
+                    <ion-select placeholder="Selecionar Estado" [(ngModel)]="privateNotaService.modelo_edit.estado_id" cancelText="Cancelar">
+                      <ion-select-option *ngFor="let estado of privateEstadoService.all" value="{{estado.id}}">{{estado.nombre}}</ion-select-option>
                     </ion-select>
                   </ion-item>
                 </ion-col>
@@ -82,10 +82,10 @@
                   </ion-row>
                   <ion-row>
                     <ion-col>
-                        <ngb-datepicker #dp [(ngModel)]="model.vencimiento"></ngb-datepicker>
+                        <ngb-datepicker #dp [(ngModel)]="privateNotaService.modelo_edit.vencimiento"></ngb-datepicker>
                     </ion-col>
                     <ion-col>
-                        <ngb-timepicker #tp [(ngModel)]="model.vencimiento_hora"></ngb-timepicker>
+                        <ngb-timepicker #tp [(ngModel)]="privateNotaService.modelo_edit.vencimiento_hora"></ngb-timepicker>
                     </ion-col>
                   </ion-row>
                 </ion-col>

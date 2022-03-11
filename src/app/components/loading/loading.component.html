@@ -1,0 +1,31 @@
+<div class="app-loading" *ngIf="appUIUtilsService.loadingPresent">
+
+  <div class="container h-100">
+    <div class="row h-100">
+      <div class="mt-auto mb-auto col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+
+        <div class="card">
+          <div class="card-body shadow">
+
+            <div class="row">
+              <div class="col-auto">
+                <div class="spinner-border text-info" role="status">
+                  <span class="sr-only">{{appUIUtilsService.loadingMsg}}</span>
+                </div>
+              </div>
+
+              <div class="col align-self-center">
+                <span>{{appUIUtilsService.loadingMsg}}</span>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+</div>

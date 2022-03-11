@@ -22,7 +22,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     public  ref:                         ChangeDetectorRef,
     private router:                      Router,
     private privateImageService:         PrivateImagenService,
-    private privateNotaService:          PrivateNotaService,
+   //[REFACTORIZAR] private privateNotaService:          PrivateNotaService,
     public  authService:                 AuthService,
   ) { 
     super(alertController, loadingController, ref, authService);    
@@ -53,7 +53,7 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
   }
 
   goBack(){
-    this.privateNotaService.goToEdit({ page:this, nota_id: this.imagen.id_nota });
+ //[REFACTORIZAR]   this.privateNotaService.goToEdit({ page:this, nota_id: this.imagen.id_nota });
     this.router.navigate([ this.privateImageService.navigationOrigin ]);
   }
 

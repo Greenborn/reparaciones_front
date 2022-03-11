@@ -1,0 +1,14 @@
+.app-loading{
+  background:   #000;
+  position:     fixed;
+  top:          0px;
+  left:         0px;
+  width:        100vw;
+  height:       100vh;
+  z-index:      1000;
+  opacity:      0.6;
+
+  .container {
+    opacity:     1;
+  }
+}
