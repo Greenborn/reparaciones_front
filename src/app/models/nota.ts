@@ -10,7 +10,7 @@ export class Nota {
     public tipo_nota_id:any = -1;
 
     public images:any = [];
-    public documentos:any = [];
+    public documents:any = [];
     public imagenes:any = [];
 
     datosValidos(){
@@ -45,12 +45,19 @@ export class Nota {
         this.vencimiento = formateoService.getFechaISOASP( this.vencimiento );
 
         this.images     = privateNotaService.nota_images;
-        this.documentos = privateNotaService.nota_documentos;
+        this.documents  = privateNotaService.nota_documentos;
     }
 
     constructor( params:any = {}){
-        if ( params.hasOwnProperty('id_obra') ){
-            this.obra_id = params.obra_id;
+        
+        //DEFINIMOS LAS PROPIEDADES DEL MODELO, SI ES QUE EXITEN EN EL MISMO
+        let claves = Object.keys(params)
+        for(let i=0; i< claves.length; i++){
+            if ( this.hasOwnProperty(claves[i]) ){
+                this[claves[i]] = params[claves[i]];
+            }
         }
+
+        console.log(this);
     }
 }

@@ -112,7 +112,7 @@
                   <ion-row>
                     <ion-col size="auto">
                       <ion-button color="secondary" size="small"><ion-icon name="add-circle"></ion-icon>&nbsp;<label for="FUDoc" class="label-btn">Agregar Documento</label></ion-button>
-                      <input type="file" id="FUDoc" name="FUDoc" style="visibility:hidden;position: fixed;" accept=".pdf, .otf, .doc, .docx, .xls, .csv, .ott, .ods, .txt" (change)="handleFileInput($event.target['files'])">
+                      <input type="file" id="FUDoc" name="FUDoc" style="visibility:hidden;position: fixed;" accept=".pdf, .otf, .doc, .docx, .xls, .csv, .ott, .ods, .txt" (change)="privateNotaService.handleFileInput($event.target['files'])">
                     </ion-col>
                     <ion-col></ion-col>
 

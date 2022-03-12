@@ -69,7 +69,8 @@ export class PrivateNotaService2 extends ApiServiceBase{
 
     public guardar_modelo(){
         this.appUIUtilsService.presentLoading({ message: "Guardando..." });
-        
+        console.log(this.operacion_actual);
+        console.log(this.modelo_edit);
         if (this.operacion_actual == 'Nueva'){
             this.post(this.modelo_edit);
         } else if (this.operacion_actual == 'Editar'){
@@ -93,8 +94,9 @@ export class PrivateNotaService2 extends ApiServiceBase{
 
         //GET
         this.subscripciones.push( this.getOneOK.subscribe({ next:(p:any) => {
-            this.modelo_edit = this.one;
-
+            this.modelo_edit = new Nota(p);
+            this.modelo_edit.id = p.id; // SE AGREGA aca por que por un extraño motivo no se define en el modelo...
+            
             //SE PASA A STRING PAR QUE EL OCMPONENTE DEL SELECTOR TOME BIEN SU VALOR ...
             this.modelo_edit.categoria_id = String(this.modelo_edit.categoria_id);
             this.modelo_edit.estado_id    = String(this.modelo_edit.estado_id);
@@ -102,9 +104,10 @@ export class PrivateNotaService2 extends ApiServiceBase{
             this.modelo_edit.tipo_nota_id = String(this.modelo_edit.tipo_nota_id);
 
             //SE ACOMODA EL FORMATO DE LZA FECHA Y HORA PARA QUE SE MUESTRE CORRECTAMENTE EN EL SELECTOR
-            let d = new Date(this.modelo_edit.vencimiento);
+            let d = new Date(p['vencimiento']);
             this.modelo_edit.vencimiento      = this.formateoService.getNgbDatepickerArrayFDate(d);
             this.modelo_edit.vencimiento_hora = this.formateoService.getNgbTimePickerFDate(d);
+            console.log(this.modelo_edit);console.log(d);
 
             //SE CARGA EL LISTADO DE IMAGENES
             this.nota_images = [];
@@ -116,8 +119,14 @@ export class PrivateNotaService2 extends ApiServiceBase{
 
             //SE CARGA EL  LISTADO DE DOCUMENTOS
             this.nota_documentos = [];
-            for(let c=0; c < this.modelo_edit.documentos.length; c++){
-                this.nota_documentos.push({ file: '', name:this.modelo_edit.documentos[c].nombre, fromnota: true, id:this.modelo_edit.documentos[c].id, url:this.modelo_edit.documentos[c].url });
+            for(let c=0; c < p['documentos'].length; c++){
+                this.nota_documentos.push(
+                    { file:     '', 
+                      name:     p['documentos'][c].nombre, 
+                      fromnota: true, 
+                      id:       p['documentos'][c].id, 
+                      url:      p['documentos'][c].url 
+                    });
             }
 
             this.appUIUtilsService.dissmisLoading();
