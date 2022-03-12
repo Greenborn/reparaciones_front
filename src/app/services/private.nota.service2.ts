@@ -6,6 +6,7 @@ import { ConfigService } from 'src/app/services/config.service';
 import { Nota } from '../models/nota';
 import { ApiServiceBase } from './api.service.base';
 import { AppUIUtilsService } from './app.ui.utils.service';
+import { FormateoService } from './formateo.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
       http:                          HttpClient,
       config:                        ConfigService,
       private router:                Router,
+      private formateoService:       FormateoService,
       private appUIUtilsService:     AppUIUtilsService,
     ) {
         super('private-nota', http, config);
@@ -92,6 +94,32 @@ export class PrivateNotaService2 extends ApiServiceBase{
         //GET
         this.subscripciones.push( this.getOneOK.subscribe({ next:(p:any) => {
             this.modelo_edit = this.one;
+
+            //SE PASA A STRING PAR QUE EL OCMPONENTE DEL SELECTOR TOME BIEN SU VALOR ...
+            this.modelo_edit.categoria_id = String(this.modelo_edit.categoria_id);
+            this.modelo_edit.estado_id    = String(this.modelo_edit.estado_id);
+            this.modelo_edit.obra_id      = String(this.modelo_edit.obra_id);
+            this.modelo_edit.tipo_nota_id = String(this.modelo_edit.tipo_nota_id);
+
+            //SE ACOMODA EL FORMATO DE LZA FECHA Y HORA PARA QUE SE MUESTRE CORRECTAMENTE EN EL SELECTOR
+            let d = new Date(this.modelo_edit.vencimiento);
+            this.modelo_edit.vencimiento      = this.formateoService.getNgbDatepickerArrayFDate(d);
+            this.modelo_edit.vencimiento_hora = this.formateoService.getNgbTimePickerFDate(d);
+
+            //SE CARGA EL LISTADO DE IMAGENES
+            this.nota_images = [];
+            for(let c=0; c < this.modelo_edit.imagenes.length; c++){
+                this.imgUrlToBase64(this.config.apiUrl(this.modelo_edit.imagenes[c].url), this.modelo_edit.imagenes[c], (p)=>{
+                    this.nota_images.push({ file: p.base64, name:p.anydata.url, fromnota: true, id:p.anydata.id });
+                });
+            }
+
+            //SE CARGA EL  LISTADO DE DOCUMENTOS
+            this.nota_documentos = [];
+            for(let c=0; c < this.modelo_edit.documentos.length; c++){
+                this.nota_documentos.push({ file: '', name:this.modelo_edit.documentos[c].nombre, fromnota: true, id:this.modelo_edit.documentos[c].id, url:this.modelo_edit.documentos[c].url });
+            }
+
             this.appUIUtilsService.dissmisLoading();
         }}));
 
@@ -104,13 +132,13 @@ export class PrivateNotaService2 extends ApiServiceBase{
 
         //POST
         this.subscripciones.push( this.postedOK.subscribe({ next:(p:any) => {
-                this.appUIUtilsService.displayAlert("Nuevo registro de Obra creado.");
+                this.appUIUtilsService.displayAlert("Nuevo registro de Nota creado.");
                 this.appUIUtilsService.dissmisLoading();
                 this.getNotas();
                 this.goBack();
         }}));
 
-        //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
+        //ERROR AL INTENTAR CREAR UNA NUEVA NOTA
         this.subscripciones.push( this.postedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
             this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la nota.');
@@ -125,7 +153,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
                 this.goBack();
         }}));
 
-        //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
+        //ERROR AL INTENTAR CREAR UNA NUEVA NOTA
         this.subscripciones.push( this.editedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
             this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la nota.');
@@ -135,7 +163,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
         /// DELETE
         this.subscripciones.push( this.deletedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Obra eliminada correctamente.');
+            this.appUIUtilsService.displayAlert('Nota eliminada correctamente.');
             this.getNotas();
         }}));
 
@@ -144,8 +172,36 @@ export class PrivateNotaService2 extends ApiServiceBase{
             this.getNotas();
             this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota.');
         }}));
+
+        //////////////////////////////
+        ///// IMAGENES
+        this.subscripciones.push( this.imageOnSuccess.subscribe({ next:(p:any) => {
+            console.log(p);
+            switch (p.extension){
+                case 'pdf': case 'otf': case 'doc': case 'docx': case 'xls': case 'csv': case 'ott': case 'ods': case 'txt':
+                    this.nota_documentos.push(p);
+                break;
+
+                case 'png': case 'jpg': case 'jpeg': case 'webp': case 'bmp':
+                    this.nota_images.push(p);
+                break;
+            }
+        }}));
+
+        this.subscripciones.push( this.base64ConvertCallBack.subscribe({ next:(p) => {
+            this.image_data = { file: p.base64 };
+        }}));
     }
 
+
+    // EDICIÓN DE NOTAS
+    goToEdit( params ){
+        this.operacion_actual = 'Editar';
+        this.appUIUtilsService.presentLoading({ message: 'Consultando nota...' });
+        this.modelo_edit      = undefined;
+        this.get( params.nota_id, 'expand=imagenes,documentos');        
+        this.router.navigate([  '/tabs/tab2/editar_nota/' + params.nota_id ]);
+    }
 
     // NOTAS VENCIDAS
     public cant_vencidas:number   = 0;
@@ -168,6 +224,9 @@ export class PrivateNotaService2 extends ApiServiceBase{
     public nota_documentos:any = [];
     public nota_images:any     = [];
     goToNueva( params:any = {} ){
+        this.nota_documentos = [];
+        this.nota_images     = [];
+
         let ruta:string = '/tabs/tab2/crear_nota';
         if ( params.hasOwnProperty('obra_id') ){
             ruta += '/' + params.obra_id;

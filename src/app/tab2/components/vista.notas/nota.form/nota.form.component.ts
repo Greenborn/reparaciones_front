@@ -74,6 +74,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
             this.privateObrasService.getAll({
                 getParams: 'filter[habilitada]=1',
                 callback: ()=>{ 
+                    this.privateNotaService.modelo_edit.obra_id = String( this.privateNotaService.modelo_edit.obra_id );
                     this.appUIUtilsService.dissmisLoading();
                 }
             });
@@ -86,6 +87,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
             this.privateTipoNotaService.getAll({
                 getParams: '',
                 callback: ()=>{
+                    this.privateNotaService.modelo_edit.tipo_nota_id = String( this.privateNotaService.modelo_edit.tipo_nota_id );
                     this.appUIUtilsService.dissmisLoading();
                 }
             });
@@ -98,6 +100,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
             this.privateCategoriaService.getAll({
                 getParams: '',
                 callback: ()=>{
+                    this.privateNotaService.modelo_edit.categoria_id = String( this.privateNotaService.modelo_edit.categoria_id );
                     this.appUIUtilsService.dissmisLoading();
                 }
             });

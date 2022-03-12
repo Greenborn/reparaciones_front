@@ -10,7 +10,7 @@ export class Nota {
     public tipo_nota_id:any = -1;
 
     public images:any = [];
-    public documents:any = [];
+    public documentos:any = [];
     public imagenes:any = [];
 
     datosValidos(){
@@ -44,8 +44,8 @@ export class Nota {
         this.vencimiento.setMinutes( this.vencimiento_hora.minute );
         this.vencimiento = formateoService.getFechaISOASP( this.vencimiento );
 
-        this.images    = privateNotaService.nota_images;
-        this.documents = privateNotaService.nota_documentos;
+        this.images     = privateNotaService.nota_images;
+        this.documentos = privateNotaService.nota_documentos;
     }
 
     constructor( params:any = {}){

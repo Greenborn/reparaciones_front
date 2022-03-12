@@ -156,7 +156,7 @@
                         <ion-icon name="images" style="font-size:3rem;margin-top:1rem;"></ion-icon>
                         <p>Agregar Imagen</p>
                       </label>
-                      <input type="file" id="FUImage" name="FUImage" style="visibility:hidden;position: fixed;" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="handleFileInput($event.target['files'])">
+                      <input type="file" id="FUImage" name="FUImage" style="visibility:hidden;position: fixed;" accept=".png, .jpg, .jpeg, .webp, .bmp" (change)="privateNotaService.handleFileInput($event.target['files'])">
                     </ion-col>
                     <ion-col></ion-col>
 

@@ -115,7 +115,7 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
     }
 
     editar_nota(nota){
-    //[REFACTORIZAR]this.privateNotaService.goToEdit({ page:this, nota_id:nota.id, navigationOrigin:'/tabs/tab2' });
+        this.privateNotaService.goToEdit({ nota_id:nota.id, navigationOrigin:'/tabs/tab2' });
     }
 
     nueva_nota(){
