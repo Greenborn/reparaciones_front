@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 
@@ -39,15 +40,18 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
     public  privateObrasService:         PrivateObrasService,
     public  privateCategoriaService:     PrivateCategoriaService2,
     private privateEstadoService:        PrivateEstadoService2,
+    public  privateTipoNotaService:      PrivateTipoNotaService2,
 
     private formateoService:             FormateoService,
-    public  privateTipoNotaService:      PrivateTipoNotaService2,
+    
     private privateImagenService:        PrivateImagenService,
+    
     public  configService:               ConfigService,
     public  privateDocumentoService:     PrivateDocumentoService,
-    public  authService:                 AuthService, 
     
     private appUIUtilsService:           AppUIUtilsService, 
+    private alertCtrl:                   AlertController,
+    
     private activatedRoute:              ActivatedRoute
     ) {
 
@@ -107,46 +111,46 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
         }        
     }
 
-  async deleteDoc(documento, i){
-     //[REFACTORIZAR] if (!documento.hasOwnProperty('fromnota')) {
-       //[REFACTORIZAR] this.privateNotaService.nota_documentos.splice(i);
-    //[REFACTORIZAR]    return true;
-    //[REFACTORIZAR]  }
+    async deleteDoc(documento, i){
 
-     /* const alert = await this.alertController.create({
+        this.privateNotaService.nota_documentos.splice(i);
+
+        if (!documento.hasOwnProperty('fromnota')) {
+            return true;
+        }
+
+        const alert = await this.alertCtrl.create({
         header: 'Atención',
-        message: 'Está por eliminar el documento ¿desea continuar?.',
+        message: 'Está por eliminar el documento ¿Desea continuar?.',
         buttons: [{
-          text: 'No',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {}
+            text: 'No',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {}
         }, {
-          text: 'Si',
-          cssClass: 'danger',
-          handler: () => {
+            text: 'Si',
+            cssClass: 'danger',
+            handler: () => {
             this.borrar_doc(documento);
-          }
+            }
         }]
-      });
-      await alert.present();*/
-  }
+        });
+        await alert.present();
+    }
 
-  async borrar_doc(documento){
-    /*const loading = await this.loadingController.create({ message: 'Borrando documento' });
-    await loading.present();
-    this.privateDocumentoService.delete(documento.id).subscribe(
-      ok => {
-        loading.dismiss();
-     //[REFACTORIZAR]   let nota_id = this.privateNotaService.nota_edit_id;
-    //[REFACTORIZAR]    this.privateNotaService.goToEdit({ page:this, nota_id:nota_id });
-      },
-      err => {
-        loading.dismiss();
-        this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota. ');
-      }
-    );*/
-  }
+    async borrar_doc(documento){
+       
+        this.appUIUtilsService.presentLoading({ message: 'Borrando documento...' });
+        this.privateDocumentoService.delete(documento.id).subscribe(
+            ok => {
+                this.appUIUtilsService.dissmisLoading(); 
+            },
+            err => {
+                this.appUIUtilsService.dissmisLoading(); 
+                this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota. ');
+            }
+        );
+    }
 
 
   ver_imagen(i){

@@ -69,8 +69,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
 
     public guardar_modelo(){
         this.appUIUtilsService.presentLoading({ message: "Guardando..." });
-        console.log(this.operacion_actual);
-        console.log(this.modelo_edit);
+        
         if (this.operacion_actual == 'Nueva'){
             this.post(this.modelo_edit);
         } else if (this.operacion_actual == 'Editar'){
@@ -185,7 +184,6 @@ export class PrivateNotaService2 extends ApiServiceBase{
         //////////////////////////////
         ///// IMAGENES
         this.subscripciones.push( this.imageOnSuccess.subscribe({ next:(p:any) => {
-            console.log(p);
             switch (p.extension){
                 case 'pdf': case 'otf': case 'doc': case 'docx': case 'xls': case 'csv': case 'ott': case 'ods': case 'txt':
                     this.nota_documentos.push(p);
