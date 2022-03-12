@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateNotaService2 } from 'src/app/services/private.nota.service2';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
@@ -15,13 +14,13 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
 
   public titulo:string = "";
 
-  private router_subs:any;
+  private subscripciones:any = [];
   public obra_id:any;
 
   constructor(
     private alertController:             AlertController,
     public  loadingController:           LoadingController,
-    private router:                      Router,
+    private activatedRoute:              ActivatedRoute,
     public  privateNotaService:          PrivateNotaService2,
     public  privateObrasService:         PrivateObrasService,
     private appUIUtilsService:           AppUIUtilsService,
@@ -29,14 +28,20 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
   }
 
     ngOnInit() {
-        if (this.router_subs == undefined){
-            
-        }
+        //SE VERIFICAN LOS PARAMETROS EN LA URL
+        this.subscripciones.push( this.activatedRoute.paramMap.subscribe(async params => 
+            { 
+                let id_obra:any           = params.get('id_obra');
+                let get_notas_params:any  = { getParams:   'expand=categoria,obra,tipoNota' };
+                
+                if (id_obra !== null){
+                    get_notas_params.obra_id = id_obra;
+                }
 
-        //SE RECARGA EL LISTADO DE NOTAS
-        this.privateNotaService.getNotas({ 
-            getParams:   'expand=categoria,obra,tipoNota' 
-        });
+                //SE RECARGA EL LISTADO DE NOTAS
+                this.privateNotaService.getNotas( get_notas_params );
+            })
+        );
 
         //NOS ASEGURAMOS DE CARGAR EL LISTADO DE OBRAS
         //SOLO LAS QUE ESTAN HABILITADAS
@@ -52,7 +57,17 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
         }
     }
 
+    clear(){
+        this.obra_id = undefined;
+        let get_notas_params:any  = { getParams:   'expand=categoria,obra,tipoNota' };
+        this.privateNotaService.getNotas( get_notas_params );
+    }
+
     ngOnDestroy(){
+        //Nos desubscribimos de todas las subcripciones vigentes
+        for (let c=0; c < this.subscripciones.length; c++){
+            this.subscripciones[c].unsubscribe();
+        }
     }
 
     getBgColor(nota:any){
@@ -89,14 +104,14 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
             }
         }
         this.privateNotaService.getNotas({
-            obra:         this.obra_id, 
+            obra_id:      this.obra_id, 
             nombre_obra:  nombre_obra,
             getParams:   'expand=categoria,obra,tipoNota'
         });
     }
 
     goBack(){
-        this.router.navigate([ '/tabs/tab1' ]);
+        //this.router.navigate([ '/tabs/tab1' ]);
     }
 
     editar_nota(nota){

@@ -45,7 +45,7 @@ export class ObrasMenuComponent implements OnInit, OnDestroy {
 
     ver_notas(obra:any){
         this.privateNotaService.goToNotas({ 
-            obra:        obra.id, 
+            obra_id:     obra.id, 
             nombre_obra: obra.nombre_alias, 
             getParams:   'expand=categoria,obra,tipoNota'
         });

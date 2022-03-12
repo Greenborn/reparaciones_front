@@ -23,8 +23,9 @@ const routes: Routes = [
       { path: 'tab2', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/crear_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab2/crear_nota/:id_obra', component: NotaFormComponent, canActivate: [AuthenticationGuard]   },
-      { path: 'tab2/editar_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab2/editar_nota/:id_nota', component: NotaFormComponent, canActivate: [AuthenticationGuard]  },
       { path: 'tab2/notas', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab2/notas_obra/:id_obra', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
       
       { path: 'tab3',  loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),  canActivate: [AuthenticationGuard] },
       { path: 'tab3/crear_categoria', component: CategoriasFormComponent, canActivate: [AuthenticationGuard]   },

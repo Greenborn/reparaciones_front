@@ -196,9 +196,14 @@ export class PrivateNotaService2 extends ApiServiceBase{
             this.titulo_vista_notas += ' ' + this.ver_nota_obra_nombre; 
         }
 
-        this.getNotas( params );
+        let ruta_vista:string = '/tabs/tab2/notas';
+        if ( params.hasOwnProperty('obra_id') ){
+            ruta_vista += '_obra/' + params.obra_id;
+        }
 
-        this.router.navigate([ '/tabs/tab2/notas' ]);
+        this.getNotas( params );
+     
+        this.router.navigate([ ruta_vista ]);
     }
 
     getNotas( params:any = {} ){ //HACE LA RECARGA DE NOTAS SIN OCUPARSE DE CUESTIONES DE LA VISTA
@@ -207,8 +212,8 @@ export class PrivateNotaService2 extends ApiServiceBase{
             paramsGetAll.getParams = params.getParams;
         }
 
-        if (params.hasOwnProperty('obra') && params.obra != undefined){
-            this.ver_nota_obra_id = params.obra;
+        if (params.hasOwnProperty('obra_id') && params.obra_id != undefined){
+            this.ver_nota_obra_id = params.obra_id;
             paramsGetAll.getParams += '&filter[obra_id]='+this.ver_nota_obra_id;
         } 
 
