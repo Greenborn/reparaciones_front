@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { ChangePassComponent } from '../modules/autentication/componentes/change-pass/change-pass.component';
 import { AuthService } from '../modules/autentication/services/auth.service';
 import { PrivateCategoriaService } from '../services/private.categoria.service';
@@ -19,7 +18,7 @@ export class Tab3Page implements OnInit, OnDestroy{
 
   constructor(
     public  authService:              AuthService,
-    private router:                   Router,
+    private navController:            NavController,
     private tab3Service:              Tab3Service,
     private privateCategoriaService:  PrivateCategoriaService,
     public  modalController:          ModalController,
@@ -40,12 +39,12 @@ export class Tab3Page implements OnInit, OnDestroy{
   }
 
   nueva_categoria(){
-    this.router.navigate([ '/tabs/tab3/crear_categoria' ]);
+    this.navController.navigateForward([ '/tabs/tab3/crear_categoria' ]);
   }
 
   editar_categoria(categoria){
     this.tab3Service.categoria_edit_id = categoria.id;
-    this.router.navigate([ '/tabs/tab3/editar_categoria' ]);
+    this.navController.navigateForward([ '/tabs/tab3/editar_categoria' ]);
   }
 
   ngOnDestroy(){

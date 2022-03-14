@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 
@@ -49,7 +50,8 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
     
     private appUIUtilsService:           AppUIUtilsService, 
     
-    private activatedRoute:              ActivatedRoute
+    private activatedRoute:              ActivatedRoute,
+    private navController:               NavController
     ) {
 
     }
@@ -110,23 +112,23 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
 
     async deleteDoc(documento, i){
 
-        this.privateNotaService.nota_documentos.splice(i);
-
         if (!documento.hasOwnProperty('fromnota')) {
+            this.privateNotaService.nota_documentos.splice(i);
             return true;
         }
 
         this.appUIUtilsService.displayAlert('Está por eliminar el documento ¿Desea continuar?.', 'Atención', [
             { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
-            { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.borrar_doc(documento); } }
+            { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.borrar_doc(documento, i); } }
         ]);
     }
 
-    async borrar_doc(documento){
+    async borrar_doc(documento, i){
        
         this.appUIUtilsService.presentLoading({ message: 'Borrando documento...' });
         this.privateDocumentoService.delete(documento.id).subscribe(
             ok => {
+                this.privateNotaService.nota_documentos.splice(i);
                 this.appUIUtilsService.dissmisLoading(); 
             },
             err => {
@@ -139,10 +141,10 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
     }
 
 
-  ver_imagen(i){
-   //[REFACTORIZAR] this.privateNotaService.navigationOrigin = '/tabs/tab2/editar_nota';
-    this.privateImagenService.goToEdit({ page:this, img_id:i.id });
-  }
+    ver_imagen(i){
+        //[REFACTORIZAR] this.privateNotaService.navigationOrigin = '/tabs/tab2/editar_nota';
+        this.privateImagenService.goToEdit({ page:this, img_id:i.id });
+    }
 
     categoria_change(){
         for (let c=0; c < this.privateCategoriaService.all.length; c++){
@@ -196,13 +198,19 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
         }
     }
   
-  goBack(){
-    //[REFACTORIZAR]this.router.navigate([ this.privateNotaService.navigationOrigin ]);
-  }
+    goBack(){
+        this.navController.setDirection('back');
+    }
 
     async deleteImg(i){
         for (let c=0; c < this.privateNotaService.nota_images.length; c++){
             if (this.privateNotaService.nota_images[c].name == i.name){
+                //si la imagen no esta registrada en la base de datos solo se la borra del arreglo
+                if (!i.hasOwnProperty('fromnota')) {
+                    this.privateNotaService.nota_images.splice(c);
+                    return false;
+                }
+
                 this.appUIUtilsService.displayAlert('Está por eliminar una imagen ¿desea continuar?.', 'Atención', [
                     { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
                     { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.borrar_img(i); } }
@@ -211,8 +219,8 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
         }
     }
 
-    async borrar_img(i:any){
-        this.appUIUtilsService.presentLoading({ message: 'Consultando listado de estados...' });
+    async borrar_img(i:any){        
+        this.appUIUtilsService.presentLoading({ message: 'Borrando imagen...' });
 
         this.privateImagenService.delete(i.id).subscribe(
             ok => {

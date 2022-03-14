@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
 import { Nota } from '../models/nota';
@@ -47,7 +47,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
     constructor( 
       http:                          HttpClient,
       config:                        ConfigService,
-      private router:                Router,
+      private navController:         NavController,
       private formateoService:       FormateoService,
       private appUIUtilsService:     AppUIUtilsService,
     ) {
@@ -223,7 +223,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
         this.appUIUtilsService.presentLoading({ message: 'Consultando nota...' });
         this.modelo_edit      = undefined;
         this.get( params.nota_id, 'expand=imagenes,documentos');        
-        this.router.navigate([  '/tabs/tab2/editar_nota/' + params.nota_id ]);
+        this.navController.navigateForward([  '/tabs/tab2/editar_nota/' + params.nota_id ]);
     }
 
     // NOTAS VENCIDAS
@@ -254,7 +254,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
         if ( params.hasOwnProperty('obra_id') ){
             ruta += '/' + params.obra_id;
         }
-        this.router.navigate([ ruta ]);
+        this.navController.navigateForward([ ruta ]);
     }
 
     inic_modelo( params:any = {}){
@@ -262,7 +262,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
     }
 
     goBack(){
-
+        this.navController.setDirection('back');
     }
 
     //VISTA DE NOTAS
@@ -285,7 +285,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
 
         this.getNotas( params );
      
-        this.router.navigate([ ruta_vista ]);
+        this.navController.navigateForward([ ruta_vista ]);
     }
 
     getNotas( params:any = {} ){ //HACE LA RECARGA DE NOTAS SIN OCUPARSE DE CUESTIONES DE LA VISTA

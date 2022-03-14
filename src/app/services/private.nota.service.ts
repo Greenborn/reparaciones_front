@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
@@ -19,7 +18,7 @@ export class PrivateNotaService extends ApiService<any>{
   constructor( 
     http:                            HttpClient,
     config:                          ConfigService,
-    private router:                  Router,
+    private navController:           NavController,
     private privateObrasService:     PrivateObrasService,
     private privateCategoriaService: PrivateCategoriaService,
     private privateTipoNotaService:  PrivateTipoNotaService,
@@ -126,7 +125,7 @@ export class PrivateNotaService extends ApiService<any>{
     async goToNotas(params:any = {}){
       
       
-      this.router.navigate([ '/tabs/tab2/notas' ]);
+      this.navController.navigateForward([ '/tabs/tab2/notas' ]);
     }
 
     public navigationOrigin;
@@ -152,7 +151,7 @@ export class PrivateNotaService extends ApiService<any>{
 
       }
       
-      this.router.navigate([ '/tabs/tab2/crear_nota' ]);
+      this.navController.navigateForward([ '/tabs/tab2/crear_nota' ]);
     }
 
     public nota_edit_id:number = 0;
@@ -185,6 +184,6 @@ export class PrivateNotaService extends ApiService<any>{
         params.page.loadingEspecificData(this.privateCategoriaService, '',   '', 'Consultando Categorias.');        //se recarga el listado de categorias
         params.page.loadingEspecificData(this.privateTipoNotaService, '',   '', 'Consultando Tipos de notas.');     //se recarga el listado de tipos de notas
       }
-      this.router.navigate([ '/tabs/tab2/editar_nota' ]);
+      this.navController.navigateForward([ '/tabs/tab2/editar_nota' ]);
     }
 }

@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { Estado } from 'src/app/models/estado';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
@@ -23,6 +24,8 @@ export class EstadosFormComponent implements OnInit, OnDestroy {
     private router:                      Router, 
     private privateEstadoService:        PrivateEstadoService,
     private appUIUtilsService:           AppUIUtilsService, 
+
+    private navController: NavController
   ) { 
   }
 
@@ -54,9 +57,9 @@ export class EstadosFormComponent implements OnInit, OnDestroy {
     this.router_subs.unsubscribe();
   }
   
-  goBack(){
-    this.router.navigate([ '/tabs/tab3/editar_categoria' ]);
-  }
+    goBack(){
+        this.navController.setDirection('back');
+    }
 
   async ingresar(){
     if ( !this.model.hasOwnProperty('nombre') || this.model.nombre == ''){

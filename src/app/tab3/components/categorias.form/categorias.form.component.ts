@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { Categoria } from 'src/app/models/categoria';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
@@ -22,6 +23,7 @@ export class CategoriasFormComponent  implements OnInit, OnDestroy {
   private recargarEstadosSubs:any;
 
   constructor(
+    private navController:               NavController,
     private router:                      Router,
     private privateCategoriaService:     PrivateCategoriaService,
     private privateEstadoService:        PrivateEstadoService,
@@ -71,17 +73,17 @@ export class CategoriasFormComponent  implements OnInit, OnDestroy {
   }
   
   goBack(){
-    this.router.navigate([ '/tabs/tab3' ]);
+    this.navController.navigateForward([ '/tabs/tab3' ]);
   }
 
   nuevo_estado(){
     this.tab3Service.estado_categoria_id = this.model.id;
-    this.router.navigate([ '/tabs/tab3/crear_estado' ]);
+    this.navController.navigateForward([ '/tabs/tab3/crear_estado' ]);
   }
 
   editar_estado(estado){
     this.tab3Service.estado_edit_id = estado.id;
-    this.router.navigate([ '/tabs/tab3/editar_estado' ]);
+    this.navController.navigateForward([ '/tabs/tab3/editar_estado' ]);
   }
 
     async eliminar_estado(estado){

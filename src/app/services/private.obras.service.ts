@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, NavController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
 import { Obra } from '../models/obra';
@@ -47,7 +46,7 @@ export class PrivateObrasService extends ApiServiceBase{
     constructor( 
       http:                          HttpClient,
       config:                        ConfigService,
-      private router:                Router,
+      private navController:         NavController,
       private appUIUtilsService:     AppUIUtilsService,
       private loadingController:     LoadingController
     ) {
@@ -207,7 +206,7 @@ export class PrivateObrasService extends ApiServiceBase{
         };
 
         this.getAll( paramsGetAll );
-        this.router.navigate([ '/tabs/tab1' ]);
+        this.navController.navigateForward([ '/tabs/tab1' ]);
     }
 
     ///Borrandoprivate extra_del_params:any = {};
@@ -222,7 +221,7 @@ export class PrivateObrasService extends ApiServiceBase{
 
     /// NAVEGACION
     goToEdit( id:number ){
-        this.router.navigate([ '/tabs/tab1/editar_obra/'+id ]);
+        this.navController.navigateForward([ '/tabs/tab1/editar_obra/'+id ]);
         this.operacion_actual = 'Editar';
         this.appUIUtilsService.presentLoading({ message: 'Consultando obra...' });
         this.modelo_edit      = undefined;
@@ -230,14 +229,14 @@ export class PrivateObrasService extends ApiServiceBase{
     }
 
     goToCreate(){
-        this.router.navigate([ '/tabs/tab1/crear_obra' ]);
+        this.navController.navigateForward([ '/tabs/tab1/crear_obra' ]);
         this.modelo_edit      = new Obra();
         this.eliminar_info_imagen();
         this.operacion_actual = 'Nueva';
     }
 
     goBack(){
-        this.router.navigate([ '/tabs/tab1' ]);
+        this.navController.navigateForward([ '/tabs/tab1' ]);
     }
     
 }

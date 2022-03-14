@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 import { TipoNota } from 'src/app/models/tipo.nota';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
@@ -23,7 +24,8 @@ export class TiponotaFormComponent implements OnInit, OnDestroy {
     private privateTipoNotaService:   PrivateTipoNotaService,
     private tab3Service:              Tab3Service,
 
-    private appUIUtilsService:           AppUIUtilsService, 
+    private appUIUtilsService:        AppUIUtilsService, 
+    private navController:            NavController
   ) {
   }
 
@@ -56,9 +58,9 @@ export class TiponotaFormComponent implements OnInit, OnDestroy {
     this.router_subs.unsubscribe();
   }
 
-  goBack(){
-    this.router.navigate([ '/tabs/tab3' ]);
-  }
+    goBack(){
+        this.navController.setDirection('back');
+    }
 
   async ingresar(){
     if ( !this.model.hasOwnProperty('color') || this.model.color == ''){

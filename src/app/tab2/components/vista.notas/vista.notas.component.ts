@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateNotaService2 } from 'src/app/services/private.nota.service2';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
@@ -21,6 +22,7 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
     public  privateNotaService:          PrivateNotaService2,
     public  privateObrasService:         PrivateObrasService,
     private appUIUtilsService:           AppUIUtilsService,
+    private navController:               NavController
   ) {
   }
 
@@ -108,7 +110,7 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
     }
 
     goBack(){
-        //this.router.navigate([ '/tabs/tab1' ]);
+        this.navController.setDirection( 'back' );
     }
 
     editar_nota(nota){

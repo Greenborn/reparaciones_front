@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 import { Imagen } from 'src/app/models/imagen';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
@@ -15,7 +16,7 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
 
   constructor(
     private privateImageService:         PrivateImagenService,
-    private router,                      Router,
+    private navController:               NavController,
     private appUIUtilsService:           AppUIUtilsService, 
   ) { 
   }
@@ -49,8 +50,7 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
   }
 
   goBack(){
- //[REFACTORIZAR]   this.privateNotaService.goToEdit({ page:this, nota_id: this.imagen.id_nota });
-    this.router.navigate([ this.privateImageService.navigationOrigin ]);
+    this.navController.setDirection( 'back' );
   }
 
   async ingresar(){

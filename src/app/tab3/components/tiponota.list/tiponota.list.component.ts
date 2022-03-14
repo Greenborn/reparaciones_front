@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
 import { Tab3Service } from '../../services/tab3.service';
@@ -15,7 +15,7 @@ export class TiponotaListComponent implements OnInit, OnDestroy {
 
   constructor(
     private privateTipoNotaService:   PrivateTipoNotaService,
-    private router:                   Router,
+    private navController:            NavController,
     private tab3Service:              Tab3Service,
 
     private appUIUtilsService:        AppUIUtilsService, 
@@ -35,12 +35,12 @@ export class TiponotaListComponent implements OnInit, OnDestroy {
   }
   
   nuevo_tipo_nota(){
-    this.router.navigate([ '/tabs/tab3/crear_tipo_nota' ]);
+    this.navController.navigateForward([ '/tabs/tab3/crear_tipo_nota' ]);
   }
 
   editar_tipo_nota(tipo_nota){
     this.tab3Service.tipo_nota_edit_id = tipo_nota.id;
-    this.router.navigate([ '/tabs/tab3/editar_tipo_nota' ]);
+    this.navController.navigateForward([ '/tabs/tab3/editar_tipo_nota' ]);
   }
 
     async eliminar_tipo_nota(tipo_nota){

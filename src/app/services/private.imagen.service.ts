@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, NavController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
@@ -16,7 +15,7 @@ export class PrivateImagenService extends ApiService<any>{
     http: HttpClient,
     config: ConfigService,
     private loadingController:       LoadingController,
-    private router:                  Router,
+    private navController:           NavController,
     private configService:           ConfigService
   ) {
       super('private-imagen', http, config)
@@ -65,6 +64,6 @@ export class PrivateImagenService extends ApiService<any>{
         }
 
       }
-      this.router.navigate([ '/vista_imagen' ]);
+      this.navController.navigateForward([ '/vista_imagen' ]);
     }
 }

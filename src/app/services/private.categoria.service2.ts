@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, NavController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
 import { Categoria } from '../models/categoria';
@@ -48,7 +47,7 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
     constructor( 
       http:                          HttpClient,
       config:                        ConfigService,
-      private router:                Router,
+      private navController:         NavController,
       private appUIUtilsService:     AppUIUtilsService,
       private loadingController:     LoadingController
     ) {
@@ -170,11 +169,11 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
     //NUEVO TIPO de NOTA
     goToNueva( params ){
         this.modelo_edit = new Categoria();
-        this.router.navigate([ '/tabs/tab2/crear_nota' ]);
+        this.navController.navigateForward([ '/tabs/tab2/crear_nota' ]);
     }
 
     goBack(){
-
+        this.navController.setDirection('back');
     }
 
     getTipoNotas(){
