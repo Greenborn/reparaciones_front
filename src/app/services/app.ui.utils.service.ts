@@ -11,15 +11,19 @@ export class AppUIUtilsService {
         public loadingController: LoadingController
     ) { }
 
-    async displayAlert(message: string, header:string = 'Info') {
-        (await this.alertCtrl.create({
-          header: header,
-          message,
-          buttons: [{
-            text: 'Ok',
-            role: 'cancel'
-          }]
-        })).present()
+    public messagePresent:boolean = false;
+    public message:string;
+    public messageHeader:string;
+    public messageButtons:any = [];
+    public displayAlert(message: string, header:string = 'Info', buttons:any = []) {
+        this.messagePresent = true;
+        this.message        = message;
+        this.messageHeader  = header;
+        this.messageButtons = buttons;
+    }
+
+    public dissmissAlert(){
+        this.messagePresent = false;
     }
 
 

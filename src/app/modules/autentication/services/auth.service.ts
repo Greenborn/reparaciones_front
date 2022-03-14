@@ -8,7 +8,7 @@ import { ResetPassword }   from '../models/reset-password';
 import { Usuario }         from '../models/usuario';
 
 import { ConfigService }   from 'src/app/services/config.service';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,33 +22,37 @@ export class AuthService {
     private  router:            Router,
     private  http:              HttpClient,
     private  config:            ConfigService,
-    private  loadingController: LoadingController,
-    private  alertCtrl:         AlertController,
+
+    private appUIUtilsService:   AppUIUtilsService, 
   ) {
     this.confGral = this.config.data;
   }
 
   async login( model:Login ){
-    const loading = await this.loadingController.create({ message: "Por favor espere..." });
-    loading.present();
+    this.appUIUtilsService.presentLoading({ message: "Por favor espere..." });
+
     this.http.post(this.confGral['apiBaseUrl'] + this.confGral['loginAction'], model,
       { headers: new HttpHeaders({ 'Content-Type':  'application/json' }) }).subscribe(
         data => {
-          loading.dismiss();
+            this.appUIUtilsService.dissmisLoading();
 
-          if ( (data as any).hasOwnProperty("token") ){
-            localStorage.setItem( this.confGral['appName']+'token', (data as any).token );
-            localStorage.setItem( this.confGral['appName']+'logedIn', JSON.stringify( true ) );
-            this.router.navigate([ this.confGral.postLoginRoute ]);
-          } else {
-            this.displayAlert( 'Usuario o contraseña incorrecta.' );
-          }
+            if ( (data as any).hasOwnProperty("token") ){
+                localStorage.setItem( this.confGral['appName']+'token', (data as any).token );
+                localStorage.setItem( this.confGral['appName']+'logedIn', JSON.stringify( true ) );
+                this.router.navigate([ this.confGral.postLoginRoute ]);
+            } else {
+                this.appUIUtilsService.displayAlert('Usuario o contraseña incorrecta.', 'Atención', [
+                    { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+                ]);
+            }
         },
         err =>  {
-          loading.dismiss();
-          localStorage.setItem( this.confGral['appName']+'logedIn',      JSON.stringify( false ) );
-          localStorage.setItem( this.confGral['appName']+'token',        JSON.stringify( '' ) );
-          this.displayAlert( 'Usuario o contraseña incorrecta.' );
+            this.appUIUtilsService.dissmisLoading();
+            localStorage.setItem( this.confGral['appName']+'logedIn',      JSON.stringify( false ) );
+            localStorage.setItem( this.confGral['appName']+'token',        JSON.stringify( '' ) );
+            this.appUIUtilsService.displayAlert('Usuario o contraseña incorrecta.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
         }
       );
   }
@@ -84,18 +88,6 @@ export class AuthService {
     out = out.replace('"','');
     out = out.replace(/\w\S*/g, (w:any) => (w.replace(/^\w/, (c:any) => c.toUpperCase())));
     return out;
-  }
-
-  async displayAlert(message: string) {
-    // this.alertCtrl.dismiss();
-    (await this.alertCtrl.create({
-      header: 'Info',
-      message,
-      buttons: [{
-        text: 'Ok',
-        role: 'cancel'
-      }]
-    })).present()
   }
 
 }

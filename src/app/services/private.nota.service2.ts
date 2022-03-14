@@ -87,7 +87,9 @@ export class PrivateNotaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER LISTA DE NOTAS
         this.subscripciones.push( this.getAllKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de notas.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de notas.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             console.log(this.last_err);
         }}));
 
@@ -134,51 +136,65 @@ export class PrivateNotaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER Nota
         this.subscripciones.push( this.getOneKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la nota.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la nota.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             console.log(this.last_err);
         }}));
 
         //POST
         this.subscripciones.push( this.postedOK.subscribe({ next:(p:any) => {
-                this.appUIUtilsService.displayAlert("Nuevo registro de Nota creado.");
-                this.appUIUtilsService.dissmisLoading();
-                this.getNotas();
-                this.goBack();
+            this.appUIUtilsService.displayAlert("Nuevo registro de Nota creado.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading();
+            this.getNotas();
+            this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA NOTA
         this.subscripciones.push( this.postedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la nota.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la nota.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             console.log(this.last_err);
         }}));
 
         //PUT 
         this.subscripciones.push( this.editedOK.subscribe({ next:(p:any) => {
-                this.appUIUtilsService.displayAlert("Se ha modificado la nota.");
-                this.appUIUtilsService.dissmisLoading();
-                this.getNotas();
-                this.goBack();
+            this.appUIUtilsService.displayAlert("Se ha modificado la nota.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading();
+            this.getNotas();
+            this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA NOTA
         this.subscripciones.push( this.editedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la nota.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la nota.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             console.log(this.last_err);
         }}));
 
         /// DELETE
         this.subscripciones.push( this.deletedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Nota eliminada correctamente.');
+            this.appUIUtilsService.displayAlert('Nota eliminada correctamente.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             this.getNotas();
         }}));
 
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading(); 
             this.getNotas();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
         }}));
 
         //////////////////////////////

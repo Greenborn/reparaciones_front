@@ -90,7 +90,9 @@ export class PrivateObrasService extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER LISTA DE OBRAS
         this.subscripciones.push( this.getAllKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de obras.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de obras.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             console.log(this.last_err);
         }}));
 
@@ -106,51 +108,65 @@ export class PrivateObrasService extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER OBRA
         this.subscripciones.push( this.getOneKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la obra.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la obra.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             console.log(this.last_err);
         }}));
 
         //POST
         this.subscripciones.push( this.postedOK.subscribe({ next:(p:any) => {
-                this.appUIUtilsService.displayAlert("Nuevo registro de Obra creado.");
-                this.appUIUtilsService.dissmisLoading();
-                this.recargarObras(this);
-                this.goBack();
+            this.appUIUtilsService.displayAlert("Nuevo registro de Obra creado.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading();
+            this.recargarObras(this);
+            this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.postedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la obra.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la obra.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             console.log(this.last_err);
         }}));
 
         //PUT 
         this.subscripciones.push( this.editedOK.subscribe({ next:(p:any) => {
-                this.appUIUtilsService.displayAlert("Se ha modificado la obra.");
-                this.appUIUtilsService.dissmisLoading();
-                this.recargarObras();
-                this.goBack();
+            this.appUIUtilsService.displayAlert("Se ha modificado la obra.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading();
+            this.recargarObras();
+            this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.editedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la obra.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la obra.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             console.log(this.last_err);
         }}));
 
         /// DELETE
         this.subscripciones.push( this.deletedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Obra eliminada correctamente.');
+            this.appUIUtilsService.displayAlert('Obra eliminada correctamente.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             this.recargarObras();
         }}));
 
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading(); 
             this.recargarObras();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la obra.');
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la obra.', 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
         }}));
 
 

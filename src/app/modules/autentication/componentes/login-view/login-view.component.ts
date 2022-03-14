@@ -1,7 +1,5 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
+import { Component } from '@angular/core';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 
 import { Login }         from '../../models/login';
 
@@ -12,18 +10,14 @@ import { AuthService }     from '../../services/auth.service';
   templateUrl: './login-view.component.html',
   styleUrls: ['./login-view.component.css']
 })
-export class LoginViewComponent extends ApiConsumer {
+export class LoginViewComponent {
 
   public login:Login = new Login();
 
   constructor(
     private auth:               AuthService,
-    private router:             Router,
-    public  loadingController:  LoadingController,
-    private alertController:    AlertController,
-    public changeDetectorRef:   ChangeDetectorRef,
-  ) { 
-    super(alertController, loadingController, changeDetectorRef, auth);
+    private appUIUtilsService:  AppUIUtilsService, 
+  ) {
   }
 
   ngOnInit(): void {
@@ -31,13 +25,17 @@ export class LoginViewComponent extends ApiConsumer {
 
   async next(){
     if (this.login.password == ''){
-      super.displayAlert('Debe ingresar una contraseña.');
-      return false;
+        this.appUIUtilsService.displayAlert('Debe ingresar una contraseña.', 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
     if (this.login.username == ''){
-      super.displayAlert('Debe ingresar un nombre de usuario.');
-      return false;
+        this.appUIUtilsService.displayAlert('Debe ingresar un nombre de usuario.', 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
     this.auth.login( this.login );

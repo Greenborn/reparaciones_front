@@ -1,10 +1,8 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Estado } from 'src/app/models/estado';
-import { AuthService } from 'src/app/modules/autentication/services/auth.service';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { Tab3Service } from '../../services/tab3.service';
 
@@ -13,7 +11,7 @@ import { Tab3Service } from '../../services/tab3.service';
   templateUrl: './estados.form.component.html',
   styleUrls: ['./estados.form.component.scss'],
 })
-export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDestroy {
+export class EstadosFormComponent implements OnInit, OnDestroy {
 
   public accion:string = 'Nueva';
   public model:Estado    = new Estado();
@@ -21,15 +19,11 @@ export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDes
   private router_subs:any;
 
   constructor(
-    private alertController:             AlertController,
-    public  authService:                 AuthService,
-    public  loadingController:           LoadingController,
-    public ref:                          ChangeDetectorRef,
     private tab3Service:                 Tab3Service,
     private router:                      Router, 
-    private privateEstadoService:        PrivateEstadoService
+    private privateEstadoService:        PrivateEstadoService,
+    private appUIUtilsService:           AppUIUtilsService, 
   ) { 
-    super(alertController, loadingController, ref, authService);
   }
 
   ngOnInit() {
@@ -41,14 +35,14 @@ export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDes
         } else if (event.url.search('editar_estado') != -1){
           this.accion = 'Editar';
           
-          const loading = await this.loadingController.create({ message: "Por favor espere..." });
+          this.appUIUtilsService.presentLoading({ message: "Por favor espere..." });
           this.privateEstadoService.get(this.tab3Service.estado_edit_id).subscribe(
             ok => {
-              loading.dismiss();
-              this.model = ok;
+                this.appUIUtilsService.dissmisLoading();
+                this.model = ok;
             },
             err => {
-              loading.dismiss();
+                this.appUIUtilsService.dissmisLoading();
             }
           );
         }
@@ -56,7 +50,7 @@ export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDes
     }
   }
 
-  OnDestroy(){
+  ngOnDestroy(){
     this.router_subs.unsubscribe();
   }
   
@@ -66,32 +60,39 @@ export class EstadosFormComponent  extends ApiConsumer  implements OnInit, OnDes
 
   async ingresar(){
     if ( !this.model.hasOwnProperty('nombre') || this.model.nombre == ''){
-      super.displayAlert("Debe definir un nombre para el estado."); return false;
+        this.appUIUtilsService.displayAlert("Debe definir un nombre para el estado.", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
-    const loading = await this.loadingController.create({ message: "Por favor espere..." });
+    this.appUIUtilsService.presentLoading({ message: "Por favor espere..." });
     if (this.accion == 'Nuevo'){
       this.privateEstadoService.post(this.model).subscribe(
         ok => {
-          super.displayAlert("Nuevo registro de Estado creado.");
-          loading.dismiss();
-          this.tab3Service.recargarEstado.next(this.model.categoria_id);
-          this.goBack();
+            this.appUIUtilsService.displayAlert("Nuevo registro de Estado creado.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading();
+            this.tab3Service.recargarEstado.next(this.model.categoria_id);
+            this.goBack();
         },
         err => {
-          loading.dismiss();
+            this.appUIUtilsService.dissmisLoading();
         }
       );
     }  else if (this.accion == 'Editar'){
       this.privateEstadoService.put(this.model, this.model.id).subscribe(
         ok => {
-          super.displayAlert("Se ha modificado el Estado.");
-          loading.dismiss();
-          this.tab3Service.recargarEstado.next(this.model.categoria_id);
-          this.goBack();
+            this.appUIUtilsService.displayAlert("Se ha modificado el Estado.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading();
+            this.tab3Service.recargarEstado.next(this.model.categoria_id);
+            this.goBack();
         },
         err => {
-          loading.dismiss();
+            this.appUIUtilsService.dissmisLoading();
         }
       );
     }

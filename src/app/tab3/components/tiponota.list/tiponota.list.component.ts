@@ -1,8 +1,6 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
-import { AuthService } from 'src/app/modules/autentication/services/auth.service';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
 import { Tab3Service } from '../../services/tab3.service';
 
@@ -11,28 +9,29 @@ import { Tab3Service } from '../../services/tab3.service';
   templateUrl: './tiponota.list.component.html',
   styleUrls: ['./tiponota.list.component.scss'],
 })
-export class TiponotaListComponent extends ApiConsumer  implements OnInit, OnDestroy {
+export class TiponotaListComponent implements OnInit, OnDestroy {
 
   public tipo_notas:any = [];
 
   constructor(
-    public  loadingController:        LoadingController,
-    private alertController:          AlertController,
-    public  ref:                      ChangeDetectorRef,
     private privateTipoNotaService:   PrivateTipoNotaService,
     private router:                   Router,
-    public  authService:              AuthService,
     private tab3Service:              Tab3Service,
+
+    private appUIUtilsService:        AppUIUtilsService, 
   ) {
-    super(alertController, loadingController, ref, authService);
   }
   
   ngOnInit() {
     this.load_data();
   }
 
+  ngOnDestroy(){
+
+  }
+
   load_data(){
-    this.loadingEspecificData(this.privateTipoNotaService, '',   'tipo_notas', 'Consultando tipos de notas.');
+    //this.loadingEspecificData(this.privateTipoNotaService, '',   'tipo_notas', 'Consultando tipos de notas.');
   }
   
   nuevo_tipo_nota(){
@@ -44,37 +43,25 @@ export class TiponotaListComponent extends ApiConsumer  implements OnInit, OnDes
     this.router.navigate([ '/tabs/tab3/editar_tipo_nota' ]);
   }
 
-  async eliminar_tipo_nota(tipo_nota){
-    const alert = await this.alertController.create({
-      header: 'Atención',
-      message: 'Está por eliminar el tipo de nota "' + tipo_nota.nombre + '" ¿desea continuar?.',
-      buttons: [{
-        text: 'No',
-        role: 'cancel',
-        cssClass: 'secondary',
-        handler: () => {}
-      }, {
-        text: 'Si',
-        cssClass: 'danger',
-        handler: () => {
-          this.borrar_tipo_nota(tipo_nota);
-        }
-      }]
-    });
-    await alert.present();
-  }
+    async eliminar_tipo_nota(tipo_nota){
+        this.appUIUtilsService.displayAlert('Está por eliminar el tipo de nota "' + tipo_nota.nombre + '" ¿desea continuar?.', 'Atención', [
+            { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
+            { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.borrar_tipo_nota(tipo_nota); } }
+        ]);
+    }
 
   async borrar_tipo_nota(tipo_nota){
-    const loading = await this.loadingController.create({ message: 'Borrando tipo de nota: ' + tipo_nota.nombre});
-    await loading.present();
+    this.appUIUtilsService.presentLoading({ message: 'Borrando tipo de nota: ' + tipo_nota.nombre });
     this.privateTipoNotaService.delete(tipo_nota.id).subscribe(
       ok => {
-        loading.dismiss();
+        this.appUIUtilsService.dissmisLoading();
         this.load_data();
       },
       err => {
-        loading.dismiss();
-        this.displayAlert('Ocurrió un error al intentar eliminar: ' + tipo_nota.nombre + '¿El tipo de nota tiene notas asociadas?');
+        this.appUIUtilsService.dissmisLoading();
+        this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota. ', 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
       }
     );
   }

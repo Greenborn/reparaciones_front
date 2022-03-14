@@ -17,11 +17,12 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModule } from '@ng-bootst
 import { NgbDateCustomParserFormatter } from 'src/providers/ngb-date-custom-parser-formatter.provider';
 import { NgbDateCustomI18 } from 'src/providers/ngb-date-custom-i18.provider';
 import { LoadingComponent } from './components/loading/loading.component';
+import { MessageComponent } from './components/message/message.component';
 
 
 @NgModule({
     declarations: [
-      AppComponent, NotaFormComponent, LoadingComponent
+      AppComponent, NotaFormComponent, LoadingComponent, MessageComponent
     ],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,ColorPickerModule, FormsModule, AutenticationModule, HttpClientModule, IonicSelectableModule, NgbModule],
     providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{

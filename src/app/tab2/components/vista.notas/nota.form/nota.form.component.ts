@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController } from '@ionic/angular';
 
 import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 
-import { AuthService } from 'src/app/modules/autentication/services/auth.service';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { FormateoService } from 'src/app/services/formateo.service';
@@ -50,7 +48,6 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
     public  privateDocumentoService:     PrivateDocumentoService,
     
     private appUIUtilsService:           AppUIUtilsService, 
-    private alertCtrl:                   AlertController,
     
     private activatedRoute:              ActivatedRoute
     ) {
@@ -119,23 +116,10 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
             return true;
         }
 
-        const alert = await this.alertCtrl.create({
-        header: 'Atención',
-        message: 'Está por eliminar el documento ¿Desea continuar?.',
-        buttons: [{
-            text: 'No',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {}
-        }, {
-            text: 'Si',
-            cssClass: 'danger',
-            handler: () => {
-            this.borrar_doc(documento);
-            }
-        }]
-        });
-        await alert.present();
+        this.appUIUtilsService.displayAlert('Está por eliminar el documento ¿Desea continuar?.', 'Atención', [
+            { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
+            { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.borrar_doc(documento); } }
+        ]);
     }
 
     async borrar_doc(documento){
@@ -147,7 +131,9 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
             },
             err => {
                 this.appUIUtilsService.dissmisLoading(); 
-                this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota. ');
+                this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la nota. ', 'Atención', [
+                    { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+                ]);
             }
         );
     }
@@ -183,7 +169,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
 
         this.privateEstadoService.getAll({
             getParams: 'filter[categoria_id]='+id,
-            callback: ()=>{ console.log(this.privateCategoriaService.all);
+            callback: ()=>{ 
                 this.appUIUtilsService.dissmisLoading();
             }
         });
@@ -193,7 +179,9 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
 
         let validacionResult = this.privateNotaService.modelo_edit.datosValidos(); 
         if ( !validacionResult.success ){
-            this.appUIUtilsService.displayAlert( validacionResult.msg );
+            this.appUIUtilsService.displayAlert(validacionResult.msg, 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
             return false;
         }
 
@@ -212,44 +200,33 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
     //[REFACTORIZAR]this.router.navigate([ this.privateNotaService.navigationOrigin ]);
   }
 
-  async deleteImg(i){
-    //[REFACTORIZAR]for (let c=0; c < this.privateNotaService.nota_images.length; c++){
-    /*  if (this.privateNotaService.nota_images[c].name == i.name){
-        const alert = await this.alertController.create({
-          header: 'Atención',
-          message: 'Está por eliminar una imagen ¿desea continuar?.',
-          buttons: [{
-            text: 'No',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {}
-          }, {
-            text: 'Si',
-            cssClass: 'danger',
-            handler: () => {
-              this.borrar_img(i);
+    async deleteImg(i){
+        for (let c=0; c < this.privateNotaService.nota_images.length; c++){
+            if (this.privateNotaService.nota_images[c].name == i.name){
+                this.appUIUtilsService.displayAlert('Está por eliminar una imagen ¿desea continuar?.', 'Atención', [
+                    { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
+                    { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.borrar_img(i); } }
+                ]);
             }
-          }]
-        });
-        await alert.present();
-      }
-    }*/
-  }
+        }
+    }
 
-  async borrar_img(i:any){
-   /* const loading = await this.loadingController.create({ message: 'Borrando imagen' });
-    await loading.present();
-    this.privateImagenService.delete(i.id).subscribe(
-      ok => {
-        loading.dismiss();
-        let nota_id = this.privateNotaService.nota_edit_id;
-        this.privateNotaService.goToEdit({ page:this, nota_id:nota_id });
-      },
-      err => {
-        loading.dismiss();
-        this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la imagen. ');
-      }
-    );*/
-  }
+    async borrar_img(i:any){
+        this.appUIUtilsService.presentLoading({ message: 'Consultando listado de estados...' });
+
+        this.privateImagenService.delete(i.id).subscribe(
+            ok => {
+                this.appUIUtilsService.dissmisLoading(); 
+                let nota_id = this.privateNotaService.modelo_edit.id;
+                this.privateNotaService.goToEdit({ nota_id:nota_id, navigationOrigin:'/tabs/tab2' });
+            },
+            err => {
+                this.appUIUtilsService.dissmisLoading(); 
+                this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la imagen.', 'Error', [
+                    { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+                ]);
+            }
+        );
+    }
 
 }

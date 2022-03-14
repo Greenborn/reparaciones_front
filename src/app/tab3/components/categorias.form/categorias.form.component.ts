@@ -1,10 +1,8 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { Categoria } from 'src/app/models/categoria';
-import { AuthService } from 'src/app/modules/autentication/services/auth.service';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateCategoriaService } from 'src/app/services/private.categoria.service';
 import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { Tab3Service } from '../../services/tab3.service';
@@ -14,7 +12,7 @@ import { Tab3Service } from '../../services/tab3.service';
   templateUrl: './categorias.form.component.html',
   styleUrls: ['./categorias.form.component.scss'],
 })
-export class CategoriasFormComponent  extends ApiConsumer  implements OnInit, OnDestroy {
+export class CategoriasFormComponent  implements OnInit, OnDestroy {
 
   public accion:string = 'Nueva';
   public model:Categoria    = new Categoria();
@@ -24,22 +22,21 @@ export class CategoriasFormComponent  extends ApiConsumer  implements OnInit, On
   private recargarEstadosSubs:any;
 
   constructor(
-    private alertController:             AlertController,
-    public  loadingController:           LoadingController,
-    public ref:                          ChangeDetectorRef,
     private router:                      Router,
     private privateCategoriaService:     PrivateCategoriaService,
     private privateEstadoService:        PrivateEstadoService,
     private tab3Service:                 Tab3Service,
-    public  authService:                 AuthService,
+
+    private appUIUtilsService:           AppUIUtilsService,
   ) {  
-    super(alertController, loadingController, ref, authService);
   }
+
+  ngOnDestroy(){}
 
   ngOnInit() {
     if (this.recargarEstadosSubs == undefined){
       this.recargarEstadosSubs = this.tab3Service.recargarEstado.subscribe({ next:(data:any) => {
-        this.loadingEspecificData(this.privateEstadoService, 'filter[categoria_id]='+data.id,   'estados', 'Consultando estados.');
+        //this.loadingEspecificData(this.privateEstadoService, 'filter[categoria_id]='+data.id,   'estados', 'Consultando estados.');
       }});
     }
     
@@ -50,15 +47,15 @@ export class CategoriasFormComponent  extends ApiConsumer  implements OnInit, On
         } else if (event.url.search('editar_categoria') != -1){
           this.accion = 'Editar';
           
-          const loading = await this.loadingController.create({ message: "Por favor espere..." });
+          this.appUIUtilsService.presentLoading({ message: "Por favor espere..." });
           this.privateCategoriaService.get(this.tab3Service.categoria_edit_id).subscribe(
             ok => {
-              loading.dismiss();
-              this.model = ok;
-              this.tab3Service.recargarEstado.next(this.model);
+                this.appUIUtilsService.dissmisLoading();
+                this.model = ok;
+                this.tab3Service.recargarEstado.next(this.model);
             },
             err => {
-              loading.dismiss();
+                this.appUIUtilsService.dissmisLoading();
             }
           );
   
@@ -87,73 +84,72 @@ export class CategoriasFormComponent  extends ApiConsumer  implements OnInit, On
     this.router.navigate([ '/tabs/tab3/editar_estado' ]);
   }
 
-  async eliminar_estado(estado){
-    const alert = await this.alertController.create({
-      header: 'Atención',
-      message: 'Está por eliminar el estado "' + estado.nombre + '" ¿desea continuar?.',
-      buttons: [{
-        text: 'No',
-        role: 'cancel',
-        cssClass: 'secondary',
-        handler: () => {}
-      }, {
-        text: 'Si',
-        cssClass: 'danger',
-        handler: () => {
-          this.borrar_estado(estado);
-        }
-      }]
-    });
-    await alert.present();
-  }
+    async eliminar_estado(estado){
+        this.appUIUtilsService.displayAlert('Está por eliminar el estado "' + estado.nombre + '" ¿desea continuar?.', 'Atención', [
+            { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
+            { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.borrar_estado(estado); } }
+        ]);
+    }
 
   async borrar_estado(estado){
-    const loading = await this.loadingController.create({ message: 'Borrando estado: ' + estado.nombre});
-    await loading.present();
+    this.appUIUtilsService.presentLoading({ message: 'Borrando estado: ' + estado.nombre });
+    
     this.privateEstadoService.delete(estado.id).subscribe(
       ok => {
-        loading.dismiss();console.log(estado);
-        this.tab3Service.recargarEstado.next({id: estado.categoria_id});
+            this.appUIUtilsService.dissmisLoading();
+            this.tab3Service.recargarEstado.next({id: estado.categoria_id});
       },
       err => {
-        loading.dismiss();
-        this.displayAlert('Ocurrió un error al intentar eliminar el estado: ' + estado.nombre + '¿El estado tiene notas asociadas?');
+        this.appUIUtilsService.dissmisLoading();
+        this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar el estado: ' + estado.nombre + '¿El estado tiene notas asociadas?', 'Error', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
       }
     );
   }
 
   async ingresar(){
     if ( !this.model.hasOwnProperty('color') || this.model.color == ''){
-      super.displayAlert("Debe definir un color para la categoría."); return false;
+        this.appUIUtilsService.displayAlert("Debe definir un color para la categoría.", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
     if ( !this.model.hasOwnProperty('nombre') || this.model.nombre == ''){
-      super.displayAlert("Debe definir un nombre para la categoría."); return false;
+        this.appUIUtilsService.displayAlert("Debe definir un nombre para la categoría.", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
     
-    const loading = await this.loadingController.create({ message: "Por favor espere..." });
+    this.appUIUtilsService.presentLoading({ message: "Por favor espere..." });
     if (this.accion == 'Nueva'){
       this.privateCategoriaService.post(this.model).subscribe(
         ok => {
-          super.displayAlert("Nuevo registro de Categoría creado.");
-          loading.dismiss();
-          this.tab3Service.recargarCategoria.next();
-          this.goBack();
+            this.appUIUtilsService.displayAlert("Nuevo registro de Categoría creado.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading();
+            this.tab3Service.recargarCategoria.next();
+            this.goBack();
         },
         err => {
-          loading.dismiss();
+            this.appUIUtilsService.dissmisLoading();
         }
       );
     } else if (this.accion == 'Editar'){
       this.privateCategoriaService.put(this.model, this.model.id).subscribe(
         ok => {
-          super.displayAlert("Se ha modificado la categoría.");
-          loading.dismiss();
-          this.tab3Service.recargarCategoria.next();
-          this.goBack();
+            this.appUIUtilsService.displayAlert("Se ha modificado la categoría.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading();
+            this.tab3Service.recargarCategoria.next();
+            this.goBack();
         },
         err => {
-          loading.dismiss();
+            this.appUIUtilsService.dissmisLoading();
         }
       );
     }

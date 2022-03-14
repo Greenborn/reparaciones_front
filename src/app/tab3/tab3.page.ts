@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController, ModalController } from '@ionic/angular';
-import { ApiConsumer } from '../models/ApiConsumer';
+import { ModalController } from '@ionic/angular';
 import { ChangePassComponent } from '../modules/autentication/componentes/change-pass/change-pass.component';
 import { AuthService } from '../modules/autentication/services/auth.service';
 import { PrivateCategoriaService } from '../services/private.categoria.service';
@@ -12,29 +11,25 @@ import { Tab3Service } from './services/tab3.service';
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss']
 })
-export class Tab3Page extends ApiConsumer  implements OnInit, OnDestroy{
+export class Tab3Page implements OnInit, OnDestroy{
 
   public categorias:any = [];
 
   private recargarCategoriasSubs:any;
 
   constructor(
-    public  loadingController:        LoadingController,
     public  authService:              AuthService,
-    private alertController:          AlertController,
-    public ref:                       ChangeDetectorRef,
     private router:                   Router,
     private tab3Service:              Tab3Service,
     private privateCategoriaService:  PrivateCategoriaService,
     public  modalController:          ModalController,
   ) {
-    super(alertController, loadingController, ref, authService);
   }
 
   ngOnInit() {
     if (this.recargarCategoriasSubs == undefined){
       this.recargarCategoriasSubs = this.tab3Service.recargarCategoria.subscribe({ next:() => {
-        this.loadingEspecificData(this.privateCategoriaService, '',   'categorias', 'Consultando categorias.');
+       // this.loadingEspecificData(this.privateCategoriaService, '',   'categorias', 'Consultando categorias.');
       }});
     }
     this.tab3Service.recargarCategoria.next();

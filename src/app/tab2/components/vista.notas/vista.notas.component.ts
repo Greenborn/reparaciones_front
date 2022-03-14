@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateNotaService2 } from 'src/app/services/private.nota.service2';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
@@ -18,8 +17,6 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
   public obra_id:any;
 
   constructor(
-    private alertController:             AlertController,
-    public  loadingController:           LoadingController,
     private activatedRoute:              ActivatedRoute,
     public  privateNotaService:          PrivateNotaService2,
     public  privateObrasService:         PrivateObrasService,
@@ -122,38 +119,24 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
         this.privateNotaService.goToNueva({ navigationOrigin:'/tabs/tab2' });
     }
 
-  async eliminar_nota(nota){
-    const alert = await this.alertController.create({
-      header: 'Atención',
-      message: 'Está por eliminar la nota "' + nota.nota + '" y se perderán sus archivos asociados ¿desea continuar?.',
-      buttons: [{
-        text: 'No',
-        role: 'cancel',
-        cssClass: 'secondary',
-        handler: () => {}
-      }, {
-        text: 'Si',
-        cssClass: 'danger',
-        handler: () => {
-          this.borrar_nota(nota);
-        }
-      }]
-    });
-    await alert.present();
-  }
+    async eliminar_nota(nota){
+        this.appUIUtilsService.displayAlert('Está por eliminar la nota "' + nota.nota + '" y se perderán sus archivos asociados ¿desea continuar?.', 'Atención', [
+            { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
+            { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.borrar_nota(nota); } }
+        ]);
+    }
 
-  async borrar_nota(nota){
-    const loading = await this.loadingController.create({ message: 'Borrando nota: ' + nota.nota});
-    await loading.present();
-   //[REFACTORIZAR] this.privateNotaService.delete(nota.id).subscribe(
-      //[REFACTORIZAR]ok => {
-        //[REFACTORIZAR]loading.dismiss();
-        //[REFACTORIZAR]this.privateNotaService.goToNotas({ page:this });
-      //[REFACTORIZAR]},
-      //[REFACTORIZAR]err => {
-        //[REFACTORIZAR]loading.dismiss();
-        //[REFACTORIZAR]this.displayAlert('Ocurrió un error al intentar eliminar la nota: ' + nota.nota);
-      //[REFACTORIZAR]}
-    //[REFACTORIZAR]);
-  }
+    async borrar_nota(nota){
+        this.appUIUtilsService.presentLoading({ message: 'Borrando nota: ' + nota.nota });
+        //[REFACTORIZAR] this.privateNotaService.delete(nota.id).subscribe(
+            //[REFACTORIZAR]ok => {
+            //[REFACTORIZAR]loading.dismiss();
+            //[REFACTORIZAR]this.privateNotaService.goToNotas({ page:this });
+            //[REFACTORIZAR]},
+            //[REFACTORIZAR]err => {
+            //[REFACTORIZAR]loading.dismiss();
+            //[REFACTORIZAR]this.displayAlert('Ocurrió un error al intentar eliminar la nota: ' + nota.nota);
+            //[REFACTORIZAR]}
+        //[REFACTORIZAR]);
+    }
 }

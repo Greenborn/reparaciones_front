@@ -43,25 +43,12 @@ export class HerramientaConfig {
       }
    }
 
-   async aplicarRecorte(){
-      const alert = await this.page.alertController.create({
-         header: 'Recorte',
-         message: '¿Desea recortar la imagen?.',
-         buttons: [{
-           text: 'No',
-           role: 'cancel',
-           cssClass: 'secondary',
-           handler: () => {}
-         }, {
-           text: 'Si',
-           cssClass: 'danger',
-           handler: () => {
-             this.confirmarRecorte();
-           }
-         }]
-       });
-       await alert.present();
-   }
+    async aplicarRecorte( appUIUtilsService ){
+        appUIUtilsService.displayAlert('¿Desea recortar la imagen?.', 'Recorte', [
+            { text:'No', css_class: 'btn-primary',callback:()=> { appUIUtilsService.dissmissAlert(); } },
+            { text:'Si', css_class: 'btn-warning',callback:()=> { appUIUtilsService.dissmissAlert(); this.confirmarRecorte(); } }
+        ]);
+    }
 
    confirmarRecorte(){
       //se quita el cuadrado de seleccion

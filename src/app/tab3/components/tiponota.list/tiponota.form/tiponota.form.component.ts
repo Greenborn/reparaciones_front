@@ -1,10 +1,8 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
 import { TipoNota } from 'src/app/models/tipo.nota';
-import { AuthService } from 'src/app/modules/autentication/services/auth.service';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
 import { Tab3Service } from 'src/app/tab3/services/tab3.service';
 
@@ -13,7 +11,7 @@ import { Tab3Service } from 'src/app/tab3/services/tab3.service';
   templateUrl: './tiponota.form.component.html',
   styleUrls: ['./tiponota.form.component.scss'],
 })
-export class TiponotaFormComponent  extends ApiConsumer  implements OnInit, OnDestroy {
+export class TiponotaFormComponent implements OnInit, OnDestroy {
 
   public accion:string = 'Nuevo';
   public model:TipoNota = new TipoNota();
@@ -21,16 +19,15 @@ export class TiponotaFormComponent  extends ApiConsumer  implements OnInit, OnDe
   private router_subs:any;
 
   constructor(
-    public  loadingController:        LoadingController,
-    private alertController:          AlertController,
-    public ref:                       ChangeDetectorRef,
     private router:                   Router,
     private privateTipoNotaService:   PrivateTipoNotaService,
     private tab3Service:              Tab3Service,
-    public  authService:              AuthService,
+
+    private appUIUtilsService:           AppUIUtilsService, 
   ) {
-    super(alertController, loadingController, ref, authService);
   }
+
+  ngOnDestroy(){}
 
   ngOnInit() {
     if (this.router_subs == undefined){
@@ -40,14 +37,14 @@ export class TiponotaFormComponent  extends ApiConsumer  implements OnInit, OnDe
         } else if (event.url.search('editar_tipo_nota') != -1){
           this.accion = 'Editar';
           
-          const loading = await this.loadingController.create({ message: "Por favor espere..." });
+          this.appUIUtilsService.presentLoading({ message: "Por favor espere..." });
           this.privateTipoNotaService.get(this.tab3Service.tipo_nota_edit_id).subscribe(
             ok => {
-              loading.dismiss();
-              this.model = ok;
+                this.appUIUtilsService.dissmisLoading();
+                this.model = ok;
             },
             err => {
-              loading.dismiss();
+                this.appUIUtilsService.dissmisLoading();
             }
           );
         }
@@ -65,36 +62,46 @@ export class TiponotaFormComponent  extends ApiConsumer  implements OnInit, OnDe
 
   async ingresar(){
     if ( !this.model.hasOwnProperty('color') || this.model.color == ''){
-      super.displayAlert("Debe definir un color para el tipo de nota."); return false;
+        this.appUIUtilsService.displayAlert("Debe definir un color para el tipo de nota.", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
     if ( !this.model.hasOwnProperty('nombre') || this.model.nombre == ''){
-      super.displayAlert("Debe definir un nombre para tipo de nota."); return false;
+        this.appUIUtilsService.displayAlert("Debe definir un nombre para tipo de nota.", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
-    const loading = await this.loadingController.create({ message: "Por favor espere..." });
+    this.appUIUtilsService.presentLoading({ message: "Por favor espere..." });
     if (this.accion == 'Nuevo'){
       this.privateTipoNotaService.post(this.model).subscribe(
         ok => {
-          super.displayAlert("Nuevo registro de Tipo de Nota creado.");
-          loading.dismiss();
-          this.tab3Service.recargarTipoNota.next();
-          this.goBack();
+            this.appUIUtilsService.displayAlert("Nuevo registro de Tipo de Nota creado.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading(); 
+            this.tab3Service.recargarTipoNota.next();
+            this.goBack();
         },
         err => {
-          loading.dismiss();
+            this.appUIUtilsService.dissmisLoading(); 
         }
       );
     } else if (this.accion == 'Editar'){
       this.privateTipoNotaService.put(this.model, this.model.id).subscribe(
         ok => {
-          super.displayAlert("Se ha modificado el Tipo de Nota.");
-          loading.dismiss();
-          this.tab3Service.recargarTipoNota.next();
-          this.goBack();
+            this.appUIUtilsService.displayAlert("Se ha modificado el Tipo de Nota.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.appUIUtilsService.dissmisLoading(); 
+            this.tab3Service.recargarTipoNota.next();
+            this.goBack();
         },
         err => {
-          loading.dismiss();
+            this.appUIUtilsService.dissmisLoading(); 
         }
       );
     }

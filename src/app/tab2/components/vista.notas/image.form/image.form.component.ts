@@ -1,11 +1,8 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
 import { Imagen } from 'src/app/models/imagen';
-import { AuthService } from 'src/app/modules/autentication/services/auth.service';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateImagenService } from 'src/app/services/private.imagen.service';
-import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { HerramientaConfig } from './herramienta.config.model';
 import { LienzoModel } from './lienzo.model';
 
@@ -14,18 +11,13 @@ import { LienzoModel } from './lienzo.model';
   templateUrl: './image.form.component.html',
   styleUrls: ['./image.form.component.scss'],
 })
-export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestroy {
+export class ImageFormComponent  implements OnInit, OnDestroy {
 
   constructor(
-    private alertController:             AlertController,
-    public  loadingController:           LoadingController,
-    public  ref:                         ChangeDetectorRef,
-    private router:                      Router,
     private privateImageService:         PrivateImagenService,
-   //[REFACTORIZAR] private privateNotaService:          PrivateNotaService,
-    public  authService:                 AuthService,
+    private router,                      Router,
+    private appUIUtilsService:           AppUIUtilsService, 
   ) { 
-    super(alertController, loadingController, ref, authService);    
   }
 
   private getAllSubj:any = [];
@@ -52,6 +44,10 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     }
   }
 
+  ngOnDestroy(){
+
+  }
+
   goBack(){
  //[REFACTORIZAR]   this.privateNotaService.goToEdit({ page:this, nota_id: this.imagen.id_nota });
     this.router.navigate([ this.privateImageService.navigationOrigin ]);
@@ -62,17 +58,21 @@ export class ImageFormComponent extends ApiConsumer  implements OnInit, OnDestro
     this.model.url         = this.imagen.url;
     this.model.id_nota     = this.imagen.id_nota;
     this.model.id          = this.imagen.id;
-    const loading = await this.loadingController.create({ message: "Guardando cambios..." });
-    loading.present();
+
+    this.appUIUtilsService.presentLoading({ message:  "Guardando cambios..." });
     this.privateImageService.put(this.model, this.model.id).subscribe(
       ok => {
-        super.displayAlert("Imagen guardada correctamente.");
-        loading.dismiss();
+        this.appUIUtilsService.displayAlert("Imagen guardada correctamente.", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        this.appUIUtilsService.dissmisLoading();
         this.goBack();
       },
       err => {
-        super.displayAlert("Ha ocurrido un error!");
-        loading.dismiss();
+        this.appUIUtilsService.displayAlert("Ha ocurrido un error!", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        this.appUIUtilsService.dissmisLoading();
       }
     );
   }

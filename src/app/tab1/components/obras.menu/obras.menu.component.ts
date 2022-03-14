@@ -1,5 +1,4 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateNotaService2 } from 'src/app/services/private.nota.service2';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
@@ -15,8 +14,6 @@ export class ObrasMenuComponent implements OnInit, OnDestroy {
   @Input() modal: any;
 
     constructor(
-        private alertController:       AlertController,
-
         private privateObrasService:   PrivateObrasService,
         private privateNotaService:    PrivateNotaService2,
         private appUIUtilsService:     AppUIUtilsService,
@@ -53,26 +50,13 @@ export class ObrasMenuComponent implements OnInit, OnDestroy {
     }
 
     async eliminar_obra(obra:any){
-        const alert = await this.alertController.create({
-                header: 'Atención',
-                message: 'Está por eliminar la obra "' + obra.nombre_alias + '" y se perderán sus notas asociadas ¿desea continuar?.',
-                buttons: [{
-                text: 'No',
-                role: 'cancel',
-                cssClass: 'secondary',
-                handler: () => {}
-            }, {
-                text: 'Si',
-                cssClass: 'danger',
-                handler: () => {
-                    //luego de borrar se fuerza la deteccion de cambios
-                    //se pasa por aca por que al parecer necesita ser llamado desde una pagina
-                    this.privateObrasService.borrar_obra(obra);
-                    this.volver();
-                }
-            }]
-        });
-        await alert.present();
+        this.appUIUtilsService.displayAlert('Está por eliminar la obra "' + obra.nombre_alias + '" y se perderán sus notas asociadas ¿desea continuar?.', 'Atención', [
+            { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
+            { text:'Si', css_class: 'btn-warning',callback:()=> { 
+                this.privateObrasService.borrar_obra(obra);
+                this.volver(); 
+            } }
+        ]);
     }
 
     async desabilitar_obra(obra:any){

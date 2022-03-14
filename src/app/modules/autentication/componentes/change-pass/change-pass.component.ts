@@ -1,9 +1,6 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { ApiConsumer } from 'src/app/models/ApiConsumer';
+import { Component, Input, OnInit } from '@angular/core';
+import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { ChangePassword } from '../../models/change-password';
-import { AuthService } from '../../services/auth.service';
 import { ChangePasswordService } from '../../services/change.password.service';
 
 @Component({
@@ -11,18 +8,15 @@ import { ChangePasswordService } from '../../services/change.password.service';
   templateUrl: './change-pass.component.html',
   styleUrls: ['./change-pass.component.scss'],
 })
-export class ChangePassComponent extends ApiConsumer implements OnInit {
+export class ChangePassComponent implements OnInit {
 
   @Input() modal: any;
 
   constructor(
     private changePasswordService: ChangePasswordService,
-    public  loadingController:     LoadingController,
-    private alertController:       AlertController,
-    public changeDetectorRef:      ChangeDetectorRef,
-    private auth:                  AuthService,
-  ) { 
-    super(alertController, loadingController, changeDetectorRef, auth);
+
+    private appUIUtilsService:   AppUIUtilsService, 
+  ) {
   }
 
   public model:ChangePassword = new ChangePassword();
@@ -31,40 +25,55 @@ export class ChangePassComponent extends ApiConsumer implements OnInit {
 
   async ingresar(){
     if (this.model.new_password == ''){
-      super.displayAlert('Debe ingresar una nueva contraseña.');
-      return false;
+        this.appUIUtilsService.displayAlert('Debe ingresar una nueva contraseña.', 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
     if (this.model.old_password == ''){
-      super.displayAlert('Debe ingresar la contraseña actual.');
-      return false;
+        this.appUIUtilsService.displayAlert('Debe ingresar la contraseña actual.', 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
     if (this.model.repeat_password == ''){
-      super.displayAlert('Debe ingresar la contraseña en el campo "repetir contraseña".');
-      return false;
+        this.appUIUtilsService.displayAlert('Debe ingresar la contraseña en el campo "repetir contraseña".', 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
     if (this.model.repeat_password !== this.model.new_password){
-      super.displayAlert('Las contraseñas no coinciden.');
-      return false;
+        this.appUIUtilsService.displayAlert('Las contraseñas no coinciden.', 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        return false;
     }
 
-    const loading = await this.loadingController.create({ message: "Por favor espere..." });
+    this.appUIUtilsService.presentLoading({ message: "Por favor espere..." });
+    
     this.changePasswordService.put(this.model, 0).subscribe(
       ok => {
-        loading.dismiss();
+        this.appUIUtilsService.dissmisLoading();
         if (ok['status'] == true){
-          super.displayAlert("Se ha modificado la contraseña.");
-          this.volver();
-          return true;
+            this.appUIUtilsService.displayAlert("Se ha modificado la contraseña.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            this.volver();
+            return true;
         }
         
-        super.displayAlert(ok['message']);
+        this.appUIUtilsService.displayAlert(ok['message'], 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
       },
       err => {
-        super.displayAlert("Ocurrió un error.");
-        loading.dismiss();
+        this.appUIUtilsService.displayAlert("Ocurrió un error.", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
+        this.appUIUtilsService.dissmisLoading();
       }
     );
   }
