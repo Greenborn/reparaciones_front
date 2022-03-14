@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { ChangePassComponent } from '../modules/autentication/componentes/change-pass/change-pass.component';
 import { AuthService } from '../modules/autentication/services/auth.service';
-import { PrivateCategoriaService } from '../services/private.categoria.service';
+import { AppUIUtilsService } from '../services/app.ui.utils.service';
+import { PrivateCategoriaService2 } from '../services/private.categoria.service2';
 import { Tab3Service } from './services/tab3.service';
 
 @Component({
@@ -12,31 +13,30 @@ import { Tab3Service } from './services/tab3.service';
 })
 export class Tab3Page implements OnInit, OnDestroy{
 
-  public categorias:any = [];
-
   private recargarCategoriasSubs:any;
 
   constructor(
     public  authService:              AuthService,
     private navController:            NavController,
     private tab3Service:              Tab3Service,
-    private privateCategoriaService:  PrivateCategoriaService,
+    public  privateCategoriaService:  PrivateCategoriaService2,
     public  modalController:          ModalController,
+
+    private appUIUtilsService:        AppUIUtilsService
   ) {
-  }
+  } 
 
-  ngOnInit() {
-    if (this.recargarCategoriasSubs == undefined){
-      this.recargarCategoriasSubs = this.tab3Service.recargarCategoria.subscribe({ next:() => {
-       // this.loadingEspecificData(this.privateCategoriaService, '',   'categorias', 'Consultando categorias.');
-      }});
+    ngOnInit() {
+        //NOS ASEGURAMOS DE CARGAR LAS CATEGORIAS
+        if ( this.privateCategoriaService.all.length == 0){
+            this.appUIUtilsService.presentLoading({ message: "Consultando listado de categorías..." });
+            this.privateCategoriaService.getAll();
+        }
     }
-    this.tab3Service.recargarCategoria.next();
-  }
 
-  cerrar_session(){
+    cerrar_session(){
     this.authService.toLogOut();
-  }
+    }
 
   nueva_categoria(){
     this.navController.navigateForward([ '/tabs/tab3/crear_categoria' ]);

@@ -4,7 +4,7 @@
         <ion-back-button (click)="goBack()"></ion-back-button>
       </ion-buttons>
       <ion-title>
-        {{accion}} Tipo de Nota
+        {{privateTipoNotaService.operacion_actual}} Tipo de Nota
       </ion-title>
     </ion-toolbar>
   </ion-header>
@@ -25,7 +25,7 @@
                   <ion-col>
                     <ion-item>
                       <ion-label>Nombre:</ion-label>
-                      <ion-input placeholder="" type="text" [(ngModel)]="model.nombre"></ion-input>
+                      <ion-input placeholder="" type="text" [(ngModel)]="privateTipoNotaService.modelo_edit.nombre"></ion-input>
                     </ion-item>
                   </ion-col>
                 </ion-row>
@@ -34,7 +34,7 @@
                   <ion-col>
                     <ion-item>
                       <ion-label>Color:</ion-label>
-                      <input [(colorPicker)]="model.color" [style.background]="model.color"/>
+                      <input [(colorPicker)]="privateTipoNotaService.modelo_edit.color" [style.background]="privateTipoNotaService.modelo_edit.color"/>
                     </ion-item>
                   </ion-col>
                 </ion-row>

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      {{privateNotaService.accion}} Nota
+      {{privateNotaService.operacion_actual}} Nota
     </ion-title>
     <ion-buttons slot="end">
         <ion-button (click)="goBack()" color="medium" fill="outline">Volver</ion-button>
@@ -37,7 +37,7 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Tipo de Nota:</ion-label>
-                    <ion-select placeholder="Selecionar Tipo de Nota" style="background-color: {{color_tipo_nota}};"  [(ngModel)]="privateNotaService.modelo_edit.tipo_nota_id" (ionChange)="tiponota_change()" cancelText="Cancelar">
+                    <ion-select placeholder="Selecionar Tipo de Nota" [ngStyle]="{'background-color': color_tipo_nota}"  [(ngModel)]="privateNotaService.modelo_edit.tipo_nota_id" (ionChange)="tiponota_change()" cancelText="Cancelar">
                       <ion-select-option *ngFor="let tipo_nota of privateTipoNotaService.all" value="{{tipo_nota.id}}">{{tipo_nota.nombre}}</ion-select-option>
                     </ion-select>
                   </ion-item>
@@ -48,7 +48,7 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Categoría:</ion-label>
-                    <ion-select placeholder="Selecionar Categoría" style="background-color: {{color_categoria}};"  [(ngModel)]="privateNotaService.modelo_edit.categoria_id" (ionChange)="categoria_change()" cancelText="Cancelar">
+                    <ion-select placeholder="Selecionar Categoría" [ngStyle]="{'background-color': color_categoria}"  [(ngModel)]="privateNotaService.modelo_edit.categoria_id" (ionChange)="categoria_change()" cancelText="Cancelar">
                       <ion-select-option *ngFor="let categoria of privateCategoriaService.all" value="{{categoria.id}}">{{categoria.nombre}}</ion-select-option>
                     </ion-select>
                   </ion-item>

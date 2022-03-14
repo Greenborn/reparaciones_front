@@ -7,6 +7,7 @@ import { Nota } from '../models/nota';
 import { ApiServiceBase } from './api.service.base';
 import { AppUIUtilsService } from './app.ui.utils.service';
 import { FormateoService } from './formateo.service';
+import { PrivateEstadoService2 } from './private.estado.service2';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
       private navController:         NavController,
       private formateoService:       FormateoService,
       private appUIUtilsService:     AppUIUtilsService,
+      private privateEstadoService:  PrivateEstadoService2
     ) {
         super('private-nota', http, config);
         this.defSubscripcionesAPI();
@@ -130,7 +132,15 @@ export class PrivateNotaService2 extends ApiServiceBase{
                     });
             }
 
-            this.appUIUtilsService.dissmisLoading();
+            this.appUIUtilsService.presentLoading({ message: "Cargando lista de estados..." });
+            this.privateEstadoService.getAll({
+                getParams: 'filter[categoria_id]='+this.modelo_edit.categoria_id,
+                callback: ()=>{ 
+                    this.modelo_edit.estado_id = String(this.modelo_edit.estado_id);
+                    console.log(this.modelo_edit.estado_id);
+                }
+            });
+    
         }}));
 
         //ERROR AL INTENTAR OBTENER Nota

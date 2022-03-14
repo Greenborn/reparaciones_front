@@ -77,10 +77,9 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER LISTA DE NOTAS
         this.subscripciones.push( this.getAllKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de notas.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de tipos de notas.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
-            console.log(this.last_err);
         }}));
 
         //GET
@@ -92,7 +91,7 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER Nota
         this.subscripciones.push( this.getOneKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la nota.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el tipo de nota.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             console.log(this.last_err);
@@ -100,18 +99,18 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
 
         //POST
         this.subscripciones.push( this.postedOK.subscribe({ next:(p:any) => {
-            this.appUIUtilsService.displayAlert("Nuevo registro de Obra creado.", 'Atención', [
+            this.appUIUtilsService.displayAlert("Nuevo registro de tipo de nota creado.", 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             this.appUIUtilsService.dissmisLoading();
-            this.getTipoNotas();
+            this.getAll();
             this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.postedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la nota.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear el tipo de nota.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             console.log(this.last_err);
@@ -119,7 +118,7 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
 
         //PUT 
         this.subscripciones.push( this.editedOK.subscribe({ next:(p:any) => {
-            this.appUIUtilsService.displayAlert("Se ha modificado la obra.", 'Atención', [
+            this.appUIUtilsService.displayAlert("Se ha modificado el tipo de nota.", 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             this.appUIUtilsService.dissmisLoading();
@@ -130,25 +129,24 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.editedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la obra.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar el tipo de nota.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
-            console.log(this.last_err);
         }}));
 
         /// DELETE
         this.subscripciones.push( this.deletedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Obra eliminada correctamente.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Tipo de nota eliminada correctamente.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
-            this.getTipoNotas();
+            this.getAll();
         }}));
 
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading(); 
             this.getTipoNotas();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la obra.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar el tipo de nota.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
         }}));
@@ -167,9 +165,18 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
 
     //NAVEGACION
     //NUEVO TIPO de NOTA
-    goToNueva( params ){
-        this.modelo_edit = new TipoNota();
-        this.navController.navigateForward([ '/tabs/tab2/crear_nota' ]);
+    goToNueva(){
+        this.navController.navigateForward([ '/tabs/tab3/crear_tipo_nota' ]);
+        this.modelo_edit      = new TipoNota();
+        this.operacion_actual = 'Nueva';
+    } 
+
+    goToEdit( id:number ){
+        this.navController.navigateForward([ '/tabs/tab3/editar_tipo_nota/' + id ]);
+        this.operacion_actual = 'Editar';
+        this.appUIUtilsService.presentLoading({ message: 'Consultando tipo de nota...' });
+        this.modelo_edit      = new TipoNota();
+        this.get(id);
     }
 
     goBack(){

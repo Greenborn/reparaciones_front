@@ -38,7 +38,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
 
     public  privateObrasService:         PrivateObrasService,
     public  privateCategoriaService:     PrivateCategoriaService2,
-    private privateEstadoService:        PrivateEstadoService2,
+    public  privateEstadoService:        PrivateEstadoService2,
     public  privateTipoNotaService:      PrivateTipoNotaService2,
 
     private formateoService:             FormateoService,
@@ -62,9 +62,16 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
             this.activatedRoute.paramMap.subscribe(async params => { 
                 this.privateNotaService.inic_modelo();
 
-                let id:any = params.get('id_obra');
-                if (id !== null){
-                    this.privateNotaService.modelo_edit.obra_id = String(id);
+                //Si se trata de una nota nueva a la cual se le especifica id de obra
+                let id_obra:any = params.get('id_obra');
+                if (id_obra !== null){
+                    this.privateNotaService.modelo_edit.obra_id = String(id_obra);
+                }
+
+                //Si se trata de la edicion de una nota existente, hay que cargar sus datos
+                let id_nota = params.get('id_nota');
+                if (id_nota !== null){
+                    this.privateNotaService.get( Number(id_nota), 'expand=imagenes,documentos')
                 }
             })
         );

@@ -17,7 +17,7 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
   constructor(
     private privateImageService:         PrivateImagenService,
     private navController:               NavController,
-    private appUIUtilsService:           AppUIUtilsService, 
+    public appUIUtilsService:           AppUIUtilsService, 
   ) { 
   }
 

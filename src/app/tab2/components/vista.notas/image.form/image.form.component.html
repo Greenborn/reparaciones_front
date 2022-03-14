@@ -11,7 +11,7 @@
           </ion-button>
         </ion-col>
         <ion-col size="auto" class="p0" *ngIf="herramientas.herramienta_seleccionada == 'recorte'">
-          <ion-button (click)="herramientas.aplicarRecorte()" color="medium" fill="outline">
+          <ion-button (click)="herramientas.aplicarRecorte( appUIUtilsService )" color="medium" fill="outline">
             Aplicar recorte
           </ion-button>
         </ion-col>

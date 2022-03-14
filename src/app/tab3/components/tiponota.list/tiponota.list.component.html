@@ -12,13 +12,13 @@
 
     <ion-row>
       <ion-col>
-        <ion-list *ngIf="tipo_notas.length > 0">
-          <ion-item  *ngFor="let tipo_nota of tipo_notas">
+        <ion-list>
+          <ion-item  *ngFor="let tipo_nota of privateTipoNotaService.all">
             <ion-grid>
               <ion-row>
                 <ion-col class="item-valign-center" size="auto">{{tipo_nota.nombre}}</ion-col>
                 <ion-col></ion-col>
-                <ion-col size="2" style="background-color: {{tipo_nota.color}};"> </ion-col>
+                <ion-col size="2" [ngStyle]="{ 'background-color': tipo_nota.color}"> </ion-col>
                 <ion-col size="auto"> 
                   <ion-button color="secondary" (click)="editar_tipo_nota(tipo_nota)" size="small"><ion-icon name="create"></ion-icon></ion-button>
                   <ion-button color="danger" (click)="eliminar_tipo_nota(tipo_nota)" size="small"><ion-icon name="trash"></ion-icon></ion-button>
@@ -28,7 +28,7 @@
           </ion-item>
         </ion-list>
 
-        <div *ngIf="tipo_notas.length == 0">No se encontraron Tipos de Notas</div>
+        <div *ngIf="privateTipoNotaService.all.length == 0">No se encontraron Tipos de Notas</div>
       </ion-col>
     </ion-row>
 
