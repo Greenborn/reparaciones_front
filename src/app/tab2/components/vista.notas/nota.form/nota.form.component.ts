@@ -149,9 +149,8 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
     }
 
 
-    ver_imagen(i){
-        //[REFACTORIZAR] this.privateNotaService.navigationOrigin = '/tabs/tab2/editar_nota';
-        this.privateImagenService.goToEdit({ page:this, img_id:i.id });
+    ver_imagen(i:any){
+        this.privateImagenService.goToEdit({ img:i });
     }
 
     categoria_change(){

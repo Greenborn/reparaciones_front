@@ -22,7 +22,7 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
   }
 
   private getAllSubj:any = [];
-  public imagen:any;
+  
   public model = new Imagen();
 
   public herramientas:HerramientaConfig;
@@ -35,19 +35,21 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
       { areaEdicion:'areaEdicion', canvasCont:'canvasCont', herramientas:this.herramientas, fps:30 }
     );
     this.herramientas.lienzo = this.lienzo;
-
-    if (this.getAllSubj.length == 0){
-      this.getAllSubj.push(this.privateImageService.base64ConvertCallBack.subscribe({ next:(p) => {
-        this.imagen = { file: p.base64, name:p.anydata.url, id:p.anydata.id, url:p.anydata.url, id_nota:p.anydata.id_nota };
-
-        this.lienzo.loadImage( this.imagen );
-      }}));
+    
+    if (this.privateImageService.imagen_edit !== undefined){
+        this.lienzo.loadImage( this.privateImageService.imagen_edit );
+    } else {
+        this.appUIUtilsService.displayAlert("No se pudo cargar la imagen.", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
     }
   }
 
-  ngOnDestroy(){
-
-  }
+    ngOnDestroy(){
+        for (let c=0; c < this.getAllSubj.length; c++){
+            this.getAllSubj[c].unsubscribe();
+        }
+    }
 
   goBack(){
     this.navController.back();
@@ -55,9 +57,9 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
 
   async ingresar(){
     this.model.base64_edit = this.lienzo.areaEdicion.toDataURL("image/jpeg");
-    this.model.url         = this.imagen.url;
-    this.model.id_nota     = this.imagen.id_nota;
-    this.model.id          = this.imagen.id;
+    this.model.url         = this.privateImageService.imagen_edit.url;
+    this.model.id_nota     = this.privateImageService.imagen_edit.id_nota;
+    this.model.id          = this.privateImageService.imagen_edit.id;
 
     this.appUIUtilsService.presentLoading({ message:  "Guardando cambios..." });
     this.privateImageService.put(this.model, this.model.id).subscribe(
@@ -86,6 +88,6 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
   }
 
   reset(){
-    this.lienzo.loadImage( this.imagen );
+    this.lienzo.loadImage( this.privateImageService.imagen_edit );
   }
 }
