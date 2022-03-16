@@ -41,7 +41,7 @@ export class TiponotaFormComponent implements OnInit, OnDestroy {
     }
 
     goBack(){
-        this.navController.setDirection('back');
+        this.navController.pop();
     }
 
     async ingresar(){

@@ -48,9 +48,9 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
       http:                          HttpClient,
       config:                        ConfigService,
       private navController:         NavController,
-      private appUIUtilsService:     AppUIUtilsService,
+      appUIUtilsService:             AppUIUtilsService,
     ) {
-        super('private-tipo-nota', http, config);
+        super('private-tipo-nota', http, config, appUIUtilsService);
         this.defSubscripcionesAPI();
     }
 
@@ -76,9 +76,6 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER LISTA DE NOTAS
         this.subscripciones.push( this.getAllKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de tipos de notas.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
         }}));
 
         //GET
@@ -90,10 +87,6 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER Nota
         this.subscripciones.push( this.getOneKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el tipo de nota.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         //POST
@@ -109,28 +102,21 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.postedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear el tipo de nota.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         //PUT 
         this.subscripciones.push( this.editedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.displayAlert("Se ha modificado el tipo de nota.", 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert();  } }
             ]);
             this.appUIUtilsService.dissmisLoading();
-            this.getAll();
+            this.getAll();   
             this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.editedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar el tipo de nota.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
         }}));
 
         /// DELETE
@@ -145,9 +131,6 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading(); 
             this.getTipoNotas();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar el tipo de nota.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
         }}));
     }
 
@@ -178,7 +161,7 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
     }
 
     goBack(){
-        this.navController.setDirection('back');
+        this.navController.pop();
     }
 
     getTipoNotas(){

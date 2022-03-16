@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable, Subject, throwError } from 'rxjs';
+import { AppUIUtilsService } from './app.ui.utils.service';
 import { ConfigService } from './config.service';
 
 @Injectable({
@@ -34,9 +35,10 @@ export abstract class ApiServiceBase {
 
 
     constructor(
-        @Inject(String) private recurso:  string,
-        protected               http:     HttpClient,
-        protected               config:   ConfigService,
+        @Inject(String) private recurso:           string,
+        protected               http:              HttpClient,
+        protected               config:            ConfigService,
+        protected               appUIUtilsService: AppUIUtilsService
     ) {
 
     }
@@ -49,7 +51,11 @@ export abstract class ApiServiceBase {
                 this.one = ok;  
                 this.getOneOK.next(ok);  
             },
-            err => { this.last_err = err; this.getOneKO.next(err); }
+            err => { 
+                this.last_err = err; 
+                this.getOneKO.next(err); 
+                this.showErrorMsg( err );
+            }
         );
     }
 
@@ -67,29 +73,61 @@ export abstract class ApiServiceBase {
 
                 if ( params.hasOwnProperty('callback') ){ params.callback(); }
             },
-            (err) => { this.last_err = err; this.getAllKO.next(err); }
+            (err) => { 
+                this.last_err = err; 
+                this.showErrorMsg( err );
+                this.getAllKO.next(err); 
+            }
         );
     }
 
     public delete( id:number ){
         this.http.delete( `${this.config.apiUrl(this.recurso)}/${id}` ).subscribe(
             ok  => { this.deletedOK.next(ok);  },
-            err => { this.last_err = err; this.deletedKO.next(err); }
+            err => { 
+                this.last_err = err; 
+                this.showErrorMsg( err );
+                this.deletedKO.next(err); 
+            }
         );
     }
 
     public post( model:any, getParams: string = ''){
         this.http.post(`${this.config.apiUrl(this.recurso)}`, model ).subscribe(
             ok  => { this.postedOK.next(ok);  },
-            err => { this.last_err = err; this.postedKO.next(err); }
+            err => { 
+                this.showErrorMsg( err );
+                this.last_err = err; 
+                this.postedKO.next(err); 
+            }
         );
     }
 
     public put( model:any, id:number ){
         this.http.put( `${this.config.apiUrl(this.recurso)}/${id}`, model ).subscribe(
             ok  => { this.editedOK.next(ok);  },
-            err => { this.last_err = err; this.editedKO.next(err); }
+            err => { 
+                this.showErrorMsg( err );
+                this.last_err = err; 
+                this.editedKO.next(err); 
+            }
         );
+    }
+
+    //////////////// MANEJO DE ERRORES
+    public display_error:boolean = true;
+    public showErrorMsg( p:any ){
+        if (!this.display_error){
+            return false;
+        }
+
+        let texto_error:string = 'Ocurrió un error, reintente más tarde o consulte al soporte.';
+        if (p.hasOwnProperty('error')){
+            texto_error = p.error.message;
+        }
+        this.appUIUtilsService.displayAlert( texto_error, 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+        ]);
     }
 
     //////////////// MANEJO DE ARCHIVOS

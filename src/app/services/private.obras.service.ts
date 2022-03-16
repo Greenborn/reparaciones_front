@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoadingController, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
 import { Obra } from '../models/obra';
@@ -47,10 +47,9 @@ export class PrivateObrasService extends ApiServiceBase{
       http:                          HttpClient,
       config:                        ConfigService,
       private navController:         NavController,
-      private appUIUtilsService:     AppUIUtilsService,
-      private loadingController:     LoadingController
+      appUIUtilsService:             AppUIUtilsService
     ) {
-        super('private-obras', http, config);
+        super('private-obras', http, config, appUIUtilsService);
         this.defSubscripcionesAPI();
     }
 
@@ -89,10 +88,6 @@ export class PrivateObrasService extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER LISTA DE OBRAS
         this.subscripciones.push( this.getAllKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de obras.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         //GET
@@ -107,10 +102,6 @@ export class PrivateObrasService extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER OBRA
         this.subscripciones.push( this.getOneKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la obra.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         //POST
@@ -126,10 +117,6 @@ export class PrivateObrasService extends ApiServiceBase{
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.postedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la obra.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         //PUT 
@@ -145,10 +132,6 @@ export class PrivateObrasService extends ApiServiceBase{
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.editedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la obra.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         /// DELETE
@@ -163,9 +146,6 @@ export class PrivateObrasService extends ApiServiceBase{
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading(); 
             this.recargarObras();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la obra.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
         }}));
 
 

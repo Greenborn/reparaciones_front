@@ -44,7 +44,7 @@ export class EstadosFormComponent implements OnInit, OnDestroy {
     }
   
     goBack(){
-        this.navController.setDirection('back');
+        this.navController.pop();
     }
 
     async ingresar(){

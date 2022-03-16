@@ -206,7 +206,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
     }
   
     goBack(){
-        this.navController.setDirection('back');
+        this.navController.pop();
     }
 
     async deleteImg(i){

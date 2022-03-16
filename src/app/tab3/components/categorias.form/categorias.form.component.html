@@ -61,14 +61,17 @@
           
           <ion-card-content>
             <ion-row>
-              <ion-col>
-                <ion-button color="secondary" (click)="nuevo_estado()"><ion-icon name="add-circle"></ion-icon>&nbsp;Agregar Estado</ion-button>
-              </ion-col>
+                <ion-col *ngIf="privateCategoriaService.modelo_edit.id != -1">
+                    <ion-button color="secondary" (click)="nuevo_estado()"><ion-icon name="add-circle"></ion-icon>&nbsp;Agregar Estado</ion-button>
+                </ion-col>
+                <ion-col *ngIf="privateCategoriaService.modelo_edit.id == -1">
+                    <p>No se pueden agregar estados a la categoría, hasta que la misma sea guardada en la base de datos.</p>
+                </ion-col>
             </ion-row>
 
             <ion-row>
               <ion-col>
-                <ion-list>
+                <ion-list *ngIf="privateCategoriaService.modelo_edit.id != -1">
                   <ion-item  *ngFor="let estado of privateCategoriaService.modelo_edit.estados">
                     <ion-grid>
                       <ion-row>

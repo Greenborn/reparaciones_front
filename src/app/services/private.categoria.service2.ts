@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoadingController, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
 import { Categoria } from '../models/categoria';
@@ -48,10 +48,9 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
       http:                          HttpClient,
       config:                        ConfigService,
       private navController:         NavController,
-      private appUIUtilsService:     AppUIUtilsService,
-      private loadingController:     LoadingController
+      appUIUtilsService:             AppUIUtilsService
     ) {
-        super('private-categoria', http, config);
+        super('private-categoria', http, config, appUIUtilsService);
         this.defSubscripcionesAPI();
     }
 
@@ -87,10 +86,6 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER LISTA DE NOTAS
         this.subscripciones.push( this.getAllKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener el listado de notas.', 'Error', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         //GET
@@ -102,10 +97,6 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR OBTENER Nota
         this.subscripciones.push( this.getOneKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la categoría.', 'Error', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         //POST
@@ -121,10 +112,6 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.postedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la categoría.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         //PUT 
@@ -140,10 +127,6 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.editedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la categoría.', 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
-            console.log(this.last_err);
         }}));
 
         /// DELETE
@@ -157,13 +140,6 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
 
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            let texto_error:string = 'Ocurrió un error al intentar eliminar la categoría.';
-            if (p.hasOwnProperty('error')){
-                texto_error = p.error.message;
-            }
-            this.appUIUtilsService.displayAlert( texto_error, 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-            ]);
         }}));
     }
 
@@ -184,7 +160,7 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
     }
 
     goBack(){
-        this.navController.setDirection('back');
+        this.navController.pop();
     }
 
     //EXTRA DATA
