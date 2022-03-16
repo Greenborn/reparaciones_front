@@ -105,7 +105,6 @@ export class PrivateEstadoService2 extends ApiServiceBase{
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             this.appUIUtilsService.dissmisLoading();
-            this.getTipoNotas();
             this.goBack();
         }}));
 
@@ -120,7 +119,6 @@ export class PrivateEstadoService2 extends ApiServiceBase{
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             this.appUIUtilsService.dissmisLoading();
-            this.getTipoNotas();
             this.goBack();
         }}));
 
@@ -135,12 +133,10 @@ export class PrivateEstadoService2 extends ApiServiceBase{
             this.appUIUtilsService.displayAlert('Estado eliminado correctamente.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
-            this.getTipoNotas();
         }}));
 
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading(); 
-            this.getTipoNotas();
         }}));
     }
 
@@ -155,15 +151,14 @@ export class PrivateEstadoService2 extends ApiServiceBase{
     }
 
     goToEdit( params:any = {}){
-        
+        this.navController.navigateForward([ '/tabs/tab3/editar_estado/' + params.estado_id ]);
+        this.operacion_actual = 'Editar';
+        this.appUIUtilsService.presentLoading({ message: 'Consultando estado...' });
+        this.modelo_edit      = new Estado();
     }
 
     goBack(){
         this.navController.pop();
-    }
-
-    getTipoNotas(){
-
     }
     
 }

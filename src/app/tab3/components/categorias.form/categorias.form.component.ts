@@ -15,6 +15,7 @@ import { PrivateEstadoService2 } from 'src/app/services/private.estado.service2'
 export class CategoriasFormComponent  implements OnInit, OnDestroy {
 
     private subcripciones:any = [];
+    private id_categoria:any;
 
     constructor(
         private navController:               NavController,
@@ -36,13 +37,25 @@ export class CategoriasFormComponent  implements OnInit, OnDestroy {
         this.subcripciones.push(
             this.activatedRoute.paramMap.subscribe(async params => { 
                 //Si se trata de la edición de una categoría
-                let id_categoria:any = params.get('id_categoria');
-                if (id_categoria !== null){
+                this.id_categoria = params.get('id_categoria');
+                if (this.id_categoria !== null){
                     this.privateCategoriaService.operacion_actual = 'Editar';
-                    this.privateCategoriaService.get( Number(id_categoria), 'expand=estados' );
+                    this.privateCategoriaService.get( Number(this.id_categoria), 'expand=estados' );
                 }
             })
         );
+
+        this.subcripciones.push( this.privateEstadoService.deletedOK.subscribe({ next:(p:any) => {
+            this.privateCategoriaService.get( Number(this.id_categoria), 'expand=estados' );
+        }}));
+
+        this.subcripciones.push( this.privateEstadoService.editedOK.subscribe({ next:(p:any) => {
+            this.privateCategoriaService.get( Number(this.id_categoria), 'expand=estados' );
+        }}));
+
+        this.subcripciones.push( this.privateEstadoService.postedOK.subscribe({ next:(p:any) => {
+            this.privateCategoriaService.get( Number(this.id_categoria), 'expand=estados' );
+        }}));
     }
 
   

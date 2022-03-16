@@ -45,7 +45,10 @@ export class Tab3Page implements OnInit, OnDestroy{
     }
 
     eliminar_categoria( categoria:Categoria ){
-        this.privateCategoriaService.delete( categoria.id );
+        this.appUIUtilsService.displayAlert('Está por eliminar la categoría "' + categoria.nombre + '" ¿desea continuar?.', 'Atención', [
+            { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
+            { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.privateCategoriaService.delete( categoria.id ); } }
+        ]);
     }
 
     ngOnDestroy(){
