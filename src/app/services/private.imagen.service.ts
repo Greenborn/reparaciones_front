@@ -43,7 +43,9 @@ export class PrivateImagenService extends ApiService<any>{
     public ImageLoaded:Subject<any> = new Subject();
     async goToEdit(params:any = {}){
         this.accion = 'Editar';
-        this.imagen_edit = params.img;
+        this.imagen_edit         = params.img;
+        this.imagen_edit.id_nota = params.id_nota;
+        this.imagen_edit.name    = params.name;
         this.navController.navigateForward([ '/vista_imagen' ]);        
     }
 }

@@ -149,8 +149,8 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
     }
 
 
-    ver_imagen(i:any){
-        this.privateImagenService.goToEdit({ img:i });
+    ver_imagen(i:any){console.log(i);
+        this.privateImagenService.goToEdit({ img:i, name:i.name, id_nota: this.privateNotaService.modelo_edit.id });
     }
 
     categoria_change(){

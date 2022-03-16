@@ -60,23 +60,45 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
     this.model.url         = this.privateImageService.imagen_edit.url;
     this.model.id_nota     = this.privateImageService.imagen_edit.id_nota;
     this.model.id          = this.privateImageService.imagen_edit.id;
-
+    this.model.name        = this.privateImageService.imagen_edit.name;
+console.log(this.model.url);
     this.appUIUtilsService.presentLoading({ message:  "Guardando cambios..." });
-    this.privateImageService.put(this.model, this.model.id).subscribe(
-      ok => {
-        this.appUIUtilsService.displayAlert("Imagen guardada correctamente.", 'Atención', [
-            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-        ]);
-        this.appUIUtilsService.dissmisLoading();
-        this.goBack();
-      },
-      err => {
-        this.appUIUtilsService.displayAlert("Ha ocurrido un error!", 'Atención', [
-            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-        ]);
-        this.appUIUtilsService.dissmisLoading();
-      }
-    );
+    if (this.privateImageService.imagen_edit.id == -1 || this.privateImageService.imagen_edit.id === undefined){
+        this.model.url = '-';
+        this.privateImageService.post(this.model).subscribe(
+            ok => {
+                this.appUIUtilsService.displayAlert("Imagen guardada correctamente.", 'Atención', [
+                    { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+                ]);
+                this.appUIUtilsService.dissmisLoading();
+                this.goBack();
+            },
+            err => {
+                this.appUIUtilsService.displayAlert("Ha ocurrido un error!", 'Atención', [
+                    { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+                ]);
+                this.appUIUtilsService.dissmisLoading();
+            }
+        );
+    } else {
+        this.privateImageService.put(this.model, this.model.id).subscribe(
+            ok => {
+                this.appUIUtilsService.displayAlert("Imagen guardada correctamente.", 'Atención', [
+                    { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+                ]);
+                this.appUIUtilsService.dissmisLoading();
+                this.goBack();
+            },
+            err => {
+                this.appUIUtilsService.displayAlert("Ha ocurrido un error!", 'Atención', [
+                    { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+                ]);
+                this.appUIUtilsService.dissmisLoading();
+            }
+        );
+    }
+
+    
   }
   
   cambiar_ancho_trazo(){
