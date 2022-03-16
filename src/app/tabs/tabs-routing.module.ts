@@ -28,12 +28,15 @@ const routes: Routes = [
       { path: 'tab2/notas_obra/:id_obra', component: VistaNotasComponent, canActivate: [AuthenticationGuard]  },
       
       { path: 'tab3',  loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),  canActivate: [AuthenticationGuard] },
+
       { path: 'tab3/crear_categoria', component: CategoriasFormComponent, canActivate: [AuthenticationGuard]   },
-      { path: 'tab3/editar_categoria', component: CategoriasFormComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab3/editar_categoria/:id_categoria', component: CategoriasFormComponent, canActivate: [AuthenticationGuard]  },
+
       { path: 'tab3/crear_estado', component: EstadosFormComponent, canActivate: [AuthenticationGuard]   },
       { path: 'tab3/editar_estado/:id_estado', component: EstadosFormComponent, canActivate: [AuthenticationGuard]  },
+      
       { path: 'tab3/crear_tipo_nota', component: TiponotaFormComponent, canActivate: [AuthenticationGuard]   },
-      { path: 'tab3/editar_tipo_nota', component: TiponotaFormComponent, canActivate: [AuthenticationGuard]  },
+      { path: 'tab3/editar_tipo_nota/:id_tipo_nota', component: TiponotaFormComponent, canActivate: [AuthenticationGuard]  },
       
       {
         path: '',

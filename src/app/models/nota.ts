@@ -14,23 +14,23 @@ export class Nota {
     public imagenes:any = [];
 
     datosValidos(){
-        if ( this.nota == ''){
+        if ( this.nota == '' || !this.hasOwnProperty('nota') || this.nota == undefined){
             return { msg:"Es necesario completar el texto correspondiente a la nota.", success: false };
         }
 
-        if ( this.categoria_id == -1){
+        if ( this.categoria_id == -1 || !this.hasOwnProperty('categoria_id') || this.categoria_id == undefined){
             return { msg:"Es necesario definir una categoría.", success: false };  
         }
 
-        if ( this.estado_id == -1){
+        if ( this.estado_id == -1 || !this.hasOwnProperty('estado_id') || this.estado_id == undefined){
             return { msg:"Es necesario definir un estado.", success: false };  
         }
 
-        if ( this.obra_id == -1){
+        if ( this.obra_id == -1 || !this.hasOwnProperty('obra_id') || this.obra_id == undefined){
             return { msg:"Es necesario definir una obra.", success: false };
         }
 
-        if ( this.vencimiento == undefined){
+        if ( this.vencimiento == undefined || !this.hasOwnProperty('vencimiento') || this.vencimiento == undefined){
             return { msg:"Es necesario definir una fecha de vencimiento.", success: false };
         }
 
@@ -57,7 +57,6 @@ export class Nota {
                 this[claves[i]] = params[claves[i]];
             }
         }
-
-        console.log(this);
+        
     }
 }

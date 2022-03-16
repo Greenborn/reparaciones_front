@@ -1,7 +1,7 @@
 export class TipoNota {
-    public id:number;
-    public nombre:string;
-    public color:string = '#FFFFFF';
+    public id:number     = -1;
+    public nombre:string = '';
+    public color:string  = '#FFFFFF';
 
     datosValidos(){
         if ( this.color == ''){
@@ -13,5 +13,16 @@ export class TipoNota {
         }
 
         return { msg:"", success: true };
+    }
+
+    constructor( params:any = {}){
+        //DEFINIMOS LAS PROPIEDADES DEL MODELO, SI ES QUE EXITEN EN EL MISMO
+        let claves = Object.keys(params);
+        for(let i=0; i< claves.length; i++){
+            if ( this.hasOwnProperty(claves[i]) ){
+                this[claves[i]] = params[claves[i]];
+            }
+        }
+        
     }
 }

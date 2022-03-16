@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
+import { Categoria } from '../models/categoria';
 import { ChangePassComponent } from '../modules/autentication/componentes/change-pass/change-pass.component';
 import { AuthService } from '../modules/autentication/services/auth.service';
 import { AppUIUtilsService } from '../services/app.ui.utils.service';
 import { PrivateCategoriaService2 } from '../services/private.categoria.service2';
-import { Tab3Service } from './services/tab3.service';
 
 @Component({
   selector: 'app-tab3',
@@ -13,12 +13,10 @@ import { Tab3Service } from './services/tab3.service';
 })
 export class Tab3Page implements OnInit, OnDestroy{
 
-  private recargarCategoriasSubs:any;
 
   constructor(
     public  authService:              AuthService,
     private navController:            NavController,
-    private tab3Service:              Tab3Service,
     public  privateCategoriaService:  PrivateCategoriaService2,
     public  modalController:          ModalController,
 
@@ -35,29 +33,31 @@ export class Tab3Page implements OnInit, OnDestroy{
     }
 
     cerrar_session(){
-    this.authService.toLogOut();
+        this.authService.toLogOut();
     }
 
-  nueva_categoria(){
-    this.navController.navigateForward([ '/tabs/tab3/crear_categoria' ]);
-  }
+    nueva_categoria(){
+        this.privateCategoriaService.goToNueva();
+    }
 
-  editar_categoria(categoria){
-    this.tab3Service.categoria_edit_id = categoria.id;
-    this.navController.navigateForward([ '/tabs/tab3/editar_categoria' ]);
-  }
+    editar_categoria( categoria:Categoria ){
+        this.privateCategoriaService.goToEdit( categoria.id );
+    }
 
-  ngOnDestroy(){
-    this.recargarCategoriasSubs.unsubscribe();
-  }
+    eliminar_categoria( categoria:Categoria ){
+        this.privateCategoriaService.delete( categoria.id );
+    }
 
-  async cambiar_pass(){
-    let modal = await this.modalController.create({
-      component: ChangePassComponent,
-      componentProps: {
-        'modal': this.modalController
-      }
-    });
-    return await modal.present();
-  }
+    ngOnDestroy(){
+    }
+
+    async cambiar_pass(){
+        let modal = await this.modalController.create({
+            component: ChangePassComponent,
+            componentProps: {
+            'modal': this.modalController
+            }
+        });
+        return await modal.present();
+    }
 }

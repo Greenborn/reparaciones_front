@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoadingController, NavController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
-import { TipoNota } from '../models/tipo.nota';
+import { Estado } from '../models/estado';
 
 import { ApiServiceBase } from './api.service.base';
 import { AppUIUtilsService } from './app.ui.utils.service';
@@ -59,7 +59,7 @@ export class PrivateEstadoService2 extends ApiServiceBase{
     private subscripciones:any = [];
 
     //modelos
-    public modelo_edit:TipoNota;
+    public modelo_edit:Estado = new Estado();
 
     //Estados
     public operacion_actual:string = 'Nueva';
@@ -70,7 +70,7 @@ export class PrivateEstadoService2 extends ApiServiceBase{
     public guardar_modelo(){
         this.appUIUtilsService.presentLoading({ message: "Guardando..." });
         
-        if (this.operacion_actual == 'Nueva'){
+        if (this.operacion_actual == 'Nuevo'){
             this.post(this.modelo_edit);
         } else if (this.operacion_actual == 'Editar'){
             this.put(this.modelo_edit, this.modelo_edit.id);
@@ -95,7 +95,7 @@ export class PrivateEstadoService2 extends ApiServiceBase{
 
         //GET
         this.subscripciones.push( this.getOneOK.subscribe({ next:(p:any) => {
-            this.modelo_edit = this.one;
+            this.modelo_edit = new Estado(this.one);
             this.appUIUtilsService.dissmisLoading();
         }}));
 
@@ -158,7 +158,11 @@ export class PrivateEstadoService2 extends ApiServiceBase{
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading(); 
             this.getTipoNotas();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar el estado.', 'Atención', [
+            let texto_error:string = 'Ocurrió un error al intentar eliminar el estado.';
+            if (p.hasOwnProperty('error')){
+                texto_error = p.error.message;
+            }
+            this.appUIUtilsService.displayAlert( texto_error, 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
         }}));
@@ -166,10 +170,16 @@ export class PrivateEstadoService2 extends ApiServiceBase{
 
 
     //NAVEGACION
-    //NUEVO TIPO de NOTA
-    goToNueva( params ){
-        this.modelo_edit = new TipoNota();
-        this.navController.navigateForward([ '/tabs/tab2/crear_nota' ]);
+    //NUEVO Estado
+    goToCreate( params:any = {} ){
+        this.modelo_edit              = new Estado();
+        this.modelo_edit.categoria_id = params.categoria_id;
+        this.operacion_actual         = 'Nuevo';
+        this.navController.navigateForward([ '/tabs/tab3/crear_estado' ]);
+    }
+
+    goToEdit( params:any = {}){
+        
     }
 
     goBack(){

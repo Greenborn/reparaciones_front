@@ -28,12 +28,16 @@
                 <ion-list>
                   <ion-item  *ngFor="let categoria of privateCategoriaService.all">
                     <ion-grid>
-                      <ion-row>
-                        <ion-col class="item-valign-center" size="auto">{{categoria.nombre}}</ion-col>
-                        <ion-col></ion-col>
-                        <ion-col size="2" [ngStyle]="{ 'background-color': categoria.color }"> </ion-col>
-                        <ion-col size="auto"> <ion-button color="secondary" (click)="editar_categoria(categoria)"         size="small"><ion-icon name="create"></ion-icon></ion-button></ion-col>
-                      </ion-row>
+                        <ion-row>
+                            <ion-col class="item-valign-center" size="auto">{{categoria.nombre}}</ion-col>
+                            <ion-col></ion-col>
+                            <ion-col size="2" [ngStyle]="{ 'background-color': categoria.color }"> </ion-col>
+                            <ion-col size="auto"> 
+                                <ion-button color="secondary" (click)="editar_categoria(categoria)" size="small"><ion-icon name="create"></ion-icon></ion-button>
+                                <ion-button color="danger" (click)="eliminar_categoria(categoria)" size="small"><ion-icon name="trash"></ion-icon></ion-button>
+                            </ion-col>
+                        
+                        </ion-row>
                     </ion-grid>
                   </ion-item>
                 </ion-list>

@@ -4,7 +4,7 @@
       <ion-back-button (click)="goBack()"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{accion}} Categoría
+      {{privateCategoriaService.operacion_actual}} Categoría
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -25,7 +25,7 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Nombre:</ion-label>
-                    <ion-input placeholder="Herrería" type="text" [(ngModel)]="model.nombre"></ion-input>
+                    <ion-input placeholder="Herrería" type="text" [(ngModel)]="privateCategoriaService.modelo_edit.nombre"></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-row>
@@ -34,7 +34,7 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Color:</ion-label>
-                    <input [(colorPicker)]="model.color" [style.background]="model.color"/>
+                    <input [(colorPicker)]="privateCategoriaService.modelo_edit.color" [style.background]="privateCategoriaService.modelo_edit.color"/>
                   </ion-item>
                 </ion-col>
               </ion-row>
@@ -69,7 +69,7 @@
             <ion-row>
               <ion-col>
                 <ion-list>
-                  <ion-item  *ngFor="let estado of estados">
+                  <ion-item  *ngFor="let estado of privateCategoriaService.modelo_edit.estados">
                     <ion-grid>
                       <ion-row>
                         <ion-col class="item-valign-center" size="auto">{{estado.nombre}}</ion-col>

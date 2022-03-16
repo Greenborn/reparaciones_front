@@ -59,7 +59,7 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
     private subscripciones:any = [];
 
     //modelos
-    public modelo_edit:Categoria;
+    public modelo_edit:Categoria = new Categoria();
 
     //Estados
     public operacion_actual:string = 'Nueva';
@@ -95,14 +95,14 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
 
         //GET
         this.subscripciones.push( this.getOneOK.subscribe({ next:(p:any) => {
-            this.modelo_edit = this.one;
+            this.modelo_edit = new Categoria(this.one);
             this.appUIUtilsService.dissmisLoading();
         }}));
 
         //ERROR AL INTENTAR OBTENER Nota
         this.subscripciones.push( this.getOneKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la nota.', 'Error', [
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar obtener la categoría.', 'Error', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             console.log(this.last_err);
@@ -110,18 +110,18 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
 
         //POST
         this.subscripciones.push( this.postedOK.subscribe({ next:(p:any) => {
-            this.appUIUtilsService.displayAlert("Nuevo registro de Obra creado.", 'Atención', [
+            this.appUIUtilsService.displayAlert("Nuevo registro de categoría creado.", 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             this.appUIUtilsService.dissmisLoading();
-            this.getTipoNotas();
+            this.getAll();
             this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.postedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la obra.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar crear la categoría.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             console.log(this.last_err);
@@ -129,18 +129,18 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
 
         //PUT 
         this.subscripciones.push( this.editedOK.subscribe({ next:(p:any) => {
-            this.appUIUtilsService.displayAlert("Se ha modificado la obra.", 'Atención', [
+            this.appUIUtilsService.displayAlert("Se ha modificado la categoría.", 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             this.appUIUtilsService.dissmisLoading();
-            this.getTipoNotas();
+            this.getAll();
             this.goBack();
         }}));
 
         //ERROR AL INTENTAR CREAR UNA NUEVA OBRA
         this.subscripciones.push( this.editedKO.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la obra.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar modificar la categoría.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             console.log(this.last_err);
@@ -149,16 +149,19 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
         /// DELETE
         this.subscripciones.push( this.deletedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Obra eliminada correctamente.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Categoría eliminada correctamente.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
-            this.getTipoNotas();
+            this.getAll();
         }}));
 
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
-            this.appUIUtilsService.dissmisLoading(); 
-            this.getTipoNotas();
-            this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar la obra.', 'Atención', [
+            this.appUIUtilsService.dissmisLoading();
+            let texto_error:string = 'Ocurrió un error al intentar eliminar la categoría.';
+            if (p.hasOwnProperty('error')){
+                texto_error = p.error.message;
+            }
+            this.appUIUtilsService.displayAlert( texto_error, 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
         }}));
@@ -167,17 +170,24 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
 
     //NAVEGACION
     //NUEVO TIPO de NOTA
-    goToNueva( params ){
-        this.modelo_edit = new Categoria();
-        this.navController.navigateForward([ '/tabs/tab2/crear_nota' ]);
+    goToNueva( params:any = {} ){
+        this.modelo_edit      = new Categoria();
+        this.operacion_actual = 'Nueva';
+        this.navController.navigateForward([ '/tabs/tab3/crear_categoria' ]);
+    }
+
+    goToEdit( id:number ){
+        this.navController.navigateForward([ '/tabs/tab3/editar_categoria/' + id ]);
+        this.operacion_actual = 'Editar';
+        this.modelo_edit      = new Categoria();
+        this.appUIUtilsService.presentLoading({ message: 'Consultando categoría...' });
     }
 
     goBack(){
         this.navController.setDirection('back');
     }
 
-    getTipoNotas(){
-
-    }
+    //EXTRA DATA
+    public estados_categoria:any = [];
     
 }

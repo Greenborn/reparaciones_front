@@ -12,14 +12,11 @@ import { PrivateEstadoService2 } from 'src/app/services/private.estado.service2'
 })
 export class EstadosFormComponent implements OnInit, OnDestroy {
 
-  public accion:string = 'Nueva';
-  public model:Estado    = new Estado();
-
   private subscripciones:any = [];
 
   constructor(
     private activatedRoute:              ActivatedRoute, 
-    private privateEstadoService:        PrivateEstadoService2,
+    public  privateEstadoService:        PrivateEstadoService2,
     private appUIUtilsService:           AppUIUtilsService, 
 
     private navController: NavController
@@ -32,7 +29,8 @@ export class EstadosFormComponent implements OnInit, OnDestroy {
                 //Si se trata de la edicion de un estado
                 let id_estado = params.get('id_estado');
                 if (id_estado !== null){
-                    this.privateEstadoService.get( Number(id_estado));
+                    this.privateEstadoService.operacion_actual = 'Editar';
+                    this.privateEstadoService.get( Number(id_estado) );
                 }
             })
         );
@@ -49,15 +47,17 @@ export class EstadosFormComponent implements OnInit, OnDestroy {
         this.navController.setDirection('back');
     }
 
-  async ingresar(){
-    if ( !this.model.hasOwnProperty('nombre') || this.model.nombre == ''){
-        this.appUIUtilsService.displayAlert("Debe definir un nombre para el estado.", 'Atención', [
-            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-        ]);
-        return false;
-    }
+    async ingresar(){
+        let validacionResult = this.privateEstadoService.modelo_edit.datosValidos(); 
 
-    
-  }
+        if ( !validacionResult.success ){
+            this.appUIUtilsService.displayAlert(validacionResult.msg, 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            return false;
+        }
+        
+        this.privateEstadoService.guardar_modelo();
+    }
 
 }

@@ -4,7 +4,7 @@
       <ion-back-button (click)="goBack()"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{accion}} Estado
+        {{privateEstadoService.operacion_actual}} Estado
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -25,7 +25,7 @@
                 <ion-col>
                   <ion-item>
                     <ion-label>Nombre:</ion-label>
-                    <ion-input placeholder="Por hacer" type="text" [(ngModel)]="model.nombre"></ion-input>
+                    <ion-input placeholder="Por hacer" type="text" [(ngModel)]="privateEstadoService.modelo_edit.nombre"></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-row>

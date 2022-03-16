@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
-import { filter } from 'rxjs/operators';
-import { Categoria } from 'src/app/models/categoria';
+import { Estado } from 'src/app/models/estado';
+
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateCategoriaService2 } from 'src/app/services/private.categoria.service2';
 import { PrivateEstadoService2 } from 'src/app/services/private.estado.service2';
-import { Tab3Service } from '../../services/tab3.service';
 
 @Component({
   selector: 'app-categorias.form',
@@ -15,87 +14,72 @@ import { Tab3Service } from '../../services/tab3.service';
 })
 export class CategoriasFormComponent  implements OnInit, OnDestroy {
 
-  public accion:string = 'Nueva';
-  public model:Categoria    = new Categoria();
-  public estados:any;
+    private subcripciones:any = [];
 
-  private router_subs:any;
-  private recargarEstadosSubs:any;
+    constructor(
+        private navController:               NavController,
+        public  privateCategoriaService:     PrivateCategoriaService2,
+        public  privateEstadoService:        PrivateEstadoService2,
 
-  constructor(
-    private navController:               NavController,
-    private router:                      Router,
-    private privateCategoriaService:     PrivateCategoriaService2,
-    private privateEstadoService:        PrivateEstadoService2,
-    private tab3Service:                 Tab3Service,
-
-    private appUIUtilsService:           AppUIUtilsService,
-  ) {  
-  }
+        private activatedRoute:              ActivatedRoute,
+        private appUIUtilsService:           AppUIUtilsService,
+    ) {  
+    }
 
     ngOnDestroy(){
-
+        for (let c=0; c < this.subcripciones.length; c++){
+            this.subcripciones[c].unsubscribe();
+        }
     }
 
     ngOnInit() { 
-
+        this.subcripciones.push(
+            this.activatedRoute.paramMap.subscribe(async params => { 
+                //Si se trata de la edición de una categoría
+                let id_categoria:any = params.get('id_categoria');
+                if (id_categoria !== null){
+                    this.privateCategoriaService.operacion_actual = 'Editar';
+                    this.privateCategoriaService.get( Number(id_categoria), 'expand=estados' );
+                }
+            })
+        );
     }
 
   
-  goBack(){
-    this.navController.navigateForward([ '/tabs/tab3' ]);
-  }
+    goBack(){
+        this.navController.navigateForward([ '/tabs/tab3' ]);
+    }
 
-  nuevo_estado(){
-    this.tab3Service.estado_categoria_id = this.model.id;
-    this.navController.navigateForward([ '/tabs/tab3/crear_estado' ]);
-  }
+    nuevo_estado(){
+        this.privateEstadoService.goToCreate( { categoria_id: this.privateCategoriaService.modelo_edit.id } );
+    }
+    
+    editar_estado( estado:Estado ){
+        this.privateEstadoService.goToEdit( { estado_id: estado.id } );
+    }
 
-  editar_estado(estado){
-    this.tab3Service.estado_edit_id = estado.id;
-    this.navController.navigateForward([ '/tabs/tab3/editar_estado' ]);
-  }
-
-    async eliminar_estado(estado){
+    async eliminar_estado( estado:Estado ){
         this.appUIUtilsService.displayAlert('Está por eliminar el estado "' + estado.nombre + '" ¿desea continuar?.', 'Atención', [
             { text:'No', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } },
             { text:'Si', css_class: 'btn-warning',callback:()=> { this.appUIUtilsService.dissmissAlert(); this.borrar_estado(estado); } }
         ]);
     }
 
-  async borrar_estado(estado){
-    this.appUIUtilsService.presentLoading({ message: 'Borrando estado: ' + estado.nombre });
-    /*
-    this.privateEstadoService.delete(estado.id).subscribe(
-      ok => {
-            this.appUIUtilsService.dissmisLoading();
-            this.tab3Service.recargarEstado.next({id: estado.categoria_id});
-      },
-      err => {
-        this.appUIUtilsService.dissmisLoading();
-        this.appUIUtilsService.displayAlert('Ocurrió un error al intentar eliminar el estado: ' + estado.nombre + '¿El estado tiene notas asociadas?', 'Error', [
-            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-        ]);
-      }
-    );*/
-  }
-
-  async ingresar(){
-    if ( !this.model.hasOwnProperty('color') || this.model.color == ''){
-        this.appUIUtilsService.displayAlert("Debe definir un color para la categoría.", 'Atención', [
-            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-        ]);
-        return false;
+    async borrar_estado( estado:Estado ){
+        this.appUIUtilsService.presentLoading({ message: 'Borrando estado: ' + estado.nombre });
+        this.privateEstadoService.delete( estado.id );
     }
 
-    if ( !this.model.hasOwnProperty('nombre') || this.model.nombre == ''){
-        this.appUIUtilsService.displayAlert("Debe definir un nombre para la categoría.", 'Atención', [
-            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
-        ]);
-        return false;
+    async ingresar(){
+        let validacionResult = this.privateCategoriaService.modelo_edit.datosValidos(); 
+
+        if ( !validacionResult.success ){
+            this.appUIUtilsService.displayAlert(validacionResult.msg, 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            ]);
+            return false;
+        }
+        
+        this.privateCategoriaService.guardar_modelo();
     }
-    
-    this.appUIUtilsService.presentLoading({ message: "Por favor espere..." });
-    
-  }
 }

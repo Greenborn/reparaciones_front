@@ -49,7 +49,6 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
       config:                        ConfigService,
       private navController:         NavController,
       private appUIUtilsService:     AppUIUtilsService,
-      private loadingController:     LoadingController
     ) {
         super('private-tipo-nota', http, config);
         this.defSubscripcionesAPI();
@@ -59,7 +58,7 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
     private subscripciones:any = [];
 
     //modelos
-    public modelo_edit:TipoNota;
+    public modelo_edit:TipoNota = new TipoNota();
 
     //Estados
     public operacion_actual:string = 'Nueva';
@@ -84,7 +83,7 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
 
         //GET
         this.subscripciones.push( this.getOneOK.subscribe({ next:(p:any) => {
-            this.modelo_edit = this.one;
+            this.modelo_edit = new TipoNota(this.one);
             this.appUIUtilsService.dissmisLoading();
         }}));
 
@@ -122,7 +121,7 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             this.appUIUtilsService.dissmisLoading();
-            this.getTipoNotas();
+            this.getAll();
             this.goBack();
         }}));
 
@@ -176,7 +175,6 @@ export class PrivateTipoNotaService2 extends ApiServiceBase{
         this.operacion_actual = 'Editar';
         this.appUIUtilsService.presentLoading({ message: 'Consultando tipo de nota...' });
         this.modelo_edit      = new TipoNota();
-        this.get(id);
     }
 
     goBack(){
