@@ -50,7 +50,7 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
   }
 
   goBack(){
-    this.navController.setDirection( 'back' );
+    this.navController.back();
   }
 
   async ingresar(){

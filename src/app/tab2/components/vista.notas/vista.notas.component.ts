@@ -16,7 +16,7 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
   public titulo:string = "";
 
   private subscripciones:any = [];
-  public obra_id:any;
+  public obra_id:any = -1;
 
   constructor(
     private activatedRoute:              ActivatedRoute,
@@ -58,7 +58,7 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
     }
 
     clear(){
-        this.obra_id = undefined;
+        this.obra_id = -1;
         let get_notas_params:any  = { getParams:   'expand=categoria,obra,tipoNota' };
         this.privateNotaService.getNotas( get_notas_params );
     }
@@ -111,7 +111,7 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
     }
 
     goBack(){
-        this.navController.setDirection( 'back' );
+        this.navController.back();
     }
 
     editar_nota(nota){

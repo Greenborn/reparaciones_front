@@ -95,12 +95,6 @@ export class PrivateNotaService extends ApiServiceBase{
         this.subscripciones.push( this.getOneOK.subscribe({ next:(p:any) => {
             this.modelo_edit = new Nota(p);
             this.modelo_edit.id = p.id; // SE AGREGA aca por que por un extraño motivo no se define en el modelo...
-            
-            //SE PASA A STRING PAR QUE EL OCMPONENTE DEL SELECTOR TOME BIEN SU VALOR ...
-            this.modelo_edit.categoria_id = String(this.modelo_edit.categoria_id);
-            this.modelo_edit.estado_id    = String(this.modelo_edit.estado_id);
-            this.modelo_edit.obra_id      = String(this.modelo_edit.obra_id);
-            this.modelo_edit.tipo_nota_id = String(this.modelo_edit.tipo_nota_id);
 
             //SE ACOMODA EL FORMATO DE LZA FECHA Y HORA PARA QUE SE MUESTRE CORRECTAMENTE EN EL SELECTOR
             let d = new Date(p['vencimiento']);

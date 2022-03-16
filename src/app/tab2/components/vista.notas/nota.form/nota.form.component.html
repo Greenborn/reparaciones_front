@@ -24,34 +24,38 @@
     
               <ion-row>
                 <ion-col>
-                  <ion-item>
-                    <ion-label>Obra:</ion-label>
-                    <ion-select placeholder="Selecionar Obra"  [(ngModel)]="privateNotaService.modelo_edit.obra_id" cancelText="Cancelar">
-                      <ion-select-option *ngFor="let obra of privateObrasService.all" value="{{obra.id}}">{{obra.nombre_alias}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
+                    <div class="input-group">
+                        <label class="input-group-text">Obra:</label>
+                        <select placeholder="Selecionar Obra" class="form-select" [(ngModel)]="privateNotaService.modelo_edit.obra_id" cancelText="Cancelar">
+                            <option *ngFor="let obra of privateObrasService.all" value="{{obra.id}}">{{obra.nombre_alias}}</option>
+                        </select>
+                    </div>
                 </ion-col>
               </ion-row>
 
               <ion-row>
                 <ion-col>
-                  <ion-item>
-                    <ion-label>Tipo de Nota:</ion-label>
-                    <ion-select placeholder="Selecionar Tipo de Nota" [ngStyle]="{'background-color': color_tipo_nota}"  [(ngModel)]="privateNotaService.modelo_edit.tipo_nota_id" (ionChange)="tiponota_change()" cancelText="Cancelar">
-                      <ion-select-option *ngFor="let tipo_nota of privateTipoNotaService.all" value="{{tipo_nota.id}}">{{tipo_nota.nombre}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
+                    <div class="input-group">
+                        <label class="input-group-text">Tipo de Nota:</label>
+                        <select placeholder="Selecionar Tipo de Nota" 
+                            [ngStyle]="{'background-color': color_tipo_nota}"  class="form-select"
+                            [(ngModel)]="privateNotaService.modelo_edit.tipo_nota_id" (change)="tiponota_change()" cancelText="Cancelar">
+                        <option *ngFor="let tipo_nota of privateTipoNotaService.all" value="{{tipo_nota.id}}">{{tipo_nota.nombre}}</option>
+                        </select>
+                    </div>
                 </ion-col>
               </ion-row>
 
               <ion-row>
                 <ion-col>
-                  <ion-item>
-                    <ion-label>Categoría:</ion-label>
-                    <ion-select placeholder="Selecionar Categoría" [ngStyle]="{'background-color': color_categoria}"  [(ngModel)]="privateNotaService.modelo_edit.categoria_id" (ionChange)="categoria_change()" cancelText="Cancelar">
-                      <ion-select-option *ngFor="let categoria of privateCategoriaService.all" value="{{categoria.id}}">{{categoria.nombre}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
+                    <div class="input-group">
+                        <label class="input-group-text">Categoría:</label>
+                        <select placeholder="Selecionar Categoría" 
+                            [ngStyle]="{'background-color': color_categoria}"  class="form-select"
+                            [(ngModel)]="privateNotaService.modelo_edit.categoria_id" (change)="categoria_change()" cancelText="Cancelar">
+                            <option *ngFor="let categoria of privateCategoriaService.all" value="{{categoria.id}}">{{categoria.nombre}}</option>
+                        </select>
+                    </div>
                 </ion-col>
               </ion-row>
 
@@ -66,12 +70,14 @@
 
               <ion-row>
                 <ion-col>
-                  <ion-item>
-                    <ion-label>Estado:</ion-label>
-                    <ion-select placeholder="Selecionar Estado" [(ngModel)]="privateNotaService.modelo_edit.estado_id" cancelText="Cancelar">
-                      <ion-select-option *ngFor="let estado of privateEstadoService.all" value="{{estado.id}}">{{estado.nombre}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
+                    <div class="input-group">
+                        <label class="input-group-text">Estado:</label>
+                        <select placeholder="Selecionar Estado" 
+                            [(ngModel)]="privateNotaService.modelo_edit.estado_id"  class="form-select"
+                            cancelText="Cancelar">
+                            <option *ngFor="let estado of privateEstadoService.all" value="{{estado.id}}">{{estado.nombre}}</option>
+                        </select>
+                    </div>
                 </ion-col>
               </ion-row>
 
