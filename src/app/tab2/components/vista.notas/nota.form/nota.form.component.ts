@@ -71,6 +71,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
                 //Si se trata de la edicion de una nota existente, hay que cargar sus datos
                 let id_nota = params.get('id_nota');
                 if (id_nota !== null){
+                    this.privateNotaService.operacion_actual = 'Editar';
                     this.privateNotaService.get( Number(id_nota), 'expand=imagenes,documentos')
                 }
             })
@@ -184,7 +185,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
         });
     }
 
-    async ingresar(){
+    ingresar(){
 
         let validacionResult = this.privateNotaService.modelo_edit.datosValidos(); 
         if ( !validacionResult.success ){
