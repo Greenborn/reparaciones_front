@@ -212,8 +212,7 @@ export class PrivateNotaService extends ApiServiceBase{
     goToEdit( params ){
         this.operacion_actual = 'Editar';
         this.appUIUtilsService.presentLoading({ message: 'Consultando nota...' });
-        this.modelo_edit      = undefined;
-        this.get( params.nota_id, 'expand=imagenes,documentos');        
+        this.modelo_edit      = undefined;     
         this.navController.navigateForward([  '/tabs/tab2/editar_nota/' + params.nota_id ]);
     }
 
