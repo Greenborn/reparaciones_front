@@ -53,7 +53,7 @@
               <ion-col>
                 <ion-list>
                   <ion-item  *ngFor="let nota of privateNotaService.all" >
-                    <ion-grid style="background-color: {{getBgColor(nota)}};">
+                    <ion-grid [ngStyle]="{ 'background-color': getBgColor(nota) }">
 
                       <ion-row> <ion-col> {{nombreObra(nota)}} - {{nota.nota}}  </ion-col> </ion-row>
 

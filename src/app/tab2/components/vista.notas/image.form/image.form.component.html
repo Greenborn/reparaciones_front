@@ -34,7 +34,7 @@
     </ion-col>
 
     <!--AREA DE EDICION-->
-    <ion-col size="12" class="image-cont" id="canvasCont" style="cursor: {{herramientas.cursor}};">
+    <ion-col size="12" class="image-cont" id="canvasCont" [ngStyle]="{ cursor: herramientas.cursor }">
       <canvas  (mousedown)="lienzo.mouse_down($event)"  (mousemove)="lienzo.mouse_move($event)" (mouseup)="lienzo.mouse_up()" 
                id="areaEdicion" #areaEdicion></canvas>
     </ion-col>
