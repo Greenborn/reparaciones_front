@@ -129,10 +129,10 @@ export class LienzoModel {
     pegarImagenFondo(){
         //se pega la imagen original de fondo (deberia hacerse una sola vez luego de la carga de la imagen)
         for ( let c=0; c < this.imagePixelCount; c++ ){
-              this.imageData[c]=(255 << 24)      | // alpha
-                              (this.imageDataEdit.data[c*4 -2] << 16) | // blue
-                              (this.imageDataEdit.data[c*4 -3] <<  8) | // green
-                               this.imageDataEdit.data[c*4   ];
+              this.imageData[c]=(this.imageDataEdit.data[c*4 -1] << 24)      | // alpha
+                                (this.imageDataEdit.data[c*4 -2] << 16) | // blue
+                                (this.imageDataEdit.data[c*4 -3] <<  8) | // green
+                                 this.imageDataEdit.data[c*4   ];
         }
     }
 
