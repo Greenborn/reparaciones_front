@@ -7,16 +7,16 @@ import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { FormateoService } from 'src/app/services/formateo.service';
-import { PrivateCategoriaService2 } from 'src/app/services/private.categoria.service2';
+import { PrivateCategoriaService } from 'src/app/services/private.categoria.service';
 
 import { PrivateDocumentoService } from 'src/app/services/private.documento.service';
-import { PrivateEstadoService2 } from 'src/app/services/private.estado.service2';
+import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { PrivateImagenService } from 'src/app/services/private.imagen.service';
-import { PrivateNotaService2 } from 'src/app/services/private.nota.service2';
+import { PrivateNotaService } from 'src/app/services/private.nota.service';
 
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
-import { PrivateTipoNotaService2 } from 'src/app/services/private.tipo.nota.service2';
+import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
 
 @Component({
   selector: 'app-nota.form',
@@ -34,12 +34,12 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
   private subcripciones:any = [];
 
   constructor(
-    public  privateNotaService:          PrivateNotaService2,
+    public  privateNotaService:          PrivateNotaService,
 
     public  privateObrasService:         PrivateObrasService,
-    public  privateCategoriaService:     PrivateCategoriaService2,
-    public  privateEstadoService:        PrivateEstadoService2,
-    public  privateTipoNotaService:      PrivateTipoNotaService2,
+    public  privateCategoriaService:     PrivateCategoriaService,
+    public  privateEstadoService:        PrivateEstadoService,
+    public  privateTipoNotaService:      PrivateTipoNotaService,
 
     private formateoService:             FormateoService,
     

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { TipoNota } from 'src/app/models/tipo.nota';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
-import { PrivateTipoNotaService2 } from 'src/app/services/private.tipo.nota.service2';
+import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
 
 @Component({
   selector: 'app-tiponota-list',
@@ -12,7 +12,7 @@ import { PrivateTipoNotaService2 } from 'src/app/services/private.tipo.nota.serv
 export class TiponotaListComponent implements OnInit, OnDestroy {
 
     constructor(
-        public privateTipoNotaService:    PrivateTipoNotaService2,
+        public privateTipoNotaService:    PrivateTipoNotaService,
         private appUIUtilsService:        AppUIUtilsService, 
     ) {
     }

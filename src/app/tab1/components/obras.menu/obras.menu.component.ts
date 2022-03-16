@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
-import { PrivateNotaService2 } from 'src/app/services/private.nota.service2';
+import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class ObrasMenuComponent implements OnInit, OnDestroy {
 
     constructor(
         private privateObrasService:   PrivateObrasService,
-        private privateNotaService:    PrivateNotaService2,
+        private privateNotaService:    PrivateNotaService,
         private appUIUtilsService:     AppUIUtilsService,
     ) { 
     }

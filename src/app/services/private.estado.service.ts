@@ -11,7 +11,7 @@ import { AppUIUtilsService } from './app.ui.utils.service';
 @Injectable({
   providedIn: 'root'
 })
-export class PrivateEstadoService2 extends ApiServiceBase{
+export class PrivateEstadoService extends ApiServiceBase{
 
     all: any =[];
     meta:any;

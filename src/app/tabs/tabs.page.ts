@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PrivateNotaService2 } from '../services/private.nota.service2';
+import { PrivateNotaService } from '../services/private.nota.service';
 
 @Component({
   selector: 'app-tabs',
@@ -9,7 +9,7 @@ import { PrivateNotaService2 } from '../services/private.nota.service2';
 export class TabsPage {
 
     constructor(
-        public  privateNotaService:           PrivateNotaService2,
+        public  privateNotaService:           PrivateNotaService,
     ) {
     }
 

@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { LoadingController, NavController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
-import { Categoria } from '../models/categoria';
+import { TipoNota } from '../models/tipo.nota';
 
 import { ApiServiceBase } from './api.service.base';
 import { AppUIUtilsService } from './app.ui.utils.service';
@@ -11,7 +11,7 @@ import { AppUIUtilsService } from './app.ui.utils.service';
 @Injectable({
   providedIn: 'root'
 })
-export class PrivateCategoriaService2 extends ApiServiceBase{
+export class PrivateTipoNotaService extends ApiServiceBase{
 
     all: any =[];
     meta:any;
@@ -48,9 +48,9 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
       http:                          HttpClient,
       config:                        ConfigService,
       private navController:         NavController,
-      appUIUtilsService:             AppUIUtilsService
+      appUIUtilsService:             AppUIUtilsService,
     ) {
-        super('private-categoria', http, config, appUIUtilsService);
+        super('private-tipo-nota', http, config, appUIUtilsService);
         this.defSubscripcionesAPI();
     }
 
@@ -58,23 +58,13 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
     private subscripciones:any = [];
 
     //modelos
-    public modelo_edit:Categoria = new Categoria();
+    public modelo_edit:TipoNota = new TipoNota();
 
     //Estados
     public operacion_actual:string = 'Nueva';
     //paginas
     public page:any;
 
-
-    public guardar_modelo(){
-        this.appUIUtilsService.presentLoading({ message: "Guardando..." });
-        
-        if (this.operacion_actual == 'Nueva'){
-            this.post(this.modelo_edit);
-        } else if (this.operacion_actual == 'Editar'){
-            this.put(this.modelo_edit, this.modelo_edit.id);
-        }
-    }
 
     defSubscripcionesAPI(){
         //////////// NOTAS
@@ -90,7 +80,7 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
 
         //GET
         this.subscripciones.push( this.getOneOK.subscribe({ next:(p:any) => {
-            this.modelo_edit = new Categoria(this.one);
+            this.modelo_edit = new TipoNota(this.one);
             this.appUIUtilsService.dissmisLoading();
         }}));
 
@@ -101,7 +91,7 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
 
         //POST
         this.subscripciones.push( this.postedOK.subscribe({ next:(p:any) => {
-            this.appUIUtilsService.displayAlert("Nuevo registro de categoría creado.", 'Atención', [
+            this.appUIUtilsService.displayAlert("Nuevo registro de tipo de nota creado.", 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             this.appUIUtilsService.dissmisLoading();
@@ -116,11 +106,11 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
 
         //PUT 
         this.subscripciones.push( this.editedOK.subscribe({ next:(p:any) => {
-            this.appUIUtilsService.displayAlert("Se ha modificado la categoría.", 'Atención', [
-                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
+            this.appUIUtilsService.displayAlert("Se ha modificado el tipo de nota.", 'Atención', [
+                { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert();  } }
             ]);
             this.appUIUtilsService.dissmisLoading();
-            this.getAll();
+            this.getAll();   
             this.goBack();
         }}));
 
@@ -132,38 +122,50 @@ export class PrivateCategoriaService2 extends ApiServiceBase{
         /// DELETE
         this.subscripciones.push( this.deletedOK.subscribe({ next:(p:any) => {
             this.appUIUtilsService.dissmisLoading();
-            this.appUIUtilsService.displayAlert('Categoría eliminada correctamente.', 'Atención', [
+            this.appUIUtilsService.displayAlert('Tipo de nota eliminada correctamente.', 'Atención', [
                 { text:'Aceptar', css_class: 'btn-primary',callback:()=> { this.appUIUtilsService.dissmissAlert(); } }
             ]);
             this.getAll();
         }}));
 
         this.subscripciones.push( this.deletedKO.subscribe({ next:(p:any) => {
-            this.appUIUtilsService.dissmisLoading();
+            this.appUIUtilsService.dissmisLoading(); 
+            this.getTipoNotas();
         }}));
+    }
+
+    public guardar_modelo(){
+        this.appUIUtilsService.presentLoading({ message: "Guardando..." });
+        
+        if (this.operacion_actual == 'Nueva'){
+            this.post(this.modelo_edit);
+        } else if (this.operacion_actual == 'Editar'){
+            this.put(this.modelo_edit, this.modelo_edit.id);
+        }
     }
 
 
     //NAVEGACION
     //NUEVO TIPO de NOTA
-    goToNueva( params:any = {} ){
-        this.modelo_edit      = new Categoria();
+    goToNueva(){
+        this.navController.navigateForward([ '/tabs/tab3/crear_tipo_nota' ]);
+        this.modelo_edit      = new TipoNota();
         this.operacion_actual = 'Nueva';
-        this.navController.navigateForward([ '/tabs/tab3/crear_categoria' ]);
-    }
+    } 
 
     goToEdit( id:number ){
-        this.navController.navigateForward([ '/tabs/tab3/editar_categoria/' + id ]);
+        this.navController.navigateForward([ '/tabs/tab3/editar_tipo_nota/' + id ]);
         this.operacion_actual = 'Editar';
-        this.modelo_edit      = new Categoria();
-        this.appUIUtilsService.presentLoading({ message: 'Consultando categoría...' });
+        this.appUIUtilsService.presentLoading({ message: 'Consultando tipo de nota...' });
+        this.modelo_edit      = new TipoNota();
     }
 
     goBack(){
         this.navController.pop();
     }
 
-    //EXTRA DATA
-    public estados_categoria:any = [];
+    getTipoNotas(){
+
+    }
     
 }

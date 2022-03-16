@@ -4,8 +4,8 @@ import { NavController } from '@ionic/angular';
 import { Estado } from 'src/app/models/estado';
 
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
-import { PrivateCategoriaService2 } from 'src/app/services/private.categoria.service2';
-import { PrivateEstadoService2 } from 'src/app/services/private.estado.service2';
+import { PrivateCategoriaService } from 'src/app/services/private.categoria.service';
+import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 
 @Component({
   selector: 'app-categorias.form',
@@ -19,8 +19,8 @@ export class CategoriasFormComponent  implements OnInit, OnDestroy {
 
     constructor(
         private navController:               NavController,
-        public  privateCategoriaService:     PrivateCategoriaService2,
-        public  privateEstadoService:        PrivateEstadoService2,
+        public  privateCategoriaService:     PrivateCategoriaService,
+        public  privateEstadoService:        PrivateEstadoService,
 
         private activatedRoute:              ActivatedRoute,
         private appUIUtilsService:           AppUIUtilsService,

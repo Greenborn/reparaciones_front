@@ -4,7 +4,7 @@ import { Categoria } from '../models/categoria';
 import { ChangePassComponent } from '../modules/autentication/componentes/change-pass/change-pass.component';
 import { AuthService } from '../modules/autentication/services/auth.service';
 import { AppUIUtilsService } from '../services/app.ui.utils.service';
-import { PrivateCategoriaService2 } from '../services/private.categoria.service2';
+import { PrivateCategoriaService } from '../services/private.categoria.service';
 
 @Component({
   selector: 'app-tab3',
@@ -17,7 +17,7 @@ export class Tab3Page implements OnInit, OnDestroy{
   constructor(
     public  authService:              AuthService,
     private navController:            NavController,
-    public  privateCategoriaService:  PrivateCategoriaService2,
+    public  privateCategoriaService:  PrivateCategoriaService,
     public  modalController:          ModalController,
 
     private appUIUtilsService:        AppUIUtilsService

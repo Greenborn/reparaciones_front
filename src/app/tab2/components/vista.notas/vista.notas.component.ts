@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Nota } from 'src/app/models/nota';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
-import { PrivateNotaService2 } from 'src/app/services/private.nota.service2';
+import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
 
   constructor(
     private activatedRoute:              ActivatedRoute,
-    public  privateNotaService:          PrivateNotaService2,
+    public  privateNotaService:          PrivateNotaService,
     public  privateObrasService:         PrivateObrasService,
     private appUIUtilsService:           AppUIUtilsService,
     private navController:               NavController

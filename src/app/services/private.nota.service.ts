@@ -7,12 +7,12 @@ import { Nota } from '../models/nota';
 import { ApiServiceBase } from './api.service.base';
 import { AppUIUtilsService } from './app.ui.utils.service';
 import { FormateoService } from './formateo.service';
-import { PrivateEstadoService2 } from './private.estado.service2';
+import { PrivateEstadoService } from './private.estado.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PrivateNotaService2 extends ApiServiceBase{
+export class PrivateNotaService extends ApiServiceBase{
 
     all: any =[];
     meta:any;
@@ -51,7 +51,7 @@ export class PrivateNotaService2 extends ApiServiceBase{
       private navController:         NavController,
       private formateoService:       FormateoService,
       appUIUtilsService:             AppUIUtilsService,
-      private privateEstadoService:  PrivateEstadoService2
+      private privateEstadoService:  PrivateEstadoService
     ) {
         super('private-nota', http, config, appUIUtilsService);
         this.defSubscripcionesAPI();

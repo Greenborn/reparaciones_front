@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Estado } from 'src/app/models/estado';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
-import { PrivateEstadoService2 } from 'src/app/services/private.estado.service2';
+import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 
 @Component({
   selector: 'app-estados.form',
@@ -16,7 +16,7 @@ export class EstadosFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute:              ActivatedRoute, 
-    public  privateEstadoService:        PrivateEstadoService2,
+    public  privateEstadoService:        PrivateEstadoService,
     private appUIUtilsService:           AppUIUtilsService, 
 
     private navController: NavController
