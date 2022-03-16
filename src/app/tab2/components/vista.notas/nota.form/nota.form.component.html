@@ -38,7 +38,7 @@
                     <div class="input-group">
                         <label class="input-group-text">Tipo de Nota:</label>
                         <select placeholder="Selecionar Tipo de Nota" 
-                            [ngStyle]="{'background-color': color_tipo_nota}"  class="form-select"
+                            [ngStyle]="{'background-color': color_tipo_nota(privateNotaService.modelo_edit.tipo_nota_id) }"  class="form-select"
                             [(ngModel)]="privateNotaService.modelo_edit.tipo_nota_id" (change)="tiponota_change()" cancelText="Cancelar">
                         <option *ngFor="let tipo_nota of privateTipoNotaService.all" value="{{tipo_nota.id}}">{{tipo_nota.nombre}}</option>
                         </select>
@@ -51,7 +51,7 @@
                     <div class="input-group">
                         <label class="input-group-text">Categoría:</label>
                         <select placeholder="Selecionar Categoría" 
-                            [ngStyle]="{'background-color': color_categoria}"  class="form-select"
+                            [ngStyle]="{'background-color': color_categoria( privateNotaService.modelo_edit.categoria_id ) }"  class="form-select"
                             [(ngModel)]="privateNotaService.modelo_edit.categoria_id" (change)="categoria_change()" cancelText="Cancelar">
                             <option *ngFor="let categoria of privateCategoriaService.all" value="{{categoria.id}}">{{categoria.nombre}}</option>
                         </select>

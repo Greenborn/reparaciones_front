@@ -27,8 +27,6 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
 
   @ViewChild('dp') dp: NgbDatepicker;
 
-  public color_categoria = "#FFF";
-  public color_tipo_nota = "#FFF";
   public estados:any = [];
 
   private subcripciones:any = [];
@@ -157,22 +155,31 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
     }
 
     categoria_change(){
-        for (let c=0; c < this.privateCategoriaService.all.length; c++){
-            if (this.privateCategoriaService.all[c].id == this.privateNotaService.modelo_edit.categoria_id){
-                this.color_categoria = this.privateCategoriaService.all[c].color;
-                this.cargar_estados(this.privateNotaService.modelo_edit.categoria_id);
-                break;
-            } 
-        }
+        this.cargar_estados(this.privateNotaService.modelo_edit.categoria_id);
     }
 
     tiponota_change(){
+        
+    }
+
+    color_categoria( categoria_id:number ){
+        for (let c=0; c < this.privateCategoriaService.all.length; c++){
+            if ( this.privateCategoriaService.all[c].id == categoria_id ){
+                return this.privateCategoriaService.all[c].color;
+            } 
+        }
+
+        return "#FFF"; 
+    }
+
+    color_tipo_nota( tipo_nota_id:number ){
         for (let c=0; c<this.privateTipoNotaService.all.length; c++){
-            if (this.privateTipoNotaService.all[c].id == this.privateNotaService.modelo_edit.tipo_nota_id){
-                this.color_tipo_nota = this.privateTipoNotaService.all[c].color;
-                break;
+            if (this.privateTipoNotaService.all[c].id == tipo_nota_id){
+                return this.privateTipoNotaService.all[c].color;
             }
         }
+
+        return "#FFF";
     }
 
     cargar_estados(id){
