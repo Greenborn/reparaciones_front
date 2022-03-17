@@ -64,7 +64,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
         this.subcripciones.push(
             this.activatedRoute.paramMap.subscribe(async params => { 
                 this.privateNotaService.inic_modelo();
-
+                this.privateNotaService.operacion_actual = 'Nueva';
                 //Si se trata de una nota nueva a la cual se le especifica id de obra
                 let id_obra:any = params.get('id_obra');
                 if (id_obra !== null){
@@ -242,7 +242,7 @@ export class NotaFormComponent  implements OnInit, OnDestroy {
             ok => {
                 this.appUIUtilsService.dissmisLoading(); 
                 let nota_id = this.privateNotaService.modelo_edit.id;
-                this.privateNotaService.goToEdit({ nota_id:nota_id, navigationOrigin:'/tabs/tab2' });
+                this.privateNotaService.get(nota_id, 'expand=imagenes,documentos');
             },
             err => {
                 this.appUIUtilsService.dissmisLoading(); 

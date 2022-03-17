@@ -20,7 +20,7 @@
           <ion-card-header> <ion-card-title>Información</ion-card-title> </ion-card-header>
           
           <ion-card-content>
-            <ion-grid>
+            <ion-grid *ngIf="privateNotaService.modelo_edit !== undefined">
     
               <ion-row>
                 <ion-col>

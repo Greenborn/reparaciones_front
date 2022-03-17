@@ -25,7 +25,7 @@
               </ion-col>
               <ion-col  size="auto">
                 <div class="input-group mt-1">
-                    <label class="input-group-text">Obra:</label>
+                    <label class="input-group-text" *ngIf="obra_id !== undefined">Obra:</label>
                     <select placeholder="Selecionar Obra"  [(ngModel)]="obra_id" cancelText="Cancelar" (change)="obra_seleccionada()">
                         <option *ngFor="let obra of privateObrasService.all" value="{{obra.id}}">{{obra.nombre_alias}}</option>
                     </select>

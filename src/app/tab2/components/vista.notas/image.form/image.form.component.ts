@@ -4,6 +4,7 @@ import { NavController } from '@ionic/angular';
 import { Imagen } from 'src/app/models/imagen';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateImagenService } from 'src/app/services/private.imagen.service';
+import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { HerramientaConfig } from './herramienta.config.model';
 import { LienzoModel } from './lienzo.model';
 
@@ -16,6 +17,7 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
 
   constructor(
     private privateImageService:         PrivateImagenService,
+    private privateNotaService:          PrivateNotaService,
     private navController:               NavController,
     public appUIUtilsService:           AppUIUtilsService, 
   ) { 
@@ -61,9 +63,28 @@ export class ImageFormComponent  implements OnInit, OnDestroy {
     this.model.id_nota     = this.privateImageService.imagen_edit.id_nota;
     this.model.id          = this.privateImageService.imagen_edit.id;
     this.model.name        = this.privateImageService.imagen_edit.name;
-console.log(this.model.url);
+
+    //Si no se especifico id de nota, significa que la misma no existe, por lo que se debe guardar en memoria nomas
+    if (this.privateImageService.imagen_edit.id_nota == -1 || this.privateImageService.imagen_edit.id_nota == undefined){
+        for ( let c=0; c < this.privateNotaService.nota_images.length; c++){
+            if (this.privateNotaService.nota_images[c].name == this.model.name ){
+                this.privateNotaService.nota_images[c].file = this.model.base64_edit;
+                break;
+            }
+        }
+        
+        this.appUIUtilsService.displayAlert("Imagen actualizada", 'Atención', [
+            { text:'Aceptar', css_class: 'btn-primary',callback:()=> { 
+                this.appUIUtilsService.dissmissAlert(); 
+                this.goBack(); 
+            } }
+        ]);
+        return true;
+    }
+
     this.appUIUtilsService.presentLoading({ message:  "Guardando cambios..." });
     if (this.privateImageService.imagen_edit.id == -1 || this.privateImageService.imagen_edit.id === undefined){
+
         this.model.url = '-';
         this.privateImageService.post(this.model).subscribe(
             ok => {
