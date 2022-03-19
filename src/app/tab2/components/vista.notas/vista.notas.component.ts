@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Nota } from 'src/app/models/nota';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
+import { PrivateCategoriaService } from 'src/app/services/private.categoria.service';
+import { PrivateEstadoService } from 'src/app/services/private.estado.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
 import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
@@ -26,7 +28,9 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
         private activatedRoute:              ActivatedRoute,
         public  privateNotaService:          PrivateNotaService,
         public  privateTipoNotaService:      PrivateTipoNotaService,
+        public  privateEstadoService:        PrivateEstadoService,
         public  privateObrasService:         PrivateObrasService,
+        public  privateCategoriaService:     PrivateCategoriaService,
         private appUIUtilsService:           AppUIUtilsService,
         private navController:               NavController
     ) {
@@ -35,8 +39,9 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
 
     ngOnInit() {
         //Se INICIALIZAN LOS FILTROS
-        this.filtros.setObrasService( this.privateObrasService );
         this.filtros.setNotaService( this.privateNotaService );
+        this.filtros.setEstadoService( this.privateEstadoService );
+        this.filtros.setAppUIUtilsService( this.appUIUtilsService );
 
         //SE VERIFICAN LOS PARAMETROS EN LA URL
         this.subscripciones.push( this.activatedRoute.paramMap.subscribe(async params => 
@@ -60,6 +65,8 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
                         this.appUIUtilsService.dissmisLoading();
                     }
                 });
+
+                this.filtros.clear_all();
             })
         );
 
@@ -67,6 +74,12 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
         if (this.privateTipoNotaService.all.length == 0){
             this.appUIUtilsService.presentLoading({ message: 'Consultando listado de tipos de notas...' });
             this.privateTipoNotaService.getAll();
+        }
+
+        //SE CARGA EL LISTADO DE CATEGORIAS
+        if (this.privateCategoriaService.all.length == 0){
+            this.appUIUtilsService.presentLoading({ message: 'Consultando listado de categorías...' });
+            this.privateCategoriaService.getAll();
         }
     }
 

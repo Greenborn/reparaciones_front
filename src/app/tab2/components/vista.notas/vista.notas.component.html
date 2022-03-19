@@ -69,7 +69,7 @@
                             <ion-row>
                                 <ion-col>
                                     <ion-row class="input-group mt-1">
-                                        <ion-col size="auto"><label class="input-group-text" *ngIf="tipo_nota_id !== undefined">Tipo de nota:</label></ion-col>
+                                        <ion-col size="auto"><label class="input-group-text" *ngIf="filtros.tipo_nota_id !== undefined">Tipo de nota:</label></ion-col>
                                         <ion-col><select class="w-100 h-100" placeholder="Selecionar Tipo de Nota"  [(ngModel)]="filtros.tipo_nota_id" cancelText="Cancelar" (change)="filtros.tipo_nota_seleccionada()">
                                             <option *ngFor="let tiponota of privateTipoNotaService.all" value="{{tiponota.id}}">{{tiponota.nombre}}</option>
                                         </select></ion-col>
@@ -77,6 +77,40 @@
                                 </ion-col>
                                 <ion-col class="item-valign-center" size="auto">
                                     <ion-button color="medium" (click)="filtros.clear_tipo_nota()"><ion-icon name="refresh"></ion-icon></ion-button>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+
+                        <ion-col size="12" size-lg="6">
+                            <!-- FILTRO DE CATEGORIAS -->
+                            <ion-row>
+                                <ion-col>
+                                    <ion-row class="input-group mt-1">
+                                        <ion-col size="auto"><label class="input-group-text" *ngIf="filtros.categoria_id !== undefined">Categoría:</label></ion-col>
+                                        <ion-col><select class="w-100 h-100" placeholder="Selecionar Categoría"  [(ngModel)]="filtros.categoria_id" cancelText="Cancelar" (change)="filtros.categoria_seleccionada()">
+                                            <option *ngFor="let categoria of privateCategoriaService.all" value="{{categoria.id}}">{{categoria.nombre}}</option>
+                                        </select></ion-col>
+                                    </ion-row>
+                                </ion-col>
+                                <ion-col class="item-valign-center" size="auto">
+                                    <ion-button color="medium" (click)="filtros.clear_categoria()"><ion-icon name="refresh"></ion-icon></ion-button>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+
+                        <ion-col size="12" size-lg="6">
+                            <!-- FILTRO DE ESTADOS -->
+                            <ion-row>
+                                <ion-col>
+                                    <ion-row class="input-group mt-1">
+                                        <ion-col size="auto"><label class="input-group-text" *ngIf="filtros.estado_id !== undefined">Estado:</label></ion-col>
+                                        <ion-col><select class="w-100 h-100" placeholder="Selecionar Estado"  [(ngModel)]="filtros.estado_id" cancelText="Cancelar" (change)="filtros.estado_seleccionado()">
+                                            <option *ngFor="let estado of privateEstadoService.all" value="{{estado.id}}">{{estado.nombre}}</option>
+                                        </select></ion-col>
+                                    </ion-row>
+                                </ion-col>
+                                <ion-col class="item-valign-center" size="auto">
+                                    <ion-button color="medium" (click)="filtros.clear_categoria()"><ion-icon name="refresh"></ion-icon></ion-button>
                                 </ion-col>
                             </ion-row>
                         </ion-col>
