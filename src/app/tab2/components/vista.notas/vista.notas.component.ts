@@ -5,6 +5,8 @@ import { Nota } from 'src/app/models/nota';
 import { AppUIUtilsService } from 'src/app/services/app.ui.utils.service';
 import { PrivateNotaService } from 'src/app/services/private.nota.service';
 import { PrivateObrasService } from 'src/app/services/private.obras.service';
+import { PrivateTipoNotaService } from 'src/app/services/private.tipo.nota.service';
+import { FiltroNotas } from './models/filtro.notas';
 
 @Component({
   selector: 'app-vista-notas',
@@ -16,18 +18,26 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
   public titulo:string = "";
 
   private subscripciones:any = [];
-  public obra_id:any = -1;
 
-  constructor(
-    private activatedRoute:              ActivatedRoute,
-    public  privateNotaService:          PrivateNotaService,
-    public  privateObrasService:         PrivateObrasService,
-    private appUIUtilsService:           AppUIUtilsService,
-    private navController:               NavController
-  ) {
-  }
+  public tipo_nota_id:any = -1;
+  
+
+    constructor(
+        private activatedRoute:              ActivatedRoute,
+        public  privateNotaService:          PrivateNotaService,
+        public  privateTipoNotaService:      PrivateTipoNotaService,
+        public  privateObrasService:         PrivateObrasService,
+        private appUIUtilsService:           AppUIUtilsService,
+        private navController:               NavController
+    ) {
+    }
+    public filtros:FiltroNotas = new FiltroNotas();
 
     ngOnInit() {
+        //Se INICIALIZAN LOS FILTROS
+        this.filtros.setObrasService( this.privateObrasService );
+        this.filtros.setNotaService( this.privateNotaService );
+
         //SE VERIFICAN LOS PARAMETROS EN LA URL
         this.subscripciones.push( this.activatedRoute.paramMap.subscribe(async params => 
             { 
@@ -40,27 +50,24 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
 
                 //SE RECARGA EL LISTADO DE NOTAS
                 this.privateNotaService.getNotas( get_notas_params );
+
+                //NOS ASEGURAMOS DE CARGAR EL LISTADO DE OBRAS
+                //SOLO LAS QUE ESTAN HABILITADAS
+                this.appUIUtilsService.presentLoading({ message: 'Consultando listado de obras...' });
+                this.privateObrasService.getAll({
+                    getParams: 'filter[habilitada]=1',
+                    callback: ()=>{
+                        this.appUIUtilsService.dissmisLoading();
+                    }
+                });
             })
         );
 
-        //NOS ASEGURAMOS DE CARGAR EL LISTADO DE OBRAS
-        //SOLO LAS QUE ESTAN HABILITADAS
-        if (this.privateObrasService.all.length == 0){
-            this.appUIUtilsService.presentLoading({ message: 'Consultando listado de obras...' });
-
-            this.privateObrasService.getAll({
-                getParams: 'filter[habilitada]=1',
-                callback: ()=>{
-                    this.appUIUtilsService.dissmisLoading();
-                }
-            });
+        //SE CARGA EL LISTADO DE TIPOS DE NOTAS 
+        if (this.privateTipoNotaService.all.length == 0){
+            this.appUIUtilsService.presentLoading({ message: 'Consultando listado de tipos de notas...' });
+            this.privateTipoNotaService.getAll();
         }
-    }
-
-    clear(){
-        this.obra_id = -1;
-        let get_notas_params:any  = { getParams:   'expand=categoria,obra,tipoNota' };
-        this.privateNotaService.getNotas( get_notas_params );
     }
 
     ngOnDestroy(){
@@ -87,29 +94,6 @@ export class VistaNotasComponent  implements OnInit, OnDestroy  {
         return nota.obra.nombre_alias;
     }
   
-
-    consultar( filtro:string ){
-        this.privateNotaService.filtro_vencidas = filtro;
-        this.privateNotaService.getNotas({ 
-            getParams:   'expand=categoria,obra,tipoNota' 
-        });
-    }
-
-    obra_seleccionada(){
-        let nombre_obra = '';
-        for (let c=0; c < this.privateObrasService.all.length; c++){
-            if (this.privateObrasService.all[c].id == this.obra_id){
-                nombre_obra = this.privateObrasService.all[c].nombre_alias;
-                break;
-            }
-        }
-        this.privateNotaService.getNotas({
-            obra_id:      this.obra_id, 
-            nombre_obra:  nombre_obra,
-            getParams:   'expand=categoria,obra,tipoNota'
-        });
-    }
-
     goBack(){
         this.navController.back();
     }

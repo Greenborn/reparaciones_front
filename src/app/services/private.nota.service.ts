@@ -213,7 +213,6 @@ export class PrivateNotaService extends ApiServiceBase{
     // NOTAS VENCIDAS
     public cant_vencidas:number   = 0;
     public notas_vencidas:any     = [];
-    public filtro_vencidas:string = 'todas';
 
     obtenerNotasVencidas(){
         let date:any = new Date();
@@ -282,12 +281,6 @@ export class PrivateNotaService extends ApiServiceBase{
             this.ver_nota_obra_id = params.obra_id;
             paramsGetAll.getParams += '&filter[obra_id]='+this.ver_nota_obra_id;
         } 
-
-        if (this.filtro_vencidas == 'vencidas') {
-            let date:any            = new Date();
-            date                    = date.toISOString();
-            paramsGetAll.getParams += '&filter[vencimiento]=<' + date;
-        }
 
         paramsGetAll.callback = () => {
             this.appUIUtilsService.dissmisLoading();

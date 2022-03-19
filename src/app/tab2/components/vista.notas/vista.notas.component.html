@@ -20,33 +20,70 @@
           
           <ion-card-content>
             <ion-row>
-              <ion-col>
-                <ion-button color="secondary" (click)="nueva_nota()"><ion-icon name="add-circle"></ion-icon>&nbsp;Agregar Nota</ion-button>
-              </ion-col>
-              <ion-col  size="auto">
-                <div class="input-group mt-1">
-                    <label class="input-group-text" *ngIf="obra_id !== undefined">Obra:</label>
-                    <select placeholder="Selecionar Obra"  [(ngModel)]="obra_id" cancelText="Cancelar" (change)="obra_seleccionada()">
-                        <option *ngFor="let obra of privateObrasService.all" value="{{obra.id}}">{{obra.nombre_alias}}</option>
-                    </select>
-                </div>
-              </ion-col>
-              <ion-col class="item-valign-center" size="auto">
-                <ion-button color="medium" (click)="clear()"><ion-icon name="refresh"></ion-icon>&nbsp;Todas</ion-button>
-              </ion-col>
+                <ion-col>
+                    <ion-button color="secondary" (click)="nueva_nota()"><ion-icon name="add-circle"></ion-icon>&nbsp;Agregar Nota</ion-button>
+                    <ion-button color="secondary" (click)="filtros.toggle_filtros()"><ion-icon name="filter"></ion-icon>&nbsp;{{filtros.filtros_text}}</ion-button>
+                </ion-col>
             </ion-row>
 
-            <ion-row>
-              <ion-col>
-                <ion-segment [value]="privateNotaService.filtro_vencidas" >
-                  <ion-segment-button value="todas" (click)="consultar('todas')">
-                    Todas ({{privateNotaService.all.length}})
-                  </ion-segment-button>
-                  <ion-segment-button value="vencidas" (click)="consultar('vencidas')">
-                    <span>Vencidas ({{privateNotaService.cant_vencidas}})</span>
-                  </ion-segment-button>
-                </ion-segment>
-              </ion-col>
+            <ion-row *ngIf="filtros.filtros_visibles">
+                <ion-col>
+
+                    <ion-row>
+                        <!-- FILTRO DE NOTAS VENCIDAS -->
+                        <ion-col size="12">
+                            <ion-row>
+                                <ion-segment [value]="filtros.filtro_vencidas" >
+                                    <ion-segment-button value="todas" (click)="filtros.set_vencidas('todas')">
+                                    Todas ({{privateNotaService.all.length}})
+                                    </ion-segment-button>
+                                    <ion-segment-button value="vencidas" (click)="filtros.set_vencidas('vencidas')">
+                                    <span>Vencidas ({{privateNotaService.cant_vencidas}})</span>
+                                    </ion-segment-button>
+                                </ion-segment>
+                            </ion-row>
+                        </ion-col>
+                        
+                    </ion-row>
+
+                    <ion-row>
+                        <!-- FILTRO DE OBRAS -->
+                        <ion-col size="12" size-lg="6">
+                            <ion-row>
+                                <ion-col>
+                                    <ion-row class="input-group mt-1">
+                                        <ion-col size="auto"><label class="input-group-text" *ngIf="filtros.obra_id !== undefined">Obra:</label></ion-col>
+                                        <ion-col><select class="w-100 h-100" placeholder="Selecionar Obra"  [(ngModel)]="filtros.obra_id" cancelText="Cancelar" (change)="filtros.obra_seleccionada()">
+                                            <option *ngFor="let obra of privateObrasService.all" value="{{obra.id}}">{{obra.nombre_alias}}</option>
+                                        </select></ion-col>
+                                    </ion-row>
+                                </ion-col>
+                                <ion-col class="item-valign-center" size="auto">
+                                    <ion-button color="medium" (click)="filtros.clear_obra()"><ion-icon name="refresh"></ion-icon></ion-button>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+
+                        <ion-col size="12" size-lg="6">
+                            <!-- FILTRO DE TIPO DE NOTAS -->
+                            <ion-row>
+                                <ion-col>
+                                    <ion-row class="input-group mt-1">
+                                        <ion-col size="auto"><label class="input-group-text" *ngIf="tipo_nota_id !== undefined">Tipo de nota:</label></ion-col>
+                                        <ion-col><select class="w-100 h-100" placeholder="Selecionar Tipo de Nota"  [(ngModel)]="filtros.tipo_nota_id" cancelText="Cancelar" (change)="filtros.tipo_nota_seleccionada()">
+                                            <option *ngFor="let tiponota of privateTipoNotaService.all" value="{{tiponota.id}}">{{tiponota.nombre}}</option>
+                                        </select></ion-col>
+                                    </ion-row>
+                                </ion-col>
+                                <ion-col class="item-valign-center" size="auto">
+                                    <ion-button color="medium" (click)="filtros.clear_tipo_nota()"><ion-icon name="refresh"></ion-icon></ion-button>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+                        
+                    </ion-row>
+                
+                </ion-col>
             </ion-row>
 
             <ion-row>
